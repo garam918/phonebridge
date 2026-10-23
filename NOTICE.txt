@@ -1,0 +1,44 @@
+PhoneBridge — third-party software notice / 오픈소스 고지
+
+PhoneBridge includes the following open-source libraries. Both are
+distributed under the GNU Lesser General Public License, version 2.1 or
+later (LGPL-2.1-or-later). The full license text is in LGPL-2.1.txt next to
+this file.
+
+PhoneBridge에는 다음 오픈소스 라이브러리가 포함되어 있습니다. 두 라이브러리
+모두 GNU 약소 일반 공중 사용 허가서 2.1판 이상(LGPL-2.1-or-later)으로
+배포됩니다. 전문은 이 파일 옆의 LGPL-2.1.txt에 있습니다.
+
+1. libmtp 1.1.23
+   Copyright (C) the libmtp authors (Linus Walleij, Richard A. Low and others)
+   https://github.com/libmtp/libmtp
+   Source: https://downloads.sourceforge.net/project/libmtp/libmtp/1.1.23/libmtp-1.1.23.tar.gz
+   SHA-256: 74a2b6e8cb4a0304e95b995496ea3ac644c29371649b892b856e22f12a0bdeed
+
+2. libusb 1.0.30
+   Copyright (C) the libusb authors (Daniel Drake, Johannes Erdfelt,
+   Nathan Hjelm, Pete Batard, Ludovic Rousseau, Chris Dickens and others)
+   https://libusb.info
+   Source: https://github.com/libusb/libusb/releases/download/v1.0.30/libusb-1.0.30.tar.bz2
+   SHA-256: fea36f34f9156400209595e300840767ab1a385ede1dc7ee893015aea9c6dbaf
+
+How PhoneBridge uses them / 사용 방식
+- Both libraries are unmodified and built from the sources above
+  (libmtp with --disable-mtpz). They are linked dynamically and shipped as
+  separate files in PhoneBridge.app/Contents/Frameworks
+  (libmtp.9.dylib, libusb-1.0.0.dylib).
+- 두 라이브러리는 수정하지 않았고 위 소스로 빌드했습니다(libmtp는 --disable-mtpz).
+  동적으로 연결되며 PhoneBridge.app/Contents/Frameworks에 별도 파일로 들어
+  있습니다.
+- You may replace them with your own builds of compatible versions. macOS
+  then requires the app to be re-signed (codesign) because the app's
+  signature covers these files. The build script used is
+  scripts/build-native-deps.sh in the PhoneBridge source.
+- 호환되는 버전을 직접 빌드해 교체할 수 있습니다. 앱 서명이 이 파일들을 포함하므로
+  교체 후에는 앱을 다시 서명(codesign)해야 macOS가 실행을 허용합니다.
+- On request we provide the exact library sources used for a release for at
+  least three years from that release. / 요청하시면 각 릴리스에 쓰인 라이브러리
+  소스를 릴리스 후 최소 3년간 제공합니다.
+
+Apple frameworks (SwiftUI, AppKit, FSKit, IOKit, OSLog, CryptoKit) are part
+of macOS and are not redistributed.

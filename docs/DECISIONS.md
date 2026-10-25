@@ -539,3 +539,14 @@ macOS 파일 이름은 조합형(NFD)일 수 있다(압축 해제, 오래된 디
 - PhoneBridge 자체 라이선스는 MIT(저작권자 Garam Im). 저장소 루트 `LICENSE`, 앱 `NOTICE.txt`(MIT 전문 + LGPL 고지), `NSHumanReadableCopyright`. libmtp·libusb는 LGPL-2.1 그대로(동적 연결).
 - 소스는 새 저장소가 아니라 기존 배포 저장소 `garam918/phonebridge`에 올린다(D60의 "소스는 올리지 않음"을 바꿈). 루트의 `install.sh`·`NOTICE.txt`·`LGPL-2.1.txt` 사본은 프로젝트 안의 원본(`scripts/`, `PhoneBridge/Resources/Licenses/`)으로 옮긴다. README는 설치 안내 + 소스 빌드.
 - 공개 순서: 배포 중인 1.0.0의 보안 결함(H1–H6 등)이 코드·점검 보고서 공개로 먼저 알려지지 않도록, 수정 빌드를 1.0.0 번호 그대로 먼저 배포(v1.0.0 릴리스 파일 교체, Homebrew Cask SHA-256 갱신)한 뒤 코드를 올린다.
+
+## V23. 수정 빌드 배포와 소스 공개 (2026-10-25 14:03–14:30)
+- 빌드: `release.sh`로 1.0.0(빌드 202610251403), MIT 저작권 표기·고지 포함. 앱·DMG 공증 Accepted(첫 시도), SHA-256 `1faeffdf…ae64622d`. 확인: 앱 버전·저작권, `get-task-allow` 없음(3개 번들), 확장이 브로커 요구 조건(D62) 만족, `install.sh --check` 통과, 테스트 265개.
+- 공개(사용자가 터미널에서 실행 — 이 세션의 권한 설정이 공개 업로드를 막음): ① v1.0.0 릴리스 파일 5개 교체 ② 릴리스 설명에 수정 빌드 안내 ③ Homebrew 탭 Cask SHA-256 갱신(11d29d1) ④ 소스 푸시(613e9f2, 파일 162개, 작성자 noreply).
+- ①과 ③ 사이 약 20분 동안 Homebrew 설치는 체크섬 불일치로 실패했다(파일은 새 DMG, Cask는 이전 체크섬). 다음에는 파일 교체 직후 바로 탭을 갱신한다.
+- 공개 결과 확인: 공개 `install.sh`(latest)가 프로젝트와 같고 `--check` 통과, 받은 DMG가 공증 빌드와 같음, `brew fetch` 체크섬 통과, GitHub가 라이선스를 MIT로 인식, README 링크 13개 모두 존재, 빌드 산출물·Vendor·자격 증명 파일 없음.
+- 남음: 저장소 "Private vulnerability reporting"이 꺼져 있어 README의 보안 신고 안내가 아직 동작하지 않음(저장소 Settings › Security에서 켜야 함). 이 프로젝트 폴더는 git 저장소가 아니므로 이후 변경은 `~/Library/Developer/PhoneBridge/publish/phonebridge`로 옮겨 커밋해야 한다.
+
+## D70. 보안 신고는 Issue로 연락만 요청 (2026-10-25, 사용자 결정)
+- 저장소의 비공개 취약점 신고 기능은 켜지 않는다. 대신 `SECURITY.md`: 제목 "Security contact"로 Issue를 열어 영향받는 부분만 적고(재현 방법·코드·로그는 쓰지 않음), 관리자가 그 Issue에서 비공개 전달 방법을 답한다. README는 이 파일을 가리킨다.
+- 신고용 이메일 주소는 공개하지 않는다(정한 주소 없음).

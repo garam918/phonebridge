@@ -90,8 +90,8 @@ python3 scripts/check-localization.py && python3 scripts/check-log-privacy.py
 앱의 도움말 › 진단 정보 내보내기로 만든 파일을 첨부해 [Issues](https://github.com/garam918/phonebridge/issues)에 올려 주세요(파일·폴더 이름은 포함되지 않습니다).
 Attach the file from Help › Export Diagnostics (it contains no file or folder names).
 
-**보안 문제는 공개 Issue로 올리지 말고** 저장소의 Security 탭 › "Report a vulnerability"로 알려 주세요.
-**Please report security problems privately** through the repository's Security tab › "Report a vulnerability", not as a public issue.
+**보안 문제는 자세한 내용을 공개 Issue에 쓰지 마세요.** 제목 "Security contact"로 Issue를 열어 영향받는 부분만 적으면, 비공개로 받을 방법을 답해 드립니다 → [SECURITY.md](SECURITY.md)
+**For security problems, do not post details in a public issue.** Open an issue titled "Security contact" naming only the affected part, and you will get a private way to send the details → [SECURITY.md](SECURITY.md)
 
 ## 라이선스 / License
 PhoneBridge는 [MIT 라이선스](LICENSE)로 배포됩니다. / PhoneBridge is released under the [MIT License](LICENSE).

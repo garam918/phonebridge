@@ -64,3 +64,8 @@
 - 점검 수정 릴리스(D61–D66, V21). 노트: `docs/RELEASE_NOTES.md`.
 - 산출물: `~/Library/Developer/PhoneBridge/release/1.0.1-202610231627/` — 공증·스테이플 완료, `install.sh --check` 통과.
 - 남은 단계: `gh release create v1.0.1` (5개 파일), 탭 저장소 `Casks/phonebridge.rb` 갱신, 설치 확인 매트릭스.
+
+## 1.0.0 수정 빌드 (2026-10-25, 공개됨)
+- 빌드 202610251403, SHA-256 `1faeffdf…ae64622d`. v1.0.0 릴리스 파일 교체, Homebrew Cask 갱신(V23).
+- 소스 공개: https://github.com/garam918/phonebridge (MIT, D69).
+- 같은 버전으로 파일을 바꿀 때는 **파일 교체와 탭 갱신을 바로 이어서** 한다(사이에는 `brew install`이 체크섬 불일치로 실패).

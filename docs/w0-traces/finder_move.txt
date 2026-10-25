@@ -1,0 +1,24 @@
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+rename 트리 in Download → 트리 in Documents [cross-folder]
+rename ._트리 in Download → ._트리 in Documents [cross-folder]
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096

@@ -1,0 +1,60 @@
+create file W0-FAIL.txt in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+create file ._W0-FAIL.txt in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._W0-FAIL.txt modes=rw
+write ._W0-FAIL.txt offset=0 length=4096 size=4096
+close ._W0-FAIL.txt keeping=- size=4096
+setattr W0-FAIL.txt [mtime=1792675170]
+open W0-FAIL.txt modes=w
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+setattr W0-FAIL.txt [mode=600]
+setattr ._W0-FAIL.txt [mode=100644]
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+setattr W0-FAIL.txt [mode=644]
+setattr ._W0-FAIL.txt [mode=100644]
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+preallocate W0-FAIL.txt offset=0 length=11 flags=16
+write W0-FAIL.txt offset=0 length=11 size=11
+setattr W0-FAIL.txt [size=11]
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+setattr W0-FAIL.txt [mode=644]
+setattr ._W0-FAIL.txt [mode=100644]
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+setattr W0-FAIL.txt [mode=644]
+setattr ._W0-FAIL.txt [mode=100644]
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+setattr W0-FAIL.txt [mode=644]
+setattr ._W0-FAIL.txt [mode=100644]
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+open ._W0-FAIL.txt modes=rw
+write ._W0-FAIL.txt offset=0 length=4096 size=4096
+close ._W0-FAIL.txt keeping=- size=4096
+remove file ._W0-FAIL.txt size=4096
+setattr W0-FAIL.txt [mtime=1792675170]
+create file ._W0-FAIL.txt in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._W0-FAIL.txt modes=rw
+write ._W0-FAIL.txt offset=0 length=4096 size=4096
+close ._W0-FAIL.txt keeping=- size=4096
+setattr W0-FAIL.txt [mtime=1792675170]
+open ._W0-FAIL.txt modes=rw
+write ._W0-FAIL.txt offset=0 length=4096 size=4096
+close ._W0-FAIL.txt keeping=- size=4096
+setattr W0-FAIL.txt [mtime=1792675170]
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+setattr W0-FAIL.txt [mode=644]
+setattr ._W0-FAIL.txt [mode=100644]
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+close W0-FAIL.txt keeping=- size=11
+close W0-FAIL.txt → EIO (probe)

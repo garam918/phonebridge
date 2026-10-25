@@ -1,0 +1,61 @@
+create file plain.txt in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+create file ._plain.txt in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._plain.txt modes=rw
+write ._plain.txt offset=0 length=4096 size=4096
+close ._plain.txt keeping=- size=4096
+setattr plain.txt [mtime=1792674959]
+open plain.txt modes=w
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+setattr plain.txt [mode=600]
+setattr ._plain.txt [mode=100644]
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+setattr plain.txt [mode=644]
+setattr ._plain.txt [mode=100644]
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+preallocate plain.txt offset=0 length=6 flags=16
+write plain.txt offset=0 length=6 size=6
+setattr plain.txt [size=6]
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+setattr plain.txt [mode=644]
+setattr ._plain.txt [mode=100644]
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+setattr plain.txt [mode=644]
+setattr ._plain.txt [mode=100644]
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+setattr plain.txt [mode=644]
+setattr ._plain.txt [mode=100644]
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+open ._plain.txt modes=rw
+write ._plain.txt offset=0 length=4096 size=4096
+close ._plain.txt keeping=- size=4096
+remove file ._plain.txt size=4096
+setattr plain.txt [mtime=1792674959]
+create file ._plain.txt in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._plain.txt modes=rw
+write ._plain.txt offset=0 length=4096 size=4096
+close ._plain.txt keeping=- size=4096
+setattr plain.txt [mtime=1792674959]
+open ._plain.txt modes=rw
+write ._plain.txt offset=0 length=4096 size=4096
+close ._plain.txt keeping=- size=4096
+setattr plain.txt [mtime=1792674959]
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+setattr plain.txt [mode=644]
+setattr ._plain.txt [mode=100644]
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+close plain.txt keeping=- size=6
+open plain.txt modes=r
+close plain.txt keeping=- size=6

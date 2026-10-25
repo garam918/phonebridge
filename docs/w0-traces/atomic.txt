@@ -1,0 +1,39 @@
+create file atomic.txt.sb-971926c4-LXdkqQ in Documents attrs=[mode=644 uid gid flags=0x0 birthtime]
+create file ._atomic.txt.sb-971926c4-LXdkqQ in Documents attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._atomic.txt.sb-971926c4-LXdkqQ modes=rw
+write ._atomic.txt.sb-971926c4-LXdkqQ offset=0 length=4096 size=4096
+close ._atomic.txt.sb-971926c4-LXdkqQ keeping=- size=4096
+setattr atomic.txt.sb-971926c4-LXdkqQ [mtime=1792675072]
+open atomic.txt.sb-971926c4-LXdkqQ modes=rw
+open ._atomic.txt.sb-971926c4-LXdkqQ modes=r
+close ._atomic.txt.sb-971926c4-LXdkqQ keeping=- size=4096
+write atomic.txt.sb-971926c4-LXdkqQ offset=0 length=10 size=10
+rename atomic.txt.sb-971926c4-LXdkqQ in Documents → atomic.txt in Documents
+create file ._atomic.txt in Documents attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._atomic.txt modes=rw
+write ._atomic.txt offset=0 length=4096 size=4096
+close ._atomic.txt keeping=- size=4096
+setattr atomic.txt [mtime=1792675072]
+rename ._atomic.txt.sb-971926c4-LXdkqQ in Documents → ._atomic.txt in Documents over ._atomic.txt (1879048225)
+close atomic.txt keeping=- size=10
+create file atomic.txt.sb-971926c4-MWMIie in Documents attrs=[mode=644 uid gid flags=0x0 birthtime]
+create file ._atomic.txt.sb-971926c4-MWMIie in Documents attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._atomic.txt.sb-971926c4-MWMIie modes=rw
+write ._atomic.txt.sb-971926c4-MWMIie offset=0 length=4096 size=4096
+close ._atomic.txt.sb-971926c4-MWMIie keeping=- size=4096
+setattr atomic.txt.sb-971926c4-MWMIie [mtime=1792675072]
+open atomic.txt.sb-971926c4-MWMIie modes=rw
+open ._atomic.txt.sb-971926c4-MWMIie modes=r
+close ._atomic.txt.sb-971926c4-MWMIie keeping=- size=4096
+write atomic.txt.sb-971926c4-MWMIie offset=0 length=10 size=10
+rename atomic.txt.sb-971926c4-MWMIie in Documents → atomic.txt in Documents over atomic.txt (1879048223)
+open ._atomic.txt modes=r
+close ._atomic.txt keeping=- size=4096
+rename ._atomic.txt.sb-971926c4-MWMIie in Documents → ._atomic.txt in Documents over ._atomic.txt (1879048224)
+setattr atomic.txt [mode=644]
+setattr ._atomic.txt [mode=100644]
+open ._atomic.txt modes=r
+close ._atomic.txt keeping=- size=4096
+close atomic.txt keeping=- size=10
+open atomic.txt modes=r
+close atomic.txt keeping=- size=10

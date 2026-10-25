@@ -29,7 +29,7 @@
 PhoneBridge는 휴대전화에 앱을 설치하지 않습니다. 업로드·교체 중에만 `.phonebridge-`로 시작하는 숨김 임시 파일을 만들고, 끝나면(또는 다음 연결 때) 지웁니다.
 
 ### 삭제
-앱과 함께 위 저장 위치를 지우면 모든 정보가 사라집니다(INSTALL.md의 제거 절차).
+앱과 함께 위 저장 위치를 지우면 모든 정보가 사라집니다(`docs/INSTALL.md` 제거 절차).
 
 ## English
 
@@ -42,4 +42,4 @@ PhoneBridge는 휴대전화에 앱을 설치하지 않습니다. 업로드·교�
 - **Logs** go to the macOS unified log. File and folder names, device names and Mac paths are logged as private values (shown as `<private>`); identifiers containing serial numbers are logged only as hashes.
 - **Help › Export Diagnostics** writes one text file where you choose. Nothing is sent automatically; you decide whether to attach it to a support request. It contains versions, Mac model, settings, device models / USB ids / states (serials as short hashes), Finder and transfer state without file names, and this launch's log with private values redacted.
 - **On the phone** PhoneBridge installs nothing. It creates hidden temporary files starting with `.phonebridge-` only during uploads and replacements and removes them afterwards (or at the next connection).
-- **Removal**: delete the app and the folders listed in INSTALL.md.
+- **Removal**: delete the app and the folders listed in `docs/INSTALL.md`.

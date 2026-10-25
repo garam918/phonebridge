@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PBAppGroupIdentifier</key>
+	<string>$(PB_APP_GROUP)</string>
+	<key>EXAppExtensionAttributes</key>
+	<dict>
+		<key>EXExtensionPointIdentifier</key>
+		<string>com.apple.fskit.fsmodule</string>
+		<key>FSActivateOptionSyntax</key>
+		<dict>
+			<key>shortOptions</key>
+			<string>o:</string>
+		</dict>
+		<key>FSCheckOptionSyntax</key>
+		<dict>
+			<key>shortOptions</key>
+			<string>nqy</string>
+		</dict>
+		<key>FSFormatOptionSyntax</key>
+		<dict>
+			<key>shortOptions</key>
+			<string>v</string>
+		</dict>
+		<key>FSMediaTypes</key>
+		<dict/>
+		<key>FSPersonalities</key>
+		<dict/>
+		<key>FSRequiresSecurityScopedPathURLResources</key>
+		<false/>
+		<key>FSShortName</key>
+		<string>$(PB_FS_SHORT_NAME)</string>
+		<key>FSSupportedSchemes</key>
+		<array>
+			<string>phonebridge</string>
+		</array>
+		<key>FSSupportsBlockResources</key>
+		<false/>
+		<key>FSSupportsGenericURLResources</key>
+		<true/>
+		<key>FSSupportsPathURLs</key>
+		<false/>
+		<key>FSSupportsServerURLs</key>
+		<false/>
+	</dict>
+</dict>
+</plist>

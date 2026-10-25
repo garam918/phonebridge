@@ -1,0 +1,265 @@
+create file random200.bin in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open random200.bin modes=w
+close random200.bin keeping=- size=0
+setattr random200.bin [birthtime]
+open ._.DS_Store modes=r
+close ._.DS_Store keeping=- size=4096
+open ._.DS_Store modes=r
+close ._.DS_Store keeping=- size=4096
+open .DS_Store modes=w
+setattr .DS_Store [size=0]
+write .DS_Store offset=0 length=6148 size=6148
+close .DS_Store keeping=- size=6148
+open random200.bin modes=r
+close random200.bin keeping=- size=0
+open random200.bin modes=r
+close random200.bin keeping=- size=0
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+open ._.DS_Store modes=r
+close ._.DS_Store keeping=- size=4096
+open ._big.bin modes=r
+close ._big.bin keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._메모.txt modes=r
+close ._메모.txt keeping=- size=4096
+open random200.bin modes=r
+close random200.bin keeping=- size=0
+open random200.bin modes=r
+close random200.bin keeping=- size=0
+remove file random200.bin size=0
+create file random200.bin in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open random200.bin modes=w
+write random200.bin offset=0 length=1048576 size=1048576
+write random200.bin offset=1048576 length=1048576 size=2097152
+write random200.bin offset=2097152 length=1048576 size=3145728
+write random200.bin offset=4194304 length=1048576 size=5242880
+write random200.bin offset=3145728 length=1048576 size=5242880
+write random200.bin offset=5242880 length=1048576 size=6291456
+write random200.bin offset=6291456 length=1048576 size=7340032
+write random200.bin offset=7340032 length=1048576 size=8388608
+write random200.bin offset=8388608 length=1048576 size=9437184
+write random200.bin offset=9437184 length=1048576 size=10485760
+write random200.bin offset=10485760 length=1048576 size=11534336
+write random200.bin offset=12582912 length=1048576 size=13631488
+write random200.bin offset=11534336 length=1048576 size=13631488
+write random200.bin offset=15728640 length=1048576 size=16777216
+write random200.bin offset=14680064 length=1048576 size=16777216
+write random200.bin offset=13631488 length=1048576 size=16777216
+write random200.bin offset=16777216 length=1048576 size=17825792
+write random200.bin offset=17825792 length=1048576 size=18874368
+write random200.bin offset=18874368 length=1048576 size=19922944
+write random200.bin offset=19922944 length=1048576 size=20971520
+write random200.bin offset=20971520 length=1048576 size=22020096
+write random200.bin offset=22020096 length=1048576 size=23068672
+write random200.bin offset=24117248 length=1048576 size=25165824
+write random200.bin offset=23068672 length=1048576 size=25165824
+write random200.bin offset=25165824 length=1048576 size=26214400
+write random200.bin offset=27262976 length=1048576 size=28311552
+write random200.bin offset=26214400 length=1048576 size=28311552
+write random200.bin offset=28311552 length=1048576 size=29360128
+write random200.bin offset=29360128 length=1048576 size=30408704
+write random200.bin offset=31457280 length=1048576 size=32505856
+write random200.bin offset=30408704 length=1048576 size=32505856
+write random200.bin offset=32505856 length=1048576 size=33554432
+write random200.bin offset=33554432 length=1048576 size=34603008
+write random200.bin offset=34603008 length=1048576 size=35651584
+write random200.bin offset=36700160 length=1048576 size=37748736
+write random200.bin offset=35651584 length=1048576 size=37748736
+write random200.bin offset=40894464 length=1048576 size=41943040
+write random200.bin offset=37748736 length=1048576 size=41943040
+write random200.bin offset=39845888 length=1048576 size=41943040
+write random200.bin offset=38797312 length=1048576 size=41943040
+write random200.bin offset=41943040 length=1048576 size=42991616
+write random200.bin offset=42991616 length=1048576 size=44040192
+write random200.bin offset=44040192 length=1048576 size=45088768
+write random200.bin offset=45088768 length=1048576 size=46137344
+write random200.bin offset=48234496 length=1048576 size=49283072
+write random200.bin offset=47185920 length=1048576 size=49283072
+write random200.bin offset=46137344 length=1048576 size=49283072
+write random200.bin offset=49283072 length=1048576 size=50331648
+write random200.bin offset=50331648 length=1048576 size=51380224
+write random200.bin offset=51380224 length=1048576 size=52428800
+write random200.bin offset=52428800 length=1048576 size=53477376
+write random200.bin offset=53477376 length=1048576 size=54525952
+write random200.bin offset=55574528 length=1048576 size=56623104
+write random200.bin offset=54525952 length=1048576 size=56623104
+write random200.bin offset=56623104 length=1048576 size=57671680
+write random200.bin offset=57671680 length=1048576 size=58720256
+write random200.bin offset=58720256 length=1048576 size=59768832
+write random200.bin offset=59768832 length=1048576 size=60817408
+write random200.bin offset=60817408 length=1048576 size=61865984
+write random200.bin offset=61865984 length=1048576 size=62914560
+write random200.bin offset=62914560 length=1048576 size=63963136
+write random200.bin offset=63963136 length=1048576 size=65011712
+write random200.bin offset=65011712 length=1048576 size=66060288
+write random200.bin offset=66060288 length=1048576 size=67108864
+write random200.bin offset=67108864 length=1048576 size=68157440
+write random200.bin offset=68157440 length=1048576 size=69206016
+write random200.bin offset=70254592 length=1048576 size=71303168
+write random200.bin offset=69206016 length=1048576 size=71303168
+write random200.bin offset=71303168 length=1048576 size=72351744
+write random200.bin offset=73400320 length=1048576 size=74448896
+write random200.bin offset=72351744 length=1048576 size=74448896
+write random200.bin offset=74448896 length=1048576 size=75497472
+write random200.bin offset=75497472 length=1048576 size=76546048
+write random200.bin offset=77594624 length=1048576 size=78643200
+write random200.bin offset=76546048 length=1048576 size=78643200
+write random200.bin offset=79691776 length=1048576 size=80740352
+write random200.bin offset=78643200 length=1048576 size=80740352
+write random200.bin offset=80740352 length=1048576 size=81788928
+write random200.bin offset=81788928 length=1048576 size=82837504
+write random200.bin offset=82837504 length=1048576 size=83886080
+write random200.bin offset=83886080 length=1048576 size=84934656
+write random200.bin offset=84934656 length=1048576 size=85983232
+write random200.bin offset=85983232 length=1048576 size=87031808
+write random200.bin offset=87031808 length=1048576 size=88080384
+write random200.bin offset=88080384 length=1048576 size=89128960
+write random200.bin offset=89128960 length=1048576 size=90177536
+write random200.bin offset=90177536 length=1048576 size=91226112
+write random200.bin offset=91226112 length=1048576 size=92274688
+write random200.bin offset=92274688 length=1048576 size=93323264
+write random200.bin offset=93323264 length=1048576 size=94371840
+write random200.bin offset=94371840 length=1048576 size=95420416
+write random200.bin offset=96468992 length=1048576 size=97517568
+write random200.bin offset=95420416 length=1048576 size=97517568
+write random200.bin offset=97517568 length=1048576 size=98566144
+write random200.bin offset=99614720 length=1048576 size=100663296
+write random200.bin offset=98566144 length=1048576 size=100663296
+write random200.bin offset=100663296 length=1048576 size=101711872
+write random200.bin offset=101711872 length=1048576 size=102760448
+write random200.bin offset=102760448 length=1048576 size=103809024
+write random200.bin offset=103809024 length=1048576 size=104857600
+write random200.bin offset=104857600 length=1048576 size=105906176
+write random200.bin offset=105906176 length=1048576 size=106954752
+write random200.bin offset=106954752 length=1048576 size=108003328
+write random200.bin offset=108003328 length=1048576 size=109051904
+write random200.bin offset=109051904 length=1048576 size=110100480
+write random200.bin offset=110100480 length=1048576 size=111149056
+write random200.bin offset=111149056 length=1048576 size=112197632
+write random200.bin offset=112197632 length=1048576 size=113246208
+write random200.bin offset=113246208 length=1048576 size=114294784
+write random200.bin offset=114294784 length=1048576 size=115343360
+write random200.bin offset=115343360 length=1048576 size=116391936
+write random200.bin offset=116391936 length=1048576 size=117440512
+write random200.bin offset=117440512 length=1048576 size=118489088
+write random200.bin offset=118489088 length=1048576 size=119537664
+write random200.bin offset=119537664 length=1048576 size=120586240
+write random200.bin offset=120586240 length=1048576 size=121634816
+write random200.bin offset=121634816 length=1048576 size=122683392
+write random200.bin offset=122683392 length=1048576 size=123731968
+write random200.bin offset=123731968 length=1048576 size=124780544
+write random200.bin offset=124780544 length=1048576 size=125829120
+write random200.bin offset=125829120 length=1048576 size=126877696
+write random200.bin offset=126877696 length=1048576 size=127926272
+write random200.bin offset=127926272 length=1048576 size=128974848
+write random200.bin offset=128974848 length=1048576 size=130023424
+write random200.bin offset=130023424 length=1048576 size=131072000
+write random200.bin offset=131072000 length=1048576 size=132120576
+write random200.bin offset=133169152 length=1048576 size=134217728
+write random200.bin offset=132120576 length=1048576 size=134217728
+write random200.bin offset=134217728 length=1048576 size=135266304
+write random200.bin offset=135266304 length=1048576 size=136314880
+write random200.bin offset=136314880 length=1048576 size=137363456
+write random200.bin offset=139460608 length=1048576 size=140509184
+write random200.bin offset=138412032 length=1048576 size=140509184
+write random200.bin offset=137363456 length=1048576 size=140509184
+write random200.bin offset=141557760 length=1048576 size=142606336
+write random200.bin offset=140509184 length=1048576 size=142606336
+write random200.bin offset=142606336 length=1048576 size=143654912
+write random200.bin offset=143654912 length=1048576 size=144703488
+write random200.bin offset=144703488 length=1048576 size=145752064
+write random200.bin offset=145752064 length=1048576 size=146800640
+write random200.bin offset=146800640 length=1048576 size=147849216
+write random200.bin offset=147849216 length=1048576 size=148897792
+write random200.bin offset=148897792 length=1048576 size=149946368
+write random200.bin offset=149946368 length=1048576 size=150994944
+write random200.bin offset=150994944 length=1048576 size=152043520
+write random200.bin offset=152043520 length=1048576 size=153092096
+write random200.bin offset=153092096 length=1048576 size=154140672
+write random200.bin offset=154140672 length=1048576 size=155189248
+write random200.bin offset=156237824 length=1048576 size=157286400
+write random200.bin offset=155189248 length=1048576 size=157286400
+write random200.bin offset=157286400 length=1048576 size=158334976
+write random200.bin offset=158334976 length=1048576 size=159383552
+write random200.bin offset=159383552 length=1048576 size=160432128
+write random200.bin offset=160432128 length=1048576 size=161480704
+write random200.bin offset=161480704 length=1048576 size=162529280
+write random200.bin offset=162529280 length=1048576 size=163577856
+write random200.bin offset=163577856 length=1048576 size=164626432
+write random200.bin offset=164626432 length=1048576 size=165675008
+write random200.bin offset=165675008 length=1048576 size=166723584
+write random200.bin offset=166723584 length=1048576 size=167772160
+write random200.bin offset=167772160 length=1048576 size=168820736
+write random200.bin offset=173015040 length=1048576 size=174063616
+write random200.bin offset=169869312 length=1048576 size=174063616
+write random200.bin offset=168820736 length=1048576 size=174063616
+write random200.bin offset=170917888 length=1048576 size=174063616
+write random200.bin offset=171966464 length=1048576 size=174063616
+write random200.bin offset=174063616 length=1048576 size=175112192
+write random200.bin offset=175112192 length=1048576 size=176160768
+write random200.bin offset=176160768 length=1048576 size=177209344
+write random200.bin offset=177209344 length=1048576 size=178257920
+write random200.bin offset=178257920 length=1048576 size=179306496
+write random200.bin offset=179306496 length=1048576 size=180355072
+write random200.bin offset=180355072 length=1048576 size=181403648
+write random200.bin offset=181403648 length=1048576 size=182452224
+write random200.bin offset=182452224 length=1048576 size=183500800
+write random200.bin offset=183500800 length=1048576 size=184549376
+write random200.bin offset=184549376 length=1048576 size=185597952
+write random200.bin offset=185597952 length=1048576 size=186646528
+write random200.bin offset=186646528 length=1048576 size=187695104
+write random200.bin offset=189792256 length=1048576 size=190840832
+write random200.bin offset=187695104 length=1048576 size=190840832
+write random200.bin offset=188743680 length=1048576 size=190840832
+write random200.bin offset=190840832 length=1048576 size=191889408
+write random200.bin offset=191889408 length=1048576 size=192937984
+write random200.bin offset=192937984 length=1048576 size=193986560
+write random200.bin offset=193986560 length=1048576 size=195035136
+write random200.bin offset=196083712 length=1048576 size=197132288
+write random200.bin offset=195035136 length=1048576 size=197132288
+write random200.bin offset=197132288 length=1048576 size=198180864
+write random200.bin offset=198180864 length=1048576 size=199229440
+write random200.bin offset=199229440 length=1048576 size=200278016
+write random200.bin offset=200278016 length=1048576 size=201326592
+write random200.bin offset=201326592 length=1048576 size=202375168
+write random200.bin offset=202375168 length=1048576 size=203423744
+write random200.bin offset=203423744 length=1048576 size=204472320
+write random200.bin offset=204472320 length=1048576 size=205520896
+write random200.bin offset=205520896 length=1048576 size=206569472
+write random200.bin offset=206569472 length=1048576 size=207618048
+write random200.bin offset=207618048 length=1048576 size=208666624
+write random200.bin offset=208666624 length=1048576 size=209715200
+create file ._random200.bin in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._random200.bin modes=rw
+write ._random200.bin offset=0 length=4096 size=4096
+close ._random200.bin keeping=- size=4096
+setattr random200.bin [mtime=1792675014]
+close random200.bin keeping=- size=209715200
+setattr random200.bin [mode=100644 mtime=1792675012 birthtime]
+setattr ._random200.bin [mode=100644]
+open ._random200.bin modes=r
+close ._random200.bin keeping=- size=4096
+open ._random200.bin modes=r
+close ._random200.bin keeping=- size=4096
+open ._random200.bin modes=r
+close ._random200.bin keeping=- size=4096
+open ._random200.bin modes=r
+close ._random200.bin keeping=- size=4096
+open ._random200.bin modes=r
+close ._random200.bin keeping=- size=4096
+open ._random200.bin modes=r
+close ._random200.bin keeping=- size=4096
+open ._random200.bin modes=r
+close ._random200.bin keeping=- size=4096
+open ._random200.bin modes=r
+close ._random200.bin keeping=- size=4096
+open ._random200.bin modes=r
+close ._random200.bin keeping=- size=4096
+open ._random200.bin modes=r
+close ._random200.bin keeping=- size=4096
+open ._random200.bin modes=r
+close ._random200.bin keeping=- size=4096
+open ._random200.bin modes=r
+close ._random200.bin keeping=- size=4096

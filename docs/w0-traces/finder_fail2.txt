@@ -1,0 +1,47 @@
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+remove file W0-FAIL.txt size=11
+remove file ._W0-FAIL.txt size=4096
+create file W0-FAIL.txt in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open W0-FAIL.txt modes=w
+close W0-FAIL.txt keeping=- size=0
+setattr W0-FAIL.txt [birthtime]
+create file .DS_Store in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open .DS_Store modes=w
+close .DS_Store keeping=- size=0
+create file ._.DS_Store in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._.DS_Store modes=rw
+write ._.DS_Store offset=0 length=4096 size=4096
+close ._.DS_Store keeping=- size=4096
+setattr .DS_Store [mtime=1792675174]
+open .DS_Store modes=w
+setattr .DS_Store [size=0]
+write .DS_Store offset=0 length=6148 size=6148
+close .DS_Store keeping=- size=6148
+remove file W0-FAIL.txt size=0
+create file W0-FAIL.txt in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open W0-FAIL.txt modes=w
+create file ._W0-FAIL.txt in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._W0-FAIL.txt modes=rw
+write ._W0-FAIL.txt offset=0 length=4096 size=4096
+close ._W0-FAIL.txt keeping=- size=4096
+write W0-FAIL.txt offset=0 length=11 size=11
+setattr W0-FAIL.txt [mtime=1792675174]
+close W0-FAIL.txt keeping=- size=11
+close W0-FAIL.txt → EIO (probe)
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+open ._W0-FAIL.txt modes=r
+close ._W0-FAIL.txt keeping=- size=4096
+remove file W0-FAIL.txt size=11
+remove file ._W0-FAIL.txt size=4096

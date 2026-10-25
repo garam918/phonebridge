@@ -1,0 +1,65 @@
+create file big.bin in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open big.bin modes=w
+close big.bin keeping=- size=0
+setattr big.bin [birthtime]
+open big.bin modes=r
+close big.bin keeping=- size=0
+open big.bin modes=r
+close big.bin keeping=- size=0
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+open ._.DS_Store modes=r
+close ._.DS_Store keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._메모.txt modes=r
+close ._메모.txt keeping=- size=4096
+open big.bin modes=r
+close big.bin keeping=- size=0
+open big.bin modes=r
+close big.bin keeping=- size=0
+remove file big.bin size=0
+create file big.bin in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open big.bin modes=w
+setattr big.bin [size=314556416]
+write big.bin offset=314556416 length=16384 size=314572800
+create file ._big.bin in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._big.bin modes=rw
+write ._big.bin offset=0 length=4096 size=4096
+close ._big.bin keeping=- size=4096
+setattr big.bin [mtime=1792674995]
+close big.bin keeping=- size=314572800
+setattr big.bin [mode=100600 mtime=1792674951 birthtime]
+setattr ._big.bin [mode=100644]
+open ._big.bin modes=r
+close ._big.bin keeping=- size=4096
+open ._big.bin modes=r
+close ._big.bin keeping=- size=4096
+open ._big.bin modes=r
+close ._big.bin keeping=- size=4096
+open ._big.bin modes=r
+close ._big.bin keeping=- size=4096
+open ._big.bin modes=r
+close ._big.bin keeping=- size=4096
+open ._big.bin modes=r
+close ._big.bin keeping=- size=4096
+open ._big.bin modes=r
+close ._big.bin keeping=- size=4096
+open ._big.bin modes=r
+close ._big.bin keeping=- size=4096
+open ._big.bin modes=r
+close ._big.bin keeping=- size=4096
+open ._big.bin modes=r
+close ._big.bin keeping=- size=4096
+open ._big.bin modes=r
+close ._big.bin keeping=- size=4096
+open ._big.bin modes=r
+close ._big.bin keeping=- size=4096
+open ._.DS_Store modes=r
+close ._.DS_Store keeping=- size=4096
+open ._.DS_Store modes=r
+close ._.DS_Store keeping=- size=4096
+open .DS_Store modes=w
+setattr .DS_Store [size=0]
+write .DS_Store offset=0 length=6148 size=6148
+close .DS_Store keeping=- size=6148

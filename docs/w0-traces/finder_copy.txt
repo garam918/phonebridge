@@ -1,0 +1,74 @@
+create file 메모.txt in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open 메모.txt modes=w
+close 메모.txt keeping=- size=0
+setattr 메모.txt [birthtime]
+create file .DS_Store in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open .DS_Store modes=w
+close .DS_Store keeping=- size=0
+create file ._.DS_Store in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._.DS_Store modes=rw
+write ._.DS_Store offset=0 length=4096 size=4096
+close ._.DS_Store keeping=- size=4096
+setattr .DS_Store [mtime=1792674974]
+open .DS_Store modes=w
+setattr .DS_Store [size=0]
+write .DS_Store offset=0 length=6148 size=6148
+close .DS_Store keeping=- size=6148
+open 메모.txt modes=r
+close 메모.txt keeping=- size=0
+open 메모.txt modes=r
+open ._.DS_Store modes=r
+close 메모.txt keeping=- size=0
+close ._.DS_Store keeping=- size=4096
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+open 메모.txt modes=r
+close 메모.txt keeping=- size=0
+open 메모.txt modes=r
+close 메모.txt keeping=- size=0
+remove file 메모.txt size=0
+create file 메모.txt in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open 메모.txt modes=w
+create file ._메모.txt in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._메모.txt modes=rw
+write ._메모.txt offset=0 length=4096 size=4096
+close ._메모.txt keeping=- size=4096
+setattr 메모.txt [mtime=1792674975]
+open ._메모.txt modes=rw
+close ._메모.txt keeping=- size=4096
+open ._메모.txt modes=rw
+write ._메모.txt offset=0 length=4096 size=4096
+close ._메모.txt keeping=- size=4096
+write 메모.txt offset=0 length=31 size=31
+setattr 메모.txt [mtime=1792674975]
+open ._메모.txt modes=rw
+write ._메모.txt offset=0 length=4096 size=4096
+close ._메모.txt keeping=- size=4096
+setattr 메모.txt [mtime=1792674975]
+close 메모.txt keeping=- size=31
+setattr 메모.txt [mode=100644 mtime=1792674951 birthtime]
+setattr ._메모.txt [mode=100644]
+open ._메모.txt modes=r
+close ._메모.txt keeping=- size=4096
+open ._메모.txt modes=r
+close ._메모.txt keeping=- size=4096
+open ._메모.txt modes=r
+close ._메모.txt keeping=- size=4096
+open ._메모.txt modes=r
+close ._메모.txt keeping=- size=4096
+open ._메모.txt modes=r
+close ._메모.txt keeping=- size=4096
+open ._메모.txt modes=r
+close ._메모.txt keeping=- size=4096
+open ._메모.txt modes=r
+close ._메모.txt keeping=- size=4096
+open ._메모.txt modes=r
+close ._메모.txt keeping=- size=4096
+open ._메모.txt modes=r
+close ._메모.txt keeping=- size=4096
+open ._메모.txt modes=r
+close ._메모.txt keeping=- size=4096
+open ._메모.txt modes=r
+close ._메모.txt keeping=- size=4096
+open ._메모.txt modes=r
+close ._메모.txt keeping=- size=4096

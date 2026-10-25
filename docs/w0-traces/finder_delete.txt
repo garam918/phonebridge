@@ -1,0 +1,38 @@
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+open ._plain.txt modes=r
+open ._plain.txt modes=r
+close ._plain.txt keeping=r size=4096
+close ._plain.txt keeping=- size=4096
+open ._plain.txt modes=r
+open ._plain.txt modes=r
+close ._plain.txt keeping=r size=4096
+close ._plain.txt keeping=- size=4096
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+open ._plain.txt modes=r
+open ._plain.txt modes=r
+close ._plain.txt keeping=r size=4096
+close ._plain.txt keeping=- size=4096
+open ._plain.txt modes=r
+open ._plain.txt modes=r
+close ._plain.txt keeping=r size=4096
+close ._plain.txt keeping=- size=4096
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+remove file plain.txt size=6
+remove file ._plain.txt size=4096

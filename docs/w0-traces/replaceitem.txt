@@ -1,0 +1,54 @@
+create file replaced.txt in Documents attrs=[mode=644 uid gid flags=0x0 birthtime]
+create file ._replaced.txt in Documents attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._replaced.txt modes=rw
+write ._replaced.txt offset=0 length=4096 size=4096
+close ._replaced.txt keeping=- size=4096
+setattr replaced.txt [mtime=1792675076]
+open replaced.txt modes=w
+open ._replaced.txt modes=r
+close ._replaced.txt keeping=- size=4096
+write replaced.txt offset=0 length=9 size=9
+close replaced.txt keeping=- size=9
+create folder (A Document Being Saved By save) in Documents attrs=[mode=700 uid gid flags=0x0 birthtime]
+create file ._(A Document Being Saved By save) in Documents attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._(A Document Being Saved By save) modes=rw
+write ._(A Document Being Saved By save) offset=0 length=4096 size=4096
+close ._(A Document Being Saved By save) keeping=- size=4096
+setattr (A Document Being Saved By save) [mtime=1792675076]
+create file replaced.txt in (A Document Being Saved By save) attrs=[mode=644 uid gid flags=0x0 birthtime]
+create file ._replaced.txt in (A Document Being Saved By save) attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._replaced.txt modes=rw
+write ._replaced.txt offset=0 length=4096 size=4096
+close ._replaced.txt keeping=- size=4096
+setattr replaced.txt [mtime=1792675076]
+open replaced.txt modes=w
+open ._replaced.txt modes=r
+close ._replaced.txt keeping=- size=4096
+write replaced.txt offset=0 length=12 size=12
+close replaced.txt keeping=- size=12
+open ._replaced.txt modes=r
+close ._replaced.txt keeping=- size=4096
+open ._replaced.txt modes=r
+close ._replaced.txt keeping=- size=4096
+open ._replaced.txt modes=r
+close ._replaced.txt keeping=- size=4096
+open ._replaced.txt modes=r
+close ._replaced.txt keeping=- size=4096
+open ._replaced.txt modes=r
+close ._replaced.txt keeping=- size=4096
+open ._replaced.txt modes=r
+close ._replaced.txt keeping=- size=4096
+open ._replaced.txt modes=r
+close ._replaced.txt keeping=- size=4096
+open ._replaced.txt modes=r
+close ._replaced.txt keeping=- size=4096
+setattr replaced.txt [mode=100644 birthtime]
+setattr ._replaced.txt [mode=100644]
+open ._replaced.txt modes=r
+close ._replaced.txt keeping=- size=4096
+rename replaced.txt in (A Document Being Saved By save) → replaced.txt in Documents over replaced.txt (1879048228) [cross-folder]
+open ._replaced.txt modes=r
+close ._replaced.txt keeping=- size=4096
+rename ._replaced.txt in (A Document Being Saved By save) → ._replaced.txt in Documents over ._replaced.txt (1879048229) [cross-folder]
+open replaced.txt modes=r
+close replaced.txt keeping=- size=12

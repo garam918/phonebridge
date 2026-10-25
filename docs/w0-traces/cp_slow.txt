@@ -1,0 +1,60 @@
+create file W0-SLOW.txt in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+create file ._W0-SLOW.txt in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._W0-SLOW.txt modes=rw
+write ._W0-SLOW.txt offset=0 length=4096 size=4096
+close ._W0-SLOW.txt keeping=- size=4096
+setattr W0-SLOW.txt [mtime=1792675188]
+open W0-SLOW.txt modes=w
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+setattr W0-SLOW.txt [mode=600]
+setattr ._W0-SLOW.txt [mode=100644]
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+setattr W0-SLOW.txt [mode=644]
+setattr ._W0-SLOW.txt [mode=100644]
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+preallocate W0-SLOW.txt offset=0 length=11 flags=16
+write W0-SLOW.txt offset=0 length=11 size=11
+setattr W0-SLOW.txt [size=11]
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+setattr W0-SLOW.txt [mode=644]
+setattr ._W0-SLOW.txt [mode=100644]
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+setattr W0-SLOW.txt [mode=644]
+setattr ._W0-SLOW.txt [mode=100644]
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+setattr W0-SLOW.txt [mode=644]
+setattr ._W0-SLOW.txt [mode=100644]
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=rw
+write ._W0-SLOW.txt offset=0 length=4096 size=4096
+close ._W0-SLOW.txt keeping=- size=4096
+remove file ._W0-SLOW.txt size=4096
+setattr W0-SLOW.txt [mtime=1792675188]
+create file ._W0-SLOW.txt in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._W0-SLOW.txt modes=rw
+write ._W0-SLOW.txt offset=0 length=4096 size=4096
+close ._W0-SLOW.txt keeping=- size=4096
+setattr W0-SLOW.txt [mtime=1792675188]
+open ._W0-SLOW.txt modes=rw
+write ._W0-SLOW.txt offset=0 length=4096 size=4096
+close ._W0-SLOW.txt keeping=- size=4096
+setattr W0-SLOW.txt [mtime=1792675188]
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+setattr W0-SLOW.txt [mode=644]
+setattr ._W0-SLOW.txt [mode=100644]
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+close W0-SLOW.txt keeping=- size=11
+close W0-SLOW.txt replied after 20 s (probe)

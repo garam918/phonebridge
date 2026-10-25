@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<!--
+  Used for ad-hoc builds without a development team. It omits
+  com.apple.developer.fskit.fsmodule and the App Group, which Xcode only signs
+  with a provisioning profile, so this build compiles but FSKit will not load it.
+  Team builds: PB_FINDER_ENTITLEMENTS=Config/PhoneBridgeFinder.entitlements
+-->
+<dict>
+	<key>com.apple.security.app-sandbox</key>
+	<true/>
+</dict>
+</plist>

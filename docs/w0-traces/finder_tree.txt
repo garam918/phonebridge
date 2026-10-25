@@ -1,0 +1,135 @@
+create folder 트리 in Download attrs=[mode=755 uid gid flags=0x0 birthtime]
+setattr 트리 [birthtime]
+create file ._트리 in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._트리 modes=rw
+write ._트리 offset=0 length=4096 size=4096
+close ._트리 keeping=- size=4096
+setattr 트리 [mtime=1792674990]
+open ._트리 modes=rw
+write ._트리 offset=0 length=4096 size=4096
+close ._트리 keeping=- size=4096
+setattr 트리 [mtime=1792674990]
+open ._트리 modes=rw
+write ._트리 offset=0 length=4096 size=4096
+close ._트리 keeping=- size=4096
+setattr 트리 [mtime=1792674990]
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._.DS_Store modes=r
+close ._.DS_Store keeping=- size=4096
+open ._.DS_Store modes=r
+close ._.DS_Store keeping=- size=4096
+open .DS_Store modes=w
+setattr .DS_Store [size=0]
+write .DS_Store offset=0 length=6148 size=6148
+close .DS_Store keeping=- size=6148
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._메모.txt modes=r
+close ._메모.txt keeping=- size=4096
+open ._plain.txt modes=r
+close ._plain.txt keeping=- size=4096
+open ._.DS_Store modes=r
+close ._.DS_Store keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._트리 modes=rw
+write ._트리 offset=0 length=4096 size=4096
+close ._트리 keeping=- size=4096
+setattr 트리 [mtime=1792674990]
+open ._트리 modes=rw
+write ._트리 offset=0 length=4096 size=4096
+close ._트리 keeping=- size=4096
+setattr 트리 [mtime=1792674990]
+open ._트리 modes=rw
+write ._트리 offset=0 length=4096 size=4096
+close ._트리 keeping=- size=4096
+setattr 트리 [mtime=1792674990]
+create folder 빈 폴더 in 트리 attrs=[mode=755 uid gid flags=0x0 birthtime]
+create file ._빈 폴더 in 트리 attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._빈 폴더 modes=rw
+write ._빈 폴더 offset=0 length=4096 size=4096
+close ._빈 폴더 keeping=- size=4096
+setattr 빈 폴더 [mtime=1792674990]
+setattr 빈 폴더 [mode=40755 mtime=1792674951 birthtime]
+setattr ._빈 폴더 [mode=40755]
+create folder 하위 😀 in 트리 attrs=[mode=755 uid gid flags=0x0 birthtime]
+create file b.txt in 하위 😀 attrs=[mode=644 uid gid flags=0x0 birthtime]
+open b.txt modes=w
+create file ._b.txt in 하위 😀 attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._b.txt modes=rw
+write ._b.txt offset=0 length=4096 size=4096
+close ._b.txt keeping=- size=4096
+write b.txt offset=0 length=2 size=2
+setattr b.txt [mtime=1792674990]
+close b.txt keeping=- size=2
+setattr b.txt [mode=100644 mtime=1792674951 birthtime]
+setattr ._b.txt [mode=100644]
+create file ._하위 😀 in 트리 attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._하위 😀 modes=rw
+write ._하위 😀 offset=0 length=4096 size=4096
+close ._하위 😀 keeping=- size=4096
+setattr 하위 😀 [mtime=1792674990]
+setattr 하위 😀 [mode=40755 mtime=1792674951 birthtime]
+setattr ._하위 😀 [mode=40755]
+create file a.txt in 트리 attrs=[mode=644 uid gid flags=0x0 birthtime]
+open a.txt modes=w
+create file ._a.txt in 트리 attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._a.txt modes=rw
+write ._a.txt offset=0 length=4096 size=4096
+close ._a.txt keeping=- size=4096
+write a.txt offset=0 length=2 size=2
+setattr a.txt [mtime=1792674990]
+close a.txt keeping=- size=2
+setattr a.txt [mode=100644 mtime=1792674951 birthtime]
+setattr ._a.txt [mode=100644]
+open ._트리 modes=rw
+close ._트리 keeping=- size=4096
+open ._트리 modes=rw
+write ._트리 offset=0 length=4096 size=4096
+close ._트리 keeping=- size=4096
+setattr 트리 [mtime=1792674990]
+setattr 트리 [mode=40755 mtime=1792674951 birthtime]
+setattr ._트리 [mode=40755]
+open ._트리 modes=rw
+write ._트리 offset=0 length=4096 size=4096
+close ._트리 keeping=- size=4096
+setattr 트리 [mtime=1792674990]
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._트리 modes=rw
+write ._트리 offset=0 length=4096 size=4096
+close ._트리 keeping=- size=4096
+setattr 트리 [mtime=1792674990]
+open ._트리 modes=rw
+close ._트리 keeping=- size=4096
+open ._트리 modes=rw
+close ._트리 keeping=- size=4096
+open ._트리 modes=rw
+open ._트리 modes=r
+close ._트리 keeping=r size=4096
+close ._트리 keeping=- size=4096
+open ._트리 modes=rw
+close ._트리 keeping=- size=4096
+open ._트리 modes=rw
+write ._트리 offset=0 length=4096 size=4096
+close ._트리 keeping=- size=4096
+open ._트리 modes=r
+setattr 트리 [mtime=1792674990]
+close ._트리 keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096
+open ._트리 modes=r
+close ._트리 keeping=- size=4096

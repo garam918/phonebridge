@@ -1,0 +1,2 @@
+create folder 새 폴더 W0 in Download attrs=[mode=755 uid gid flags=0x0 birthtime]
+rename 새 폴더 W0 in Download → 이름 바꾼 폴더 in Download

@@ -1,0 +1,32 @@
+open ._하위 😀 modes=r
+close ._하위 😀 keeping=- size=4096
+remove file ._하위 😀 size=4096
+remove folder 빈 폴더 size=0
+remove file ._빈 폴더 size=4096
+remove file a.txt size=2
+remove file ._a.txt size=4096
+remove file b.txt size=2
+remove file ._b.txt size=4096
+remove folder 하위 😀 size=0
+remove folder 트리 size=0
+remove file ._트리 size=4096
+create file .DS_Store in Documents attrs=[mode=644 uid gid flags=0x0 birthtime]
+open .DS_Store modes=w
+close .DS_Store keeping=- size=0
+create file ._.DS_Store in Documents attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._.DS_Store modes=rw
+write ._.DS_Store offset=0 length=4096 size=4096
+close ._.DS_Store keeping=- size=4096
+setattr .DS_Store [mtime=1792675054]
+open .DS_Store modes=w
+setattr .DS_Store [size=0]
+write .DS_Store offset=0 length=6148 size=6148
+close .DS_Store keeping=- size=6148
+open ._.DS_Store modes=r
+close ._.DS_Store keeping=- size=4096
+open ._.DS_Store modes=r
+close ._.DS_Store keeping=- size=4096
+open .DS_Store modes=w
+setattr .DS_Store [size=0]
+write .DS_Store offset=0 length=6148 size=6148
+close .DS_Store keeping=- size=6148

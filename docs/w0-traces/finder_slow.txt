@@ -1,0 +1,81 @@
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._.DS_Store modes=r
+close ._.DS_Store keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._.DS_Store modes=r
+close ._.DS_Store keeping=- size=4096
+open ._.DS_Store modes=r
+close ._.DS_Store keeping=- size=4096
+open .DS_Store modes=r
+close .DS_Store keeping=- size=6148
+open ._.DS_Store modes=r
+close ._.DS_Store keeping=- size=4096
+open ._.DS_Store modes=r
+close ._.DS_Store keeping=- size=4096
+open .DS_Store modes=w
+setattr .DS_Store [size=0]
+write .DS_Store offset=0 length=6148 size=6148
+close .DS_Store keeping=- size=6148
+remove file W0-SLOW.txt size=11
+remove file ._W0-SLOW.txt size=4096
+create file W0-SLOW.txt in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open W0-SLOW.txt modes=w
+close W0-SLOW.txt keeping=- size=0
+setattr W0-SLOW.txt [birthtime]
+remove file W0-SLOW.txt size=0
+create file W0-SLOW.txt in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open W0-SLOW.txt modes=w
+create file ._W0-SLOW.txt in Download attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._W0-SLOW.txt modes=rw
+write ._W0-SLOW.txt offset=0 length=4096 size=4096
+close ._W0-SLOW.txt keeping=- size=4096
+write W0-SLOW.txt offset=0 length=11 size=11
+setattr W0-SLOW.txt [mtime=1792675234]
+close W0-SLOW.txt keeping=- size=11
+open ._.DS_Store modes=r
+close ._.DS_Store keeping=- size=4096
+open ._.DS_Store modes=r
+close ._.DS_Store keeping=- size=4096
+open .DS_Store modes=w
+setattr .DS_Store [size=0]
+write .DS_Store offset=0 length=6148 size=6148
+close .DS_Store keeping=- size=6148
+close W0-SLOW.txt replied after 20 s (probe)
+setattr W0-SLOW.txt [mode=100644 mtime=1792675138 birthtime]
+setattr ._W0-SLOW.txt [mode=100644]
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096
+open ._W0-SLOW.txt modes=r
+close ._W0-SLOW.txt keeping=- size=4096

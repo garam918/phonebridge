@@ -1,0 +1,10 @@
+open 가계부 2026.xlsx modes=w
+create file ._가계부 2026.xlsx in Documents attrs=[mode=644 uid gid flags=0x0 birthtime]
+open ._가계부 2026.xlsx modes=rw
+write ._가계부 2026.xlsx offset=0 length=4096 size=4096
+close ._가계부 2026.xlsx keeping=- size=4096
+setattr 가계부 2026.xlsx [mtime=1791082471]
+write 가계부 2026.xlsx offset=81920 length=6209 size=88129
+close 가계부 2026.xlsx keeping=- size=88129
+open 가계부 2026.xlsx modes=r
+close 가계부 2026.xlsx keeping=- size=88129

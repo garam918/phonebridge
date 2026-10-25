@@ -23,6 +23,7 @@ TEAM_ID="KB2PLX99H6"
 BUNDLE_ID="com.phonebridge.PhoneBridge"
 MIN_MACOS="15.0"
 APP_NAME="PhoneBridge.app"
+LSREGISTER="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister"
 
 dmg=""
 mode="install"
@@ -98,12 +99,27 @@ verify_app() {  # <path to PhoneBridge.app>
   say "verified: Developer ID ($TEAM_ID), notarized"
 }
 
+# --- LaunchServices -------------------------------------------------------
+
+# Copies outside the install location (the opened disk image, the old app in
+# the Trash) must not stay registered with LaunchServices: macOS may pick
+# their Finder extension instead of the installed one, and mounting then fails
+# (docs/KNOWN_ISSUES.md K44). Only the registration goes; files are untouched.
+forget_copy() {  # <path to PhoneBridge.app>
+  [ -x "$LSREGISTER" ] || return 0
+  "$LSREGISTER" -u "$1/Contents/Extensions/PhoneBridgeFinder.appex" >/dev/null 2>&1 || true
+  "$LSREGISTER" -u "$1" >/dev/null 2>&1 || true
+}
+
 # --- download / mount -----------------------------------------------------
 
 work="$(mktemp -d "${TMPDIR:-/tmp}/phonebridge-install.XXXXXX")"
 mount_point=""
 cleanup() {
-  if [ -n "$mount_point" ]; then hdiutil detach -quiet "$mount_point" 2>/dev/null || true; fi
+  if [ -n "$mount_point" ]; then
+    forget_copy "$mount_point/$APP_NAME"
+    hdiutil detach -quiet "$mount_point" 2>/dev/null || true
+  fi
   rm -rf "$work"
 }
 trap cleanup EXIT
@@ -158,7 +174,11 @@ quit_app() {
 move_to_trash() {  # <path>
   [ -e "$1" ] || return 0
   local target="$HOME/.Trash/$(basename "$1") $(date +%Y%m%d-%H%M%S)-$$"
-  [ ! -e "$target" ] && mv "$1" "$target" 2>/dev/null && say "moved to Trash: $1" && return 0
+  if [ ! -e "$target" ] && mv "$1" "$target" 2>/dev/null; then
+    case "$target" in *.app*) forget_copy "$target" ;; esac
+    say "moved to Trash: $1"
+    return 0
+  fi
   say "could not remove $1 — remove it in Finder (⇧⌘G, then move to Trash)"
 }
 
@@ -179,6 +199,9 @@ install_app() {
   ditto "$mount_point/$APP_NAME" "$staged"
   verify_app "$staged"
   if [ -d "$dest_dir/$APP_NAME" ]; then move_to_trash "$dest_dir/$APP_NAME"; fi
+  # The staged path is not passed to forget_copy: LaunchServices follows the
+  # moved bundle, so that would unregister the installed app itself. Its Finder
+  # extension is registered when the app first runs.
   mv "$staged" "$dest_dir/$APP_NAME"
   local version
   version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$dest_dir/$APP_NAME/Contents/Info.plist")"

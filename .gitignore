@@ -1,0 +1,19 @@
+build/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+.DS_Store
+Vendor/build/
+Vendor/sources/
+Vendor/native/
+
+# Never commit signing material or release outputs
+*.p12
+*.p8
+*.cer
+*.mobileprovision
+*.provisionprofile
+*.dmg
+*.xcarchive
+ExportOptions.plist
+.env

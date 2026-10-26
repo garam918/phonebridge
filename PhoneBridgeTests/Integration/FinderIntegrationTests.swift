@@ -550,15 +550,15 @@ final class FinderIntegrationManagerTests {
         #expect(model.settings.finderWritesEnabled && model.finder.repository.allowsWrites)
         #expect(mounter.unmountCount == 1 && mounter.mountCount == 2, "remounted so the extension sees the new mode")
         #expect(mountedURL() != nil)
-        #expect(!model.finder.acceptsWrites(volume), "real devices need their own setting")
-        model.finder.repository.allowsRealDeviceWrites = true
-        #expect(model.finder.acceptsWrites(volume))
+        #expect(model.finder.acceptsWrites(volume), "one switch: phones accept writes (D72)")
+        #expect(model.finder.repository.allowsRealDeviceWrites)
 
         await model.finder.setWritesEnabled(true)
         #expect(mounter.mountCount == 2, "no change, no remount")
 
         await model.finder.setWritesEnabled(false)
         #expect(!model.finder.repository.allowsWrites && !model.settings.finderWritesEnabled)
+        #expect(!model.finder.repository.allowsRealDeviceWrites && !model.finder.acceptsWrites(volume))
         #expect(mounter.unmountCount == 2 && mounter.mountCount == 3)
     }
 
@@ -589,35 +589,26 @@ final class FinderIntegrationManagerTests {
         #expect(!settings.finderWritesRealDevices)
     }
 
-    @Test func realDeviceWritesAreASettingThatRemounts() async throws {
-        await model.start()
-        monitor.send(.attached(.fixture()))
-        try await waitUntil { self.mountedURL() != nil }
-        let volume = try #require(model.finder.volumes.first)
-        await model.finder.setWritesEnabled(true)
-        let mountsBefore = mounter.mountCount
-        #expect(!model.finder.acceptsWrites(volume))
+    @Test func consentGivenForTheVirtualDeviceIsNotReusedForPhones() {
+        // Before D72 "settings.finderWrites" meant "write to the virtual device only".
+        let upgraded = freshDefaults()
+        upgraded.set(true, forKey: "settings.finderWrites")
+        upgraded.set(true, forKey: "settings.showDemoDevice")
+        let settings = AppSettings(defaults: upgraded)
+        #expect(!settings.finderWritesEnabled && !settings.finderWritesRealDevices, "asks again after the update")
+        #expect(!settings.showDemoDevice, "the old visible setting no longer shows the virtual device")
 
-        await model.finder.setRealDeviceWritesEnabled(true)
-        #expect(model.settings.finderWritesRealDevices && model.finder.repository.allowsRealDeviceWrites)
-        #expect(model.finder.acceptsWrites(volume))
-        #expect(mounter.mountCount == mountsBefore + 1, "remounted writable")
-
-        await model.finder.setWritesEnabled(false)
-        #expect(!model.finder.acceptsWrites(volume), "the real-device option needs Finder writes on")
-        await model.finder.setRealDeviceWritesEnabled(false)
-        #expect(!model.finder.repository.allowsRealDeviceWrites)
+        settings.finderWritesEnabled = true
+        #expect(AppSettings(defaults: upgraded).finderWritesEnabled, "the new switch is saved")
     }
 
-    @Test func realDeviceWriteSettingIsSavedAndTheDiagnosticsArgumentStillWorks() {
-        let defaults = freshDefaults()
-        let settings = AppSettings(defaults: defaults)
-        settings.finderWritesRealDevices = true
-        #expect(AppSettings(defaults: defaults).finderWritesRealDevices, "saved")
-
+    @Test func virtualDeviceAndRealDeviceWritesStillHaveLaunchArguments() {
         let launched = freshDefaults()
         launched.set("YES", forKey: AppSettings.Key.diagnosticsRealDeviceWrites)
-        #expect(AppSettings(defaults: launched).finderWritesRealDevices)
+        launched.set("YES", forKey: AppSettings.Key.showDemoDevice)
+        let settings = AppSettings(defaults: launched)
+        #expect(settings.finderWritesRealDevices && !settings.finderWritesEnabled)
+        #expect(settings.showDemoDevice)
     }
 
     @Test func safeDisconnectUnmountsFromFinderAndClosesTheSession() async throws {
@@ -691,6 +682,7 @@ final class FinderIntegrationManagerTests {
     @Test func missingAppGroupIsReported() async throws {
         let defaults = freshDefaults()
         defaults.set(true, forKey: AppSettings.Key.finderIntegration)
+        defaults.set(true, forKey: AppSettings.Key.showDemoDevice)
         let broker = DeviceBroker(monitor: MockUSBMonitor(), backend: MockMTPBackend(), configuration: .fast)
         let model = AppModel(broker: broker, localization: LocalizationManager(defaults: defaults), settings: AppSettings(defaults: defaults),
                              localAccess: LocalAccessManager(defaults: defaults, defaultFolder: FileManager.default.temporaryDirectory),

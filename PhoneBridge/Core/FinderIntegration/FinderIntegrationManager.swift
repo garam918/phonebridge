@@ -296,15 +296,7 @@ final class FinderIntegrationManager {
         guard settings.finderWritesEnabled != enabled else { return }
         settings.finderWritesEnabled = enabled
         repository.allowsWrites = enabled
-        if !enabled { await repository.writes.finishAllPendingDeletes() }
-        await remountMounted()
-    }
-
-    /// Settings › Finder › real devices. Remounts so Finder sees the change.
-    func setRealDeviceWritesEnabled(_ enabled: Bool) async {
-        guard settings.finderWritesRealDevices != enabled else { return }
-        settings.finderWritesRealDevices = enabled
-        repository.allowsRealDeviceWrites = enabled
+        repository.allowsRealDeviceWrites = settings.finderWritesRealDevices
         if !enabled { await repository.writes.finishAllPendingDeletes() }
         await remountMounted()
     }

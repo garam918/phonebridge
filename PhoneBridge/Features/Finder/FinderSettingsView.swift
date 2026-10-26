@@ -9,7 +9,6 @@ struct FinderSettingsView: View {
     @Environment(LocalizationManager.self) private var loc
     @Environment(AppSettings.self) private var settings
     @State private var confirmWrites = false
-    @State private var confirmRealDeviceWrites = false
 
     var body: some View {
         let finder = model.finder
@@ -68,18 +67,7 @@ struct FinderSettingsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 if settings.finderWritesEnabled {
-                    Toggle(loc.t("finder.writes.realDevices"), isOn: Binding(
-                        get: { settings.finderWritesRealDevices },
-                        set: { value in
-                            if value {
-                                confirmRealDeviceWrites = true
-                            } else {
-                                Task { await finder.setRealDeviceWritesEnabled(false) }
-                            }
-                        }
-                    ))
-                    Label(loc.t(settings.finderWritesRealDevices ? "finder.writes.realDevicesOnNote" : "finder.writes.demoOnly"),
-                          systemImage: settings.finderWritesRealDevices ? "exclamationmark.triangle" : "testtube.2")
+                    Label(loc.t("finder.writes.realDevicesOnNote"), systemImage: "exclamationmark.triangle")
                         .font(.caption)
                         .foregroundStyle(.orange)
                 }
@@ -142,14 +130,8 @@ struct FinderSettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .alert(loc.t("finder.writes.confirmTitle"), isPresented: $confirmWrites) {
+        .alert(loc.t("finder.writes.realDevicesConfirmTitle"), isPresented: $confirmWrites) {
             Button(loc.t("finder.writes.confirmEnable")) { Task { await finder.setWritesEnabled(true) } }
-            Button(loc.t("action.cancel"), role: .cancel) {}
-        } message: {
-            Text(loc.t("finder.writes.confirmMessage"))
-        }
-        .alert(loc.t("finder.writes.realDevicesConfirmTitle"), isPresented: $confirmRealDeviceWrites) {
-            Button(loc.t("finder.writes.confirmEnable")) { Task { await finder.setRealDeviceWritesEnabled(true) } }
             Button(loc.t("action.cancel"), role: .cancel) {}
         } message: {
             Text(loc.t("finder.writes.realDevicesConfirmMessage"))

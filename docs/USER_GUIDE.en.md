@@ -49,12 +49,11 @@ Choose **Device › Safely Disconnect** (⌘E) or right-click the device in the 
 ## 5. Finder (optional)
 Turn on **Enable Finder integration** in Settings › Finder and enable the "PhoneBridge Finder" extension in System Settings (`INSTALL.md`). The device's storage then appears under Locations in the Finder sidebar.
 - It is **read-only** by default: open, Quick Look and copy to the Mac.
-- **Allow writing from Finder (experimental)** writes to the virtual device; turn on **Also allow writing to real Android devices** below it to write to phones too (asks once more). Files deleted on the phone cannot be recovered, and only one model has been verified so far, so back up important files first.
+- **Allow writing from Finder (experimental)** lets you copy, rename and delete on the phone from Finder (asks for confirmation first). Files deleted on the phone cannot be recovered, so back up important files first.
 - While a large copy runs through the Finder volume, other folders may take a moment to list (MTP handles one request at a time).
 
 ## 6. Settings
 - **General › Language**: 한국어 / English. The app's windows switch immediately; a few texts drawn by macOS (Services and Quit in the app menu, file panel buttons) follow after a relaunch.
-- Show virtual device: a demo Android device for trying PhoneBridge without hardware. It is marked as virtual; its files reset when the app quits.
 
 ## 7. When something goes wrong
 1. Go through **Help › Connection Troubleshooting** (cable, port, unlock, other apps).
@@ -64,4 +63,4 @@ Turn on **Enable Finder integration** in Settings › Finder and enable the "Pho
 - MTP handles one request at a time. Large files move in pieces so you can keep browsing; on devices that do not support this, opening folders waits until the transfer ends.
 - SD cards formatted FAT32 cannot hold files over 4 GB (device limit).
 - Some devices hide their storage while locked; unlocking continues automatically.
-- So far, the Samsung Galaxy S25 Edge (SM-S937N) has been verified on real hardware. Other Android devices using standard MTP will likely work but have not been verified.
+- Verified on hardware: transfers on the Galaxy S25 Edge (SM-S937N), Finder browsing and reads on the Galaxy Z Flip5 (SM-F731N). Other Android devices using standard MTP will likely work but have not been verified.

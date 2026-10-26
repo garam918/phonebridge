@@ -1,5 +1,21 @@
 # 릴리스 노트 / Release Notes
 
+## 1.0.0 수정 빌드 2 (2026-10-26, 버전 번호 1.0.0 유지)
+
+- **새 앱 아이콘**: Android(녹색)와 Mac(파란색)을 잇는 다리.
+- **가상 기기(테스트용) 제거**: 사이드바의 "가상 기기 (테스트용)"와 설정의 "가상 기기 표시"가 없어졌습니다.
+- **Finder 쓰기는 스위치 하나**: 설정 › Finder › "Finder에서 쓰기 허용(실험적)"을 켜면 휴대전화에 씁니다(이전에는 가상 기기용 스위치와 실제 기기용 스위치가 따로 있었음). 이전에 켜 두었더라도 업데이트 후에는 꺼진 상태로 시작하며, 다시 켤 때 확인을 묻습니다.
+- 이미 1.0.0을 설치했다면 업데이트 알림이 오지 않습니다. 설치 스크립트를 다시 실행하거나 `brew reinstall --cask phonebridge`로 받으세요.
+
+## 1.0.0 updated build 2 (2026-10-26, version number unchanged)
+
+- **New app icon**: a bridge between Android (green) and the Mac (blue).
+- **Virtual (test) device removed**: the "Virtual devices (testing)" sidebar entry and the "Show virtual device" setting are gone.
+- **One switch for Finder writing**: Settings › Finder › "Allow writing from Finder (experimental)" now writes to phones (previously there were separate switches for the virtual device and real devices). It starts off after this update, even if it was on before, and asks for confirmation when turned on.
+- If 1.0.0 is already installed you will not be notified; run the install script again or `brew reinstall --cask phonebridge`.
+
+---
+
 ## 1.0.0 수정 빌드 (2026-10-25, 버전 번호 1.0.0 유지)
 
 보안·데이터 보호 수정 빌드입니다. 새 기능은 없고, 버전 번호는 1.0.0 그대로입니다. 이미 1.0.0을 설치했다면 업데이트 알림이 오지 않으니 설치 스크립트를 다시 실행하거나 `brew reinstall --cask phonebridge`로 받으세요. 이번 빌드부터 PhoneBridge는 MIT 라이선스로 공개됩니다. 전체 점검 결과는 `docs/AUDIT_2026-10-23.md`, 결정 기록은 `docs/DECISIONS.md` D61–D66에 있습니다.

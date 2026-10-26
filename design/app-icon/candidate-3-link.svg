@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <title>PhoneBridge icon candidate 3: interlocked links</title>
+  <defs>
+    <clipPath id="front-crossing"><rect x="395" y="512" width="235" height="190"/></clipPath>
+  </defs>
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="#1F242C"/>
+  <g transform="rotate(-30 512 512)">
+    <rect x="402" y="402" width="400" height="220" rx="110" fill="none" stroke="#4DA3FF" stroke-width="72"/>
+    <rect x="222" y="402" width="400" height="220" rx="110" fill="none" stroke="#3DDC84" stroke-width="72"/>
+    <rect x="402" y="402" width="400" height="220" rx="110" fill="none" stroke="#4DA3FF" stroke-width="72" clip-path="url(#front-crossing)"/>
+  </g>
+</svg>

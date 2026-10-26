@@ -32,7 +32,7 @@ enum DiagnosticsReport {
         lines.append("[settings]")
         lines.append("language: \(model.localization.language.rawValue)")
         lines.append("finder integration: \(settings.finderIntegrationEnabled), auto mount: \(settings.finderAutoMount), writes: \(settings.finderWritesEnabled)")
-        lines.append("demo device shown: \(settings.showDemoDevice), dual pane: \(settings.dualPane)")
+        lines.append("virtual device (diagnostics): \(settings.showDemoDevice), dual pane: \(settings.dualPane)")
         lines.append("")
 
         lines.append("[devices]")

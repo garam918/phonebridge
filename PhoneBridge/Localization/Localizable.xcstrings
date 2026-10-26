@@ -3299,57 +3299,6 @@
         }
       }
     },
-    "finder.writes.confirmMessage": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This is an experimental feature. Originals on the device are protected: new files are uploaded under a temporary name and checked before they replace anything. Still, back up important files first. Files you delete in Finder do not go to the Trash."
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "실험 기능입니다. 기기의 원본은 새 파일을 임시 이름으로 올려 확인한 뒤에 바꾸는 방식으로 보호되지만, 중요한 파일은 미리 백업해 두세요. Finder에서 지운 파일은 휴지통으로 가지 않습니다."
-          }
-        }
-      }
-    },
-    "finder.writes.confirmTitle": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Allow writing from Finder?"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Finder에서 쓰기를 허용할까요?"
-          }
-        }
-      }
-    },
-    "finder.writes.demoOnly": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "For now, writing goes only to the virtual device. Turn on the option above to write to real devices."
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "지금은 가상 기기에만 씁니다. 실제 기기에 쓰려면 위 항목을 켜세요."
-          }
-        }
-      }
-    },
     "finder.writes.enable": {
       "extractionState": "manual",
       "localizations": {
@@ -3414,23 +3363,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Finder에서 기기로 복사하고, 새 폴더를 만들고, 이름을 바꾸고, 삭제할 수 있습니다. 파일은 Mac에 먼저 저장되었다가 닫힐 때 기기로 올라가므로, 큰 파일은 복사가 끝날 즈음 잠시 멈춘 것처럼 보일 수 있습니다. 삭제는 휴지통을 거치지 않고 바로 반영됩니다. 태그 같은 Finder 정보는 기기에 저장되지 않습니다."
-          }
-        }
-      }
-    },
-    "finder.writes.realDevices": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Also allow writing to real Android devices"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "실제 Android 기기에도 쓰기 허용"
           }
         }
       }
@@ -5063,40 +4995,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "앱의 화면, 메뉴, 툴팁, 오류 메시지는 바로 바뀝니다. macOS가 제공하는 메뉴 항목(서비스, 편집, 윈도우 등)과 파일 선택 창의 버튼, 설정 창 제목은 앱을 다시 실행하면 바뀝니다."
-          }
-        }
-      }
-    },
-    "settings.showDemoDevice": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Show virtual device (testing)"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "가상 기기 표시 (테스트용)"
-          }
-        }
-      }
-    },
-    "settings.showDemoDevice.note": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The virtual device is not a real Android device; it only shows sample data for trying out the interface."
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "가상 기기는 실제 Android 기기가 아니며 화면 확인용 샘플 데이터만 보여 줍니다."
           }
         }
       }

@@ -10,19 +10,21 @@ enum BrowserViewMode: String, CaseIterable, Sendable {
 @Observable
 final class AppSettings {
     enum Key {
-        static let showDemoDevice = "settings.showDemoDevice"
+        /// Diagnostics (launch argument only): the virtual demo device, for
+        /// checks without a phone. Not shown or saved in the app (D72).
+        static let showDemoDevice = "diagnostics.virtualDevice"
         static let viewMode = "settings.viewMode"
         static let foldersFirst = "settings.foldersFirst"
         static let dualPane = "settings.dualPane"
         static let finderIntegration = "settings.finderIntegration"
         static let finderAutoMount = "settings.finderAutoMount"
         /// "Finder에서 쓰기 허용(실험적)"; off by default (사용자 결정).
-        static let finderWrites = "settings.finderWrites"
+        /// Finder writes to devices (one switch since D72). New key: a "yes" given
+        /// earlier for the virtual device alone is not taken as consent for phones.
+        static let finderWrites = "settings.finderWritesDevices"
         static let onboardingCompleted = "settings.onboardingCompleted"
         static let dualPaneFraction = "settings.dualPaneFraction"
-        /// Finder writes also reach real devices (Settings › Finder, off by default).
-        static let finderWritesRealDevices = "settings.finderWritesRealDevices"
-        /// Diagnostics (launch argument only): same as above for one launch (W5).
+        /// Diagnostics (launch argument only, W5): real-device writes for one launch.
         static let diagnosticsRealDeviceWrites = "diagnostics.finderWritesRealDevices"
         /// Diagnostics (launch argument only): demo device upload speed in MB/s,
         /// to see Finder wait for a long upload.
@@ -36,9 +38,8 @@ final class AppSettings {
         static let autoMountDemo = "diagnostics.autoMountDemo"
     }
 
-    var showDemoDevice: Bool {
-        didSet { defaults.set(showDemoDevice, forKey: Key.showDemoDevice) }
-    }
+    /// The virtual device is a developer tool (launch argument), not a setting.
+    let showDemoDevice: Bool
 
     var viewMode: BrowserViewMode {
         didSet { defaults.set(viewMode.rawValue, forKey: Key.viewMode) }
@@ -72,11 +73,10 @@ final class AppSettings {
         didSet { defaults.set(finderWritesEnabled, forKey: Key.finderWrites) }
     }
 
-    /// Writes from Finder reach real devices too, not only the virtual device.
-    /// Applies only while `finderWritesEnabled` is on.
-    var finderWritesRealDevices: Bool {
-        didSet { defaults.set(finderWritesRealDevices, forKey: Key.finderWritesRealDevices) }
-    }
+    /// Real devices accept Finder writes: the switch in Settings › Finder, or
+    /// the diagnostics launch argument for one launch.
+    var finderWritesRealDevices: Bool { finderWritesEnabled || diagnosticsRealDeviceWrites }
+    private let diagnosticsRealDeviceWrites: Bool
 
     /// Diagnostics launch arguments: not shown in the UI, never persisted by the app.
     let demoUploadRate: Double
@@ -97,14 +97,13 @@ final class AppSettings {
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
-        showDemoDevice = Self.bool(defaults, Key.showDemoDevice, default: true)
+        showDemoDevice = Self.bool(defaults, Key.showDemoDevice, default: false)
         viewMode = defaults.string(forKey: Key.viewMode).flatMap(BrowserViewMode.init(rawValue:)) ?? .list
         foldersFirst = Self.bool(defaults, Key.foldersFirst, default: true)
         dualPane = Self.bool(defaults, Key.dualPane, default: false)
         finderIntegrationEnabled = Self.bool(defaults, Key.finderIntegration, default: false)
         finderAutoMount = Self.bool(defaults, Key.finderAutoMount, default: true)
-        finderWritesRealDevices = Self.bool(defaults, Key.finderWritesRealDevices, default: false)
-            || Self.bool(defaults, Key.diagnosticsRealDeviceWrites, default: false)
+        diagnosticsRealDeviceWrites = Self.bool(defaults, Key.diagnosticsRealDeviceWrites, default: false)
         demoUploadRate = defaults.double(forKey: Key.demoUploadRate)
         finderWriteScope = defaults.string(forKey: Key.finderWriteScope).flatMap { $0.isEmpty ? nil : $0 }
         showStagingObjects = Self.bool(defaults, Key.showStagingObjects, default: false)

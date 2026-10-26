@@ -27,7 +27,7 @@ Finder 사이드바에서 기기를 일반 디스크처럼 보려면 파일 시�
 1. PhoneBridge › 설정 › Finder에서 **Finder 통합 사용**을 켭니다.
 2. 확장이 꺼져 있으면 **시스템 설정 열기**를 누릅니다. 또는 직접 **시스템 설정 › 일반 › 로그인 항목 및 확장 프로그램 › 파일 시스템 확장**에서 **PhoneBridge Finder**를 켭니다.
 3. 기기를 다시 연결하거나 설정 › Finder에서 **Finder에 연결**을 누르면 Finder 사이드바의 위치 아래에 기기 저장소가 나타납니다.
-- Finder 연결은 기본적으로 **읽기 전용**입니다. 쓰기는 실험 기능이며 가상 기기에서만 열려 있습니다(정식 지원 전).
+- Finder 연결은 기본적으로 **읽기 전용**입니다. 설정 › Finder › **Finder에서 쓰기 허용(실험적)**을 켜면 Finder에서 휴대전화로 복사·이름 변경·삭제할 수 있습니다(삭제는 되돌릴 수 없으니 중요한 파일은 먼저 백업하세요).
 
 ### 업데이트
 새 DMG의 PhoneBridge로 응용 프로그램 폴더의 앱을 대치합니다. 설정과 기록은 유지됩니다. 업데이트 전에 진행 중인 전송이 없는지 확인하고 앱을 종료하세요.
@@ -65,7 +65,7 @@ To see the device in the Finder sidebar like a disk, turn on the file system ext
 1. In PhoneBridge › Settings › Finder, turn on **Enable Finder integration**.
 2. If the extension is off, click **Open System Settings**, or go to **System Settings › General › Login Items & Extensions › File System Extensions** and enable **PhoneBridge Finder**.
 3. Reconnect the device or click **Mount in Finder**; the storage appears under Locations in the Finder sidebar.
-- Finder access is **read-only** by default. Writing is experimental and only enabled for the virtual device.
+- Finder access is **read-only** by default. Turn on Settings › Finder › **Allow writing from Finder (experimental)** to copy, rename and delete on the phone from Finder (deletions cannot be undone; back up important files first).
 
 ### Update
 Replace PhoneBridge in Applications with the one from the new DMG. Settings are kept. Quit the app (with no transfers running) first.

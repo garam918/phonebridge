@@ -41,13 +41,6 @@ private struct GeneralSettingsView: View {
                     get: { settings.foldersFirst },
                     set: { model.setFoldersFirst($0) }
                 ))
-                Toggle(loc.t("settings.showDemoDevice"), isOn: Binding(
-                    get: { settings.showDemoDevice },
-                    set: { model.setDemoDeviceVisible($0) }
-                ))
-                Text(loc.t("settings.showDemoDevice.note"))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)

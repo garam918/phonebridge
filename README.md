@@ -80,7 +80,7 @@ python3 scripts/check-localization.py && python3 scripts/check-log-privacy.py
 | `PhoneBridgeFinder/` | FSKit 확장(Finder 볼륨, libmtp 없음) / FSKit extension |
 | `PhoneBridgeUnmounter/` | 볼륨 해제 XPC 헬퍼 / unmount helper |
 | `Shared/` | 세 타깃 공용(Finder IPC, 서명 검증, 로그) / shared by all three targets |
-| `PhoneBridgeTests/` | 단위·통합 테스트(가상 기기, 모의 MTP 백엔드) / tests |
+| `PhoneBridgeTests/` | 단위·통합 테스트(테스트용 가상 기기, 모의 MTP 백엔드) / tests |
 | `scripts/` | 의존성 빌드, 릴리스, 설치, 검사 스크립트 / scripts |
 | `docs/` | 설계·결정·점검 기록 / design and decision records |
 

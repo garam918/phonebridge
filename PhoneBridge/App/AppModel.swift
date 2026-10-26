@@ -285,12 +285,6 @@ final class AppModel {
         showOnboarding = false
     }
 
-    func setDemoDeviceVisible(_ visible: Bool) {
-        settings.showDemoDevice = visible
-        finder.scheduleRefresh()
-        if !visible, isDemoSelected { sidebarSelection = nil }
-    }
-
     func setFoldersFirst(_ value: Bool) {
         settings.foldersFirst = value
         browser.sort.foldersFirst = value

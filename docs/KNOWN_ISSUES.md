@@ -182,3 +182,7 @@ Xcode 내보내기(Developer ID 서명)가 "timestamps differ by N seconds - che
   `lsregister -dump | grep 'path:.*/PhoneBridge.app'`로 찾고 각 경로에 `lsregister -u <경로>` (`lsregister`: `/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister`)
 - 개발 중에는 빌드할 때마다 다시 생길 수 있다(Xcode DerivedData의 Debug 빌드는 지워도 곧 다시 등록됨).
 - (D68) `install.sh`는 설치·검사 때 연 DMG 사본과 휴지통으로 옮긴 이전 앱의 등록을 지운다. 사용자가 Finder에서 직접 연 DMG나 다른 폴더에 둔 사본은 여전히 원인이 될 수 있다.
+
+## K45. Homebrew 7은 외부 탭을 "신뢰"해야 설치한다
+Homebrew 7부터 공식이 아닌 탭의 Cask는 `brew trust --cask garam918/phonebridge/phonebridge`(또는 `brew trust garam918/phonebridge`)로 한 번 허용해야 읽는다. 허용하지 않으면 "Refusing to load cask … from untrusted tap"으로 설치가 멈춘다(2026-10-26 확인). 설치 안내(README, INSTALL, 탭 README, 릴리스 설명)에 이 단계를 넣었다. 이 Mac의 신뢰 목록은 바꾸지 않고 임시 설정 폴더(`XDG_CONFIG_HOME`)로만 확인했다.
+

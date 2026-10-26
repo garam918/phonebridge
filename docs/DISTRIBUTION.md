@@ -18,6 +18,7 @@
    옵션: `--user`(~/Applications, 관리자 권한 없이), `--check`(검증만), `--dmg <파일|URL>`, `--uninstall [--zap]`.
 3. **터미널 — Homebrew**:
    ```
+   brew trust --cask garam918/phonebridge/phonebridge   # Homebrew 7+ (외부 탭 허용)
    brew install --cask garam918/phonebridge/phonebridge
    brew uninstall --zap --cask phonebridge
    ```

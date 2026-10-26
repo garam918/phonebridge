@@ -19,7 +19,7 @@
 - 설치 스크립트: `curl -fsSL https://github.com/garam918/phonebridge/releases/latest/download/install.sh | bash`
   - 받은 DMG의 체크섬, 개발자 서명(Developer ID, 팀 KB2PLX99H6), Apple 공증을 확인한 뒤에만 설치합니다.
   - `--user`: 관리자 권한 없이 `~/Applications`에 설치, `--check`: 확인만, `--uninstall [--zap]`: 제거
-- Homebrew: `brew install --cask garam918/phonebridge/phonebridge` (제거: `brew uninstall --zap --cask phonebridge`)
+- Homebrew: `brew trust --cask garam918/phonebridge/phonebridge`(Homebrew 7 이상에서 외부 저장소 Cask를 한 번 허용) 후 `brew install --cask garam918/phonebridge/phonebridge` (제거: `brew uninstall --zap --cask phonebridge`)
 - DMG 내려받기: https://github.com/garam918/phonebridge/releases/latest
 
 ### Finder 연결(선택)
@@ -58,7 +58,7 @@ Finder 사이드바에서 기기를 일반 디스크처럼 보려면 파일 시�
 
 ### Install from Terminal
 - Script: `curl -fsSL https://github.com/garam918/phonebridge/releases/latest/download/install.sh | bash` — installs only after checking the checksum, the Developer ID signature (team KB2PLX99H6) and Apple notarization. Options: `--user`, `--check`, `--uninstall [--zap]`.
-- Homebrew: `brew install --cask garam918/phonebridge/phonebridge` (remove: `brew uninstall --zap --cask phonebridge`).
+- Homebrew: `brew trust --cask garam918/phonebridge/phonebridge` (Homebrew 7+ asks you to allow a third-party tap's cask once), then `brew install --cask garam918/phonebridge/phonebridge` (remove: `brew uninstall --zap --cask phonebridge`).
 
 ### Finder (optional)
 To see the device in the Finder sidebar like a disk, turn on the file system extension once. macOS does not let apps do this for you.

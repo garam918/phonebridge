@@ -28,6 +28,7 @@ Installs only after verifying the checksum, the Developer ID signature (team `KB
 
 **Homebrew**
 ```sh
+brew trust --cask garam918/phonebridge/phonebridge   # Homebrew 7 이상: 외부 저장소의 Cask를 한 번 허용 / allow this tap's cask once
 brew install --cask garam918/phonebridge/phonebridge
 ```
 

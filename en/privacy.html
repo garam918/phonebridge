@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy Policy — PhoneBridge</title>
+  <meta name="description" content="PhoneBridge sends nothing anywhere. What the app handles and where it is kept.">
+  <link rel="canonical" href="https://garam918.github.io/phonebridge/en/privacy.html">
+  <link rel="alternate" hreflang="ko" href="https://garam918.github.io/phonebridge/privacy.html">
+  <link rel="alternate" hreflang="en" href="https://garam918.github.io/phonebridge/en/privacy.html">
+  <link rel="icon" href="../assets/favicon.png" type="image/png">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="./"><img src="../assets/icon.svg" alt="" width="28" height="28">PhoneBridge</a>
+      <nav class="site-nav" aria-label="Site">
+        <a class="hide-sm" href="./#install">Install</a>
+        <a href="support.html">Support</a>
+        <a class="lang" href="../privacy.html" hreflang="ko" lang="ko">한국어</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="doc">
+    <div class="wrap narrow">
+      <h1>Privacy Policy</h1>
+      <p class="updated">Effective October 27, 2026 · PhoneBridge for Mac</p>
+
+      <div class="summary">
+        <p><strong>PhoneBridge sends nothing anywhere.</strong> There is no server, account, analytics, advertising or automatic crash reporting. The app has no network permission, so the macOS sandbox blocks internet access. The developer receives no information about you.</p>
+      </div>
+
+      <h2>What the app handles</h2>
+      <p>Everything below is processed only on your Mac and is never transmitted.</p>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Information</th><th>Purpose</th><th>Where it is kept</th></tr></thead>
+          <tbody>
+            <tr><td>File and folder lists and contents on the phone</td><td>Browsing, copying and previewing you ask for</td><td>Memory, the Mac folder you choose</td></tr>
+            <tr><td>Temporary preview copies</td><td>Quick Look</td><td>App container cache (at most 2 GB, cleared at launch and quit)</td></tr>
+            <tr><td>Temporary copies when dragging to Finder</td><td>Held until copied to where you drop</td><td>App container tmp (removed after 30 minutes or at next launch)</td></tr>
+            <tr><td>Device model, manufacturer, USB ids, serial number</td><td>Telling devices apart, recognizing reconnection</td><td>Memory</td></tr>
+            <tr><td>Last opened Mac folder (security-scoped bookmark)</td><td>Keeping access when reopened</td><td>App settings</td></tr>
+            <tr><td>App settings (language, view style …)</td><td>Remembering settings</td><td>App container</td></tr>
+            <tr><td>Finder extension status (event kinds and error codes, no names)</td><td>Export Diagnostics</td><td>App Group container</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>System log</h2>
+      <ul>
+        <li>PhoneBridge writes its activity to the macOS unified log for troubleshooting. The log stays on your Mac.</li>
+        <li>File and folder names, device names and Mac paths are logged as private values, which macOS shows as <code class="inline">&lt;private&gt;</code>. Identifiers containing serial numbers are logged only as hashes.</li>
+        <li>Device models, USB ids, error codes, byte counts and times are logged as is.</li>
+      </ul>
+
+      <h2>Export Diagnostics</h2>
+      <p>Help › Export Diagnostics… writes one text file where you choose. Nothing is sent automatically; it reaches anyone only if you attach it to a support request. It contains no file or folder names, and serial numbers only as short hashes. You can open the file and read it before sending.</p>
+
+      <h2>What is left on the phone</h2>
+      <p>PhoneBridge installs nothing on the phone. It creates hidden temporary files starting with <code class="inline">.phonebridge-</code> only during uploads and replacements and removes them afterwards (or at the next connection).</p>
+
+      <h2>This website</h2>
+      <p>This site is served by GitHub Pages and uses no cookies, analytics or external fonts. GitHub may log visitors’ IP addresses to operate the service (<a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">GitHub Privacy Statement</a>).</p>
+
+      <h2>Removal</h2>
+      <p>Deleting the app and its container folders removes all of the above. See the <a href="https://github.com/garam918/phonebridge/blob/main/docs/INSTALL.md">install and uninstall guide</a>.</p>
+
+      <h2>Contact</h2>
+      <p>Send privacy questions through <a href="https://github.com/garam918/phonebridge/issues">GitHub Issues</a>. If this policy changes, this page and its effective date are updated together.</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <nav aria-label="Footer">
+        <a href="./">Home</a>
+        <a href="support.html">Support</a>
+        <a href="https://github.com/garam918/phonebridge">GitHub</a>
+      </nav>
+      <p>Android is a trademark of Google LLC. Mac, macOS and Finder are trademarks of Apple Inc., registered in the U.S. and other countries.</p>
+    </div>
+  </footer>
+</body>
+</html>

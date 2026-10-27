@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <title>PhoneBridge</title>
+  <defs>
+    <clipPath id="squircle"><rect x="100" y="100" width="824" height="824" rx="185"/></clipPath>
+  </defs>
+  <g clip-path="url(#squircle)">
+    <rect x="100" y="100" width="824" height="824" fill="#2F7DF6"/>
+    <polygon points="100,300 100,924 820,924" fill="#25B868"/>
+  </g>
+  <path d="M220 620 Q512 250 804 620" fill="none" stroke="#FFFFFF" stroke-width="56" stroke-linecap="round"/>
+  <path d="M330 507 V620 M420 454 V620 M512 435 V620 M604 454 V620 M694 507 V620" fill="none" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round"/>
+  <path d="M170 620 H854" fill="none" stroke="#FFFFFF" stroke-width="44" stroke-linecap="round"/>
+  <rect x="198" y="620" width="44" height="150" fill="#FFFFFF"/>
+  <rect x="782" y="620" width="44" height="150" fill="#FFFFFF"/>
+  <path d="M180 770 q41.5 -22 83 0 t83 0 t83 0 t83 0 t83 0 t83 0 t83 0 t83 0" fill="none" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="18" stroke-linecap="round"/>
+  <path d="M222 830 q41.5 -22 83 0 t83 0 t83 0 t83 0 t83 0 t83 0 t83 0" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="18" stroke-linecap="round"/>
+</svg>

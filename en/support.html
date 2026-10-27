@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Support — PhoneBridge</title>
+  <meta name="description" content="PhoneBridge connection troubleshooting, frequently asked questions and how to get help.">
+  <link rel="canonical" href="https://garam918.github.io/phonebridge/en/support.html">
+  <link rel="alternate" hreflang="ko" href="https://garam918.github.io/phonebridge/support.html">
+  <link rel="alternate" hreflang="en" href="https://garam918.github.io/phonebridge/en/support.html">
+  <link rel="icon" href="../assets/favicon.png" type="image/png">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="./"><img src="../assets/icon.svg" alt="" width="28" height="28">PhoneBridge</a>
+      <nav class="site-nav" aria-label="Site">
+        <a class="hide-sm" href="./#install">Install</a>
+        <a href="support.html" aria-current="page">Support</a>
+        <a class="lang" href="../support.html" hreflang="ko" lang="ko">한국어</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="doc">
+    <div class="wrap narrow">
+      <h1>Support</h1>
+      <p class="updated">Check here first when a device won’t connect or something is unclear.</p>
+
+      <h2>First connection</h2>
+      <ol>
+        <li>Connect the device to your Mac with a USB cable that carries data.</li>
+        <li>Unlock the phone.</li>
+        <li>In the phone’s notification, set “Use USB for” to <strong>File transfer</strong> (Samsung: “Transferring files / Android Auto”). Tap <strong>Allow</strong> if it asks to allow access to phone data.</li>
+        <li>The device appears under <strong>Connected Devices</strong> in PhoneBridge.</li>
+      </ol>
+
+      <h2>Frequently asked questions</h2>
+
+      <details>
+        <summary>My device doesn’t show up</summary>
+        <ul>
+          <li>The cable may be charge-only. Try another cable that carries data, or another USB port. Connecting directly to the Mac is more reliable than a hub.</li>
+          <li>If the phone’s USB mode is “Charging only” or “Transferring images (PTP)”, switch it to “File transfer”.</li>
+          <li><strong>Help › Connection Troubleshooting</strong> in the app has a checklist.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>The device shows up but no files appear</summary>
+        <p>The phone is locked, data access has not been allowed yet, or the USB mode is not “File transfer”. Samsung devices still connect in this case but show no files. Unlock the phone, choose “File transfer” and tap “Allow”, and your files will appear automatically.</p>
+      </details>
+
+      <details>
+        <summary>It says “Another program is using the device”</summary>
+        <p>On macOS only one program can talk to the phone at a time. Quit apps such as Image Capture, Android File Transfer or Smart Switch, then click <strong>Retry</strong>. PhoneBridge never quits other programs on its own.</p>
+        <p>If it keeps happening with every app closed, the Samsung USB driver (DEVGURU), which comes with Smart Switch or the Samsung USB driver installer, may be holding the device.</p>
+        <ol>
+          <li>Open <strong>System Settings › General › Login Items &amp; Extensions</strong>.</li>
+          <li>Click ⓘ next to <strong>Driver Extensions</strong> and turn off the Samsung (DEVGURU) entries.</li>
+          <li>Restart your Mac. Turn them back on there if you need Smart Switch again.</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>The device doesn’t appear in the Finder sidebar</summary>
+        <p>The Finder sidebar needs macOS 26 or later, and macOS requires you to turn on the file system extension yourself once.</p>
+        <ol>
+          <li>In PhoneBridge › Settings › Finder, turn on <strong>Enable Finder integration</strong>.</li>
+          <li>In <strong>System Settings › General › Login Items &amp; Extensions › File System Extensions</strong>, turn on <strong>PhoneBridge Finder</strong>.</li>
+          <li>Reconnect the device, or click <strong>Mount in Finder</strong> in Settings › Finder.</li>
+        </ol>
+        <p>Finder volumes are read-only by default. On earlier macOS versions, everything except the Finder sidebar works in the PhoneBridge window.</p>
+      </details>
+
+      <details>
+        <summary>Homebrew stops with “untrusted tap”</summary>
+        <p>Since Homebrew 7, casks from third-party taps must be trusted once.</p>
+        <div class="code"><code>brew trust --cask garam918/phonebridge/phonebridge</code></div>
+        <p class="note">Then run <code class="inline">brew install --cask garam918/phonebridge/phonebridge</code> again.</p>
+      </details>
+
+      <details>
+        <summary>I can’t copy files larger than 4 GB to the SD card</summary>
+        <p>An SD card formatted as FAT32 can’t hold a single file over 4 GB. This is a limit of the card’s file system, not something PhoneBridge can change. Copy to internal storage, or format the card as exFAT (formatting erases the card).</p>
+      </details>
+
+      <details>
+        <summary>Other folders open slowly while a large file is copying</summary>
+        <p>Android’s file transfer protocol (MTP) handles one operation at a time. PhoneBridge moves large files in pieces so you can open other folders in between, but on devices that don’t support partial transfers you may need to wait until the copy finishes.</p>
+      </details>
+
+      <details>
+        <summary>When can I unplug the cable?</summary>
+        <p>Choose <strong>Device › Safely Disconnect</strong> (⌘E). PhoneBridge checks for running transfers, unmounts its Finder volumes and then tells you that you can unplug.</p>
+      </details>
+
+      <details>
+        <summary>How do I uninstall?</summary>
+        <p>Quit PhoneBridge and move it from Applications to the Trash. If you installed it with Homebrew:</p>
+        <div class="code"><code>brew uninstall --zap --cask phonebridge</code></div>
+        <p class="note">To also remove settings and caches, see the <a href="https://github.com/garam918/phonebridge/blob/main/docs/INSTALL.md">install and uninstall guide</a>. Nothing is installed on the phone.</p>
+      </details>
+
+      <details>
+        <summary>Which devices can I use?</summary>
+        <p>PhoneBridge is built for Android phones and tablets that support USB “File transfer” (MTP). Behavior can vary by manufacturer and model, so if something doesn’t work, please let us know along with the diagnostics file described below.</p>
+      </details>
+
+      <h2>Get help</h2>
+      <p>If you’re still stuck, save a text file with <strong>Help › Export Diagnostics…</strong> in the app and attach it to a <a href="https://github.com/garam918/phonebridge/issues">GitHub issue</a>. It contains no file or folder names, and you can read it before attaching.</p>
+      <p>For <strong>security problems</strong>, do not post details in a public issue. Open an issue titled “Security contact” naming only the affected part, and you will get a private way to send the details (<a href="https://github.com/garam918/phonebridge/blob/main/SECURITY.md">security policy</a>).</p>
+      <p>For more, see the <a href="https://github.com/garam918/phonebridge/blob/main/docs/USER_GUIDE.en.md">user guide</a>.</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <nav aria-label="Footer">
+        <a href="./">Home</a>
+        <a href="privacy.html">Privacy policy</a>
+        <a href="https://github.com/garam918/phonebridge">GitHub</a>
+      </nav>
+      <p>Android is a trademark of Google LLC. Mac, macOS and Finder are trademarks of Apple Inc., registered in the U.S. and other countries.</p>
+    </div>
+  </footer>
+  <script src="../assets/site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>지원 — PhoneBridge</title>
+  <meta name="description" content="PhoneBridge 연결 문제 해결, 자주 묻는 질문, 문의 방법.">
+  <link rel="canonical" href="https://garam918.github.io/phonebridge/support.html">
+  <link rel="alternate" hreflang="ko" href="https://garam918.github.io/phonebridge/support.html">
+  <link rel="alternate" hreflang="en" href="https://garam918.github.io/phonebridge/en/support.html">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="./"><img src="assets/icon.svg" alt="" width="28" height="28">PhoneBridge</a>
+      <nav class="site-nav" aria-label="사이트">
+        <a class="hide-sm" href="./#install">설치</a>
+        <a href="support.html" aria-current="page">지원</a>
+        <a class="lang" href="en/support.html" hreflang="en" lang="en">English</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="doc">
+    <div class="wrap narrow">
+      <h1>지원</h1>
+      <p class="updated">연결이 안 되거나 궁금한 점이 있을 때 먼저 확인해 보세요.</p>
+
+      <h2>처음 연결하기</h2>
+      <ol>
+        <li>데이터 전송을 지원하는 USB 케이블로 기기를 Mac에 연결합니다.</li>
+        <li>휴대전화 잠금을 풉니다.</li>
+        <li>휴대전화 알림의 'USB 사용 목적'에서 <strong>파일 전송</strong>을 선택합니다(삼성: '파일 전송/Android Auto'). "휴대전화 데이터에 대한 접근을 허용할까요?"가 나오면 <strong>허용</strong>을 누릅니다.</li>
+        <li>PhoneBridge 왼쪽 <strong>연결된 기기</strong> 목록에 기기가 나타납니다.</li>
+      </ol>
+
+      <h2>자주 묻는 질문</h2>
+
+      <details>
+        <summary>기기가 목록에 나타나지 않아요</summary>
+        <ul>
+          <li>충전 전용 케이블일 수 있습니다. 데이터 전송을 지원하는 다른 케이블이나 다른 USB 포트로 바꿔 보세요. USB 허브보다 Mac에 직접 연결하는 편이 안정적입니다.</li>
+          <li>휴대전화의 USB 사용 목적이 '충전만' 또는 '사진 전송(PTP)'이면 '파일 전송'으로 바꿔 주세요.</li>
+          <li>앱의 <strong>도움말 › 연결 문제 해결</strong>에 점검 목록이 있습니다.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>기기는 보이는데 파일이 보이지 않아요</summary>
+        <p>휴대전화가 잠겨 있거나, 데이터 접근을 아직 허용하지 않았거나, USB 사용 목적이 '파일 전송'이 아닌 경우입니다. 삼성 기기는 이 경우에도 연결은 되지만 파일이 보이지 않습니다. 잠금을 풀고 '파일 전송'을 선택한 뒤 '허용'을 누르면 파일 목록이 자동으로 나타납니다.</p>
+      </details>
+
+      <details>
+        <summary>"다른 프로그램이 기기를 사용 중"이라고 나와요</summary>
+        <p>macOS에서는 한 번에 한 프로그램만 휴대전화에 접근할 수 있습니다. 이미지 캡처, Android File Transfer, Smart Switch 같은 프로그램을 종료한 뒤 <strong>다시 시도</strong>를 누르세요. PhoneBridge는 다른 프로그램을 임의로 종료하지 않습니다.</p>
+        <p>프로그램을 모두 닫았는데도 계속 나오면 Samsung USB 드라이버(DEVGURU)가 기기를 점유하고 있을 수 있습니다. 이 드라이버는 Smart Switch나 Samsung USB 드라이버를 설치할 때 함께 설치됩니다.</p>
+        <ol>
+          <li><strong>시스템 설정 › 일반 › 로그인 항목 및 확장 프로그램</strong>을 엽니다.</li>
+          <li><strong>드라이버 확장 프로그램</strong> 옆의 ⓘ 버튼을 누르고 Samsung(DEVGURU) 항목을 끕니다.</li>
+          <li>Mac을 재시동합니다. Smart Switch를 다시 쓰려면 같은 곳에서 다시 켜면 됩니다.</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>Finder 사이드바에 기기가 나타나지 않아요</summary>
+        <p>Finder 연결은 macOS 26 이상에서 쓸 수 있고, macOS 보안 정책상 파일 시스템 확장을 사용자가 직접 한 번 켜야 합니다.</p>
+        <ol>
+          <li>PhoneBridge › 설정 › Finder에서 <strong>Finder 통합 사용</strong>을 켭니다.</li>
+          <li><strong>시스템 설정 › 일반 › 로그인 항목 및 확장 프로그램 › 파일 시스템 확장</strong>에서 <strong>PhoneBridge Finder</strong>를 켭니다.</li>
+          <li>기기를 다시 연결하거나 설정 › Finder에서 <strong>Finder에 연결</strong>을 누릅니다.</li>
+        </ol>
+        <p>Finder 연결은 기본적으로 읽기 전용입니다. 이전 macOS 버전에서도 Finder 연결을 제외한 모든 기능을 PhoneBridge 창에서 쓸 수 있습니다.</p>
+      </details>
+
+      <details>
+        <summary>Homebrew 설치가 "untrusted tap"으로 멈춰요</summary>
+        <p>Homebrew 7부터는 공식 저장소가 아닌 Cask를 처음 한 번 허용해야 합니다.</p>
+        <div class="code"><code>brew trust --cask garam918/phonebridge/phonebridge</code></div>
+        <p class="note">그다음 <code class="inline">brew install --cask garam918/phonebridge/phonebridge</code>를 다시 실행하세요.</p>
+      </details>
+
+      <details>
+        <summary>4 GB보다 큰 파일을 SD 카드로 보낼 수 없어요</summary>
+        <p>SD 카드가 FAT32로 포맷되어 있으면 파일 하나가 4 GB를 넘을 수 없습니다. SD 카드 파일 시스템의 제한이라 PhoneBridge에서 바꿀 수 없습니다. 내장 저장공간으로 보내거나 SD 카드를 exFAT로 포맷하세요(포맷하면 카드 내용이 지워집니다).</p>
+      </details>
+
+      <details>
+        <summary>큰 파일을 옮기는 동안 다른 폴더가 늦게 열려요</summary>
+        <p>Android의 파일 전송 방식(MTP)은 한 번에 한 작업만 처리합니다. PhoneBridge는 큰 파일을 조각으로 나눠 옮겨 그 사이에 다른 폴더를 열 수 있게 하지만, 이를 지원하지 않는 기기에서는 전송이 끝날 때까지 기다려야 할 수 있습니다.</p>
+      </details>
+
+      <details>
+        <summary>케이블은 언제 뽑아도 되나요?</summary>
+        <p><strong>기기 › 안전하게 연결 해제</strong>(⌘E)를 누르면 진행 중인 전송을 확인하고 Finder 연결을 정리한 뒤 "이제 케이블을 분리해도 됩니다"라고 알려 줍니다.</p>
+      </details>
+
+      <details>
+        <summary>앱을 제거하고 싶어요</summary>
+        <p>PhoneBridge를 종료하고 응용 프로그램 폴더의 PhoneBridge를 휴지통으로 옮기면 됩니다. Homebrew로 설치했다면:</p>
+        <div class="code"><code>brew uninstall --zap --cask phonebridge</code></div>
+        <p class="note">설정·캐시까지 지우는 방법은 <a href="https://github.com/garam918/phonebridge/blob/main/docs/INSTALL.md">설치·제거 안내</a>에 있습니다. 휴대전화에는 아무것도 설치되지 않습니다.</p>
+      </details>
+
+      <details>
+        <summary>어떤 기기에서 쓸 수 있나요?</summary>
+        <p>USB '파일 전송'(MTP)을 지원하는 Android 휴대전화·태블릿에서 쓸 수 있도록 만들었습니다. 제조사나 모델에 따라 동작이 다를 수 있으니, 문제가 있으면 아래 방법으로 진단 정보와 함께 알려 주세요.</p>
+      </details>
+
+      <h2>문의하기</h2>
+      <p>해결되지 않으면 앱의 <strong>도움말 › 진단 정보 내보내기…</strong>로 텍스트 파일을 저장해 <a href="https://github.com/garam918/phonebridge/issues">GitHub Issues</a>에 첨부해 주세요. 파일에는 파일·폴더 이름이 들어 있지 않으며, 첨부하기 전에 열어서 내용을 확인할 수 있습니다.</p>
+      <p><strong>보안 문제</strong>는 자세한 내용을 공개 Issue에 쓰지 마세요. 제목을 "Security contact"로 하고 영향받는 부분만 적어 Issue를 열면, 자세한 내용을 비공개로 보낼 방법을 알려 드립니다(<a href="https://github.com/garam918/phonebridge/blob/main/SECURITY.md">보안 정책</a>).</p>
+      <p>더 자세한 사용법은 <a href="https://github.com/garam918/phonebridge/blob/main/docs/USER_GUIDE.ko.md">사용 설명서</a>를 보세요.</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <nav aria-label="바닥글">
+        <a href="./">홈</a>
+        <a href="privacy.html">개인정보 처리방침</a>
+        <a href="https://github.com/garam918/phonebridge">GitHub</a>
+      </nav>
+      <p>Android는 Google LLC의 상표입니다. Mac, macOS, Finder는 미국 및 기타 국가에서 등록된 Apple Inc.의 상표입니다.</p>
+    </div>
+  </footer>
+  <script src="assets/site.js" defer></script>
+</body>
+</html>

@@ -1,7 +1,8 @@
 #!/bin/zsh
 # Fills in the release details for the Terminal installers after
 # scripts/release.sh built a notarized DMG:
-#   - packaging/homebrew/Casks/phonebridge.rb: version, sha256, repository
+#   - packaging/homebrew/Casks/phonebridge.rb: version, sha256, repository,
+#     homepage (the GitHub Pages site, D76)
 #   - scripts/install.sh: default download location (repository)
 #
 # Usage: scripts/publish-metadata.sh --repo <owner/name> --release-dir <dir>
@@ -38,7 +39,7 @@ sed -i '' -E \
   -e "s|^  version \".*\"|  version \"$version\"|" \
   -e "s|^  sha256 \".*\"|  sha256 \"$sum\"|" \
   -e "s|github.com/[^/]+/[^/]+/releases|github.com/$repo/releases|" \
-  -e "s|homepage \"https://github.com/[^\"]+\"|homepage \"https://github.com/$repo\"|" \
+  -e "s|homepage \"https://[^\"]+\"|homepage \"https://${repo%%/*}.github.io/${repo#*/}/\"|" \
   "$cask"
 sed -i '' -E "s|^BASE_URL=\"\\\$\\{PHONEBRIDGE_BASE_URL:-[^}]*\\}\"|BASE_URL=\"\${PHONEBRIDGE_BASE_URL:-https://github.com/$repo/releases/latest/download}\"|" scripts/install.sh
 cp scripts/install.sh "$dir/install.sh"

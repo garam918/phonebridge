@@ -5,7 +5,7 @@ cask "phonebridge" do
   url "https://github.com/garam918/phonebridge/releases/download/v#{version}/PhoneBridge-#{version}.dmg"
   name "PhoneBridge"
   desc "Browse and transfer files on Android devices over USB"
-  homepage "https://github.com/garam918/phonebridge"
+  homepage "https://garam918.github.io/phonebridge/"
 
   livecheck do
     url :url

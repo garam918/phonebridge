@@ -6,7 +6,10 @@ A native macOS app to browse and move files on an Android phone or tablet connec
 - 전용 탐색기 창과 Finder 사이드바 연결(macOS 26+) / a dedicated browser window and Finder volumes (macOS 26+)
 - Swift · SwiftUI · FSKit, libmtp · libusb
 - 한국어·영어 / Korean and English
+- 무료, 광고·결제·가입 없음 / free, with no ads, payments or sign-up
 - [MIT 라이선스](LICENSE)
+
+웹사이트 / Website: <https://garam918.github.io/phonebridge/>
 
 ## 요구 사항 / Requirements
 - Apple Silicon Mac (M1 이상 / M1 or later)
@@ -32,6 +35,11 @@ brew trust --cask garam918/phonebridge/phonebridge   # Homebrew 7 이상: 외부
 brew install --cask garam918/phonebridge/phonebridge
 ```
 
+**업데이트 / Updating** — 같은 버전 번호(예: 1.0.0)로 수정 빌드를 다시 올리는 경우가 있어 업데이트 알림이 오지 않을 수 있습니다. 설치 스크립트를 다시 실행하거나, Homebrew는 탭을 먼저 갱신하세요(갱신하지 않으면 "reports different checksum" 오류가 납니다). / Updated builds may keep the same version number. Re-run the install script, or refresh the tap first with Homebrew (otherwise it reports a different checksum).
+```sh
+brew update && brew reinstall --cask phonebridge
+```
+
 **Finder 연결 켜기 / Turn on Finder volumes** (macOS 26+)
 1. PhoneBridge 설정 › Finder › Finder 연결 / PhoneBridge Settings › Finder
 2. 시스템 설정 › 일반 › 로그인 항목 및 확장 프로그램 › 파일 시스템 확장 › **PhoneBridge Finder** / System Settings › General › Login Items & Extensions › File System Extensions
@@ -42,9 +50,11 @@ brew install --cask garam918/phonebridge/phonebridge
 - 기기 연결 상태 안내(파일 전송 모드, 잠금, 다른 프로그램 점유 등) / connection guidance (file-transfer mode, locked screen, another app holding the device)
 - 탐색, 정렬, 검색, 훑어보기(Quick Look), 썸네일 / browse, sort, search, Quick Look, thumbnails
 - Mac ↔ Android 전송: 원본을 지키는 교체, 크기 검증, 진행률·취소·재시도 / transfers with safe replace, size verification, progress, cancel, retry
-- Android → Finder로 바로 끌어 놓기 / drag straight from Android to Finder
+- 끌어 놓기: Android → Finder·바탕화면, Finder → 휴대전화 창·폴더, 두 창 사이 / drag and drop: Android to Finder or the desktop, Finder into the phone pane or a folder, and between the two panes
 - Finder 사이드바에 기기 저장소 연결(기본 읽기 전용) / Finder volumes for each storage (read-only by default)
+- 휴대전화를 연결하면 PhoneBridge 자동 열기(설정 › 일반, 기본 꺼짐, 로그인 항목 도우미 사용) / open PhoneBridge when a phone is connected (Settings › General, off by default; uses a login item helper)
 - iPhone·iPad 사진·동영상 탐색·가져오기·삭제(macOS 이미지 캡처 사용, 실기기 미검증) / iPhone & iPad photos and videos: browse, import, delete (via macOS Image Capture; not yet verified on a device)
+  - iPhone·iPad와 Android를 동시에 연결하면 Android 연결이 실패할 수 있습니다([K50](docs/KNOWN_ISSUES.md)). / Connecting an iPhone or iPad together with an Android phone may make the Android connection fail.
 - 앱 안에서 즉시 바뀌는 한국어·영어 / Korean and English, switchable without restarting
 
 ## 호환성 / Compatibility
@@ -52,8 +62,8 @@ brew install --cask garam918/phonebridge/phonebridge
 Verified on hardware: transfers on **Galaxy S25 Edge (SM-S937N)**, Finder browsing and reads on **Galaxy Z Flip5 (SM-F731N)**. Other Android devices using standard MTP will likely work but are not verified yet.
 
 ## 개인정보 / Privacy
-PhoneBridge는 아무 데이터도 외부로 보내지 않습니다(네트워크 권한 없음). 시스템 기록에는 파일 이름·Mac 경로·기기 일련번호를 남기지 않습니다. → [docs/PRIVACY.md](docs/PRIVACY.md)
-PhoneBridge sends nothing anywhere (no network entitlement) and keeps file names, Mac paths and device serial numbers out of the system log.
+PhoneBridge는 무료이며 광고·결제·가입·사용 통계 수집이 없고, 아무 데이터도 외부로 보내지 않습니다(네트워크 권한 없음). 시스템 기록에는 파일 이름·Mac 경로·기기 일련번호를 남기지 않습니다. → [docs/PRIVACY.md](docs/PRIVACY.md)
+PhoneBridge is free, with no ads, payments, sign-up or analytics, and sends nothing anywhere (no network entitlement). It also keeps file names, Mac paths and device serial numbers out of the system log.
 
 ## 사용 설명서 / Guides
 [한국어](docs/USER_GUIDE.ko.md) · [English](docs/USER_GUIDE.en.md) · [설치·제거 / Install](docs/INSTALL.md)
@@ -81,7 +91,9 @@ python3 scripts/check-localization.py && python3 scripts/check-log-privacy.py
 | `PhoneBridge/` | 앱: SwiftUI 화면, 기기 브로커, 전송, MTP 세션, C 브리지(`Native/`) / the app |
 | `PhoneBridgeFinder/` | FSKit 확장(Finder 볼륨, libmtp 없음) / FSKit extension |
 | `PhoneBridgeUnmounter/` | 볼륨 해제 XPC 헬퍼 / unmount helper |
-| `Shared/` | 세 타깃 공용(Finder IPC, 서명 검증, 로그) / shared by all three targets |
+| `PhoneBridgeLauncher/` | 로그인 항목 도우미(휴대전화를 꽂으면 앱 열기, 기기와 통신하지 않음) / login item that opens the app when a phone is plugged in |
+| `USBDetection/` | IOKit USB 감시·기기 분류(앱과 도우미 공용) / USB monitoring and device classification, shared by the app and the launcher |
+| `Shared/` | 앱·Finder 확장·해제 헬퍼 공용(Finder IPC, 서명 검증, 로그) / shared by the app, the Finder extension and the unmount helper |
 | `PhoneBridgeTests/` | 단위·통합 테스트(테스트용 가상 기기, 모의 MTP 백엔드) / tests |
 | `scripts/` | 의존성 빌드, 릴리스, 설치, 검사 스크립트 / scripts |
 | `docs/` | 설계·결정·점검 기록 / design and decision records |

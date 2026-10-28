@@ -273,6 +273,31 @@ final class AppleDeviceTests {
         }
     }
 
+    /// A running Image Capture browser makes ptpcamerad take Android phones
+    /// too (D78): it runs only while an iPhone/iPad is on USB.
+    @Test func imageCaptureRunsOnlyWhileAnAppleDeviceIsPluggedIn() async throws {
+        let monitor = MockUSBMonitor()
+        let defaults = freshDefaults()
+        let apple = AppleDeviceManager()
+        let model = AppModel(broker: DeviceBroker(monitor: monitor, backend: MockMTPBackend(), configuration: .fast),
+                             localization: LocalizationManager(defaults: defaults), settings: AppSettings(defaults: defaults),
+                             localAccess: LocalAccessManager(defaults: defaults, defaultFolder: local), appleDevices: apple)
+        await model.start()
+        #expect(!apple.wantsBrowsing, "nothing plugged in")
+
+        monitor.send(.attached(.fixture(registryID: 1)))
+        try await waitUntil { model.broker.devices.first?.state == .connected }
+        #expect(!apple.wantsBrowsing, "an Android phone alone never starts Image Capture")
+
+        monitor.send(.attached(.fixture(registryID: 2, vendorID: 0x05AC, productID: 0x12A8, serial: "IPHONE",
+                                        product: "iPhone", interfaces: [.stillImageUnnamed])))
+        try await waitUntil { apple.wantsBrowsing }
+
+        monitor.send(.detached(registryID: 2))
+        try await waitUntil { !apple.wantsBrowsing }
+        #expect(model.broker.devices.first?.state == .connected, "the Android phone stays connected")
+    }
+
     @Test func theTestManagerNeverStartsImageCapture() {
         let apple = AppleDeviceManager()
         apple.start()

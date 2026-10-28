@@ -52,6 +52,33 @@ final class AppleDeviceManager: NSObject {
         self.storageName = storageName
     }
 
+    /// Whether an iPhone/iPad is on USB (set by `AppModel` from the USB monitor).
+    private(set) var wantsBrowsing = false
+    @ObservationIgnored private var pendingStop: Task<Void, Never>?
+    /// An iPhone briefly leaves the bus when it is trusted or restarts its USB
+    /// stack; browsing stops only once it has stayed away this long.
+    @ObservationIgnored var stopDelay: Duration = .seconds(3)
+
+    /// Image Capture runs only while an iPhone or iPad is connected. A running
+    /// device browser makes macOS's ptpcamerad open every PTP-class device,
+    /// Android phones in File transfer mode included, and libmtp then finds
+    /// them taken ("ptpcamerad" busy, 2026-10-28, D78).
+    func setBrowsing(_ wanted: Bool) {
+        guard wanted != wantsBrowsing else { return }
+        wantsBrowsing = wanted
+        pendingStop?.cancel()
+        pendingStop = nil
+        if wanted {
+            start()
+        } else if browser != nil {
+            pendingStop = Task { [weak self, stopDelay] in
+                try? await Task.sleep(for: stopDelay)
+                guard !Task.isCancelled, let self, !self.wantsBrowsing else { return }
+                self.stop()
+            }
+        }
+    }
+
     func start() {
         guard enabled, browser == nil else { return }
         let browser = ICDeviceBrowser()
@@ -64,12 +91,13 @@ final class AppleDeviceManager: NSObject {
     }
 
     func stop() {
-        browser?.stop()
-        browser = nil
+        guard let browser else { return }
+        browser.stop()
+        self.browser = nil
         for camera in cameras.values { camera.requestCloseSession() }
         cameras.removeAll()
-        fileSystems.removeAll()
-        records.removeAll()
+        for record in records { removeRecord(record.id) }
+        Log.app.info("iPhone/iPad browsing stopped")
     }
 
     func record(for id: DeviceID) -> AppleDeviceRecord? {

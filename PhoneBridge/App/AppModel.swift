@@ -193,7 +193,7 @@ final class AppModel {
         if startBroker {
             Log.app.info("libmtp \(LibMTPBackend.libmtpVersion, privacy: .public)")
             broker.start()
-            appleDevices.start()
+            updateAppleBrowsing()
             // Diagnostics (launch argument only): flip "open on connect" without the UI.
             if let value = UserDefaults.standard.string(forKey: "diagnostics.openOnConnect") {
                 launchOnConnect.setEnabled(value == "on" || value == "YES")
@@ -344,6 +344,12 @@ final class AppModel {
             syncBrowser()
         }
         finder.scheduleRefresh()
+        updateAppleBrowsing()
+    }
+
+    /// Image Capture only while an iPhone/iPad is on USB (D78).
+    private func updateAppleBrowsing() {
+        appleDevices.setBrowsing(broker.devices.contains { $0.state == .unsupported(.appleDevice) })
     }
 
     // MARK: - iPhone/iPad → UI

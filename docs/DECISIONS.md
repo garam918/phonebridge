@@ -630,3 +630,16 @@ macOS 파일 이름은 조합형(NFD)일 수 있다(압축 해제, 오래된 디
 - 공개 순서: ① v1.0.0 파일 5개 교체 → ② 탭 Cask(7d17860) → ③ 릴리스 설명(수정 빌드 3, 새 체크섬, iPhone 미검증) → ④ 소스 푸시 → ⑤ 웹사이트에 새 기능 카드(iPhone은 "시험 단계").
 - 확인: `curl … | bash -s -- --check` 통과, `curl … | bash`로 이 Mac 설치본을 공개 빌드로 교체(이전 팀 개발 빌드는 휴지통), 실행 시 broker·USB 감시·iPhone 탐색 시작, 샌드박스 거부 0건.
 - 미확인: 실제 휴대전화로 드래그·자동 실행, iPhone·iPad 전체, macOS 15·26.
+
+## D78. Image Capture 탐색은 iPhone·iPad가 USB에 있을 때만 (2026-10-28, 사용자 제보: ptpcamerad 연결 실패)
+- 제보: 수정 빌드 3에서 Android 연결이 "다른 프로그램이 사용 중: ptpcamerad"로 실패.
+- 원인(추정): D75는 앱 시작 때부터 `ICDeviceBrowser`(카메라 마스크)를 계속 돌렸다. 탐색이 켜져 있으면 macOS의 ptpcamerad가 USB의 PTP형 기기를 모두 열어 보는데, '파일 전송' 모드의 Android도 여기에 해당해 libmtp가 기기를 열지 못한다. 이전 빌드에서는 사진·이미지 캡처 앱이 열려 있을 때만 생기던 충돌을 PhoneBridge가 스스로 만든 셈. 이 Mac에는 휴대전화가 없어 재현하지 못했다(ptpcamerad 실행 중인 것만 확인).
+- 수정: `AppleDeviceManager.setBrowsing(_:)` — USB 감시(`DeviceBroker`)에 Apple 기기(`.unsupported(.appleDevice)`, vendor 0x05AC)가 있을 때만 탐색을 켜고, 없어진 뒤 3초가 지나면 끈다(신뢰 과정에서 iPhone이 잠깐 버스에서 빠졌다 붙는 경우 대비). `AppModel`이 시작할 때와 broker 변경마다 `updateAppleBrowsing()`으로 갱신. `stop()`은 iPhone 기록을 지우고 변경을 알린다.
+- ptpcamerad는 종료하지 않는다(사용자 제약: 다른 프로그램을 임의로 종료하지 않음).
+- 테스트 295개(새 테스트: Android만 꽂으면 꺼진 채, iPhone을 꽂으면 켜지고 빼면 꺼지며 그동안 Android 연결 유지).
+- **미확인**: 실제 Android로 배포판 재현·수정 빌드 연결, 탐색을 끈 뒤 ptpcamerad가 이미 잡은 기기를 놓는지, iPhone과 Android를 동시에 꽂은 경우(K50).
+
+## V29. 수정 빌드 4 배포 (2026-10-28 12:57–13:05, 1.0.0 유지, 사용자 요청: "일단 1.0.0으로 다시 배포")
+- 범위: D78만(수정 빌드 3 대비 소스 변경은 `AppModel`·`AppleDeviceManager`·테스트). 실제 Android 확인 전 배포 — 릴리스 설명에 "실제 기기로는 아직 확인하지 않음"으로 표기.
+- 배포 전 테스트 295개 통과. 빌드 202610281257, 앱·DMG 공증 Accepted(첫 시도), Developer ID + Hardened Runtime, `get-task-allow` 없음, 최소 macOS 15·arm64, Gatekeeper Notarized Developer ID. SHA-256 `9666ce9f…2846302c`.
+- 공개 순서: v1.0.0 파일 5개 교체 → 탭 Cask(d0435ba) → 릴리스 설명(수정 빌드 4, 새 체크섬) → 소스 푸시. 웹사이트는 바꿀 내용 없음.

@@ -1,5 +1,12 @@
 # 릴리스 노트 / Release Notes
 
+## 1.0.0 수정 빌드 4 (2026-10-28, 버전 번호 1.0.0 유지) / 1.0.0 updated build 4 (version number unchanged)
+빌드 202610281257, SHA-256 `9666ce9f6269fea0d1f8cbce06fbc5c18292ee05b6b900613657354c2846302c`
+
+- **연결 실패 수정**: 수정 빌드 3에서 Android 휴대전화가 "다른 프로그램이 사용 중: ptpcamerad"로 연결되지 않던 문제를 고쳤습니다. iPhone·iPad 사진 탐색은 이제 iPhone·iPad가 연결되어 있을 때만 켜집니다. / **Connection fix**: in updated build 3, Android phones could fail with "in use by another program: ptpcamerad". iPhone & iPad photo browsing now runs only while one is connected.
+- 실제 휴대전화로는 아직 확인하지 않았습니다. iPhone·iPad와 Android를 동시에 연결하면 같은 충돌이 생길 수 있습니다. / Not yet verified on a real phone. Connecting an iPhone/iPad and an Android phone at the same time may still conflict.
+- 설치 스크립트를 다시 실행하거나 `brew reinstall --cask phonebridge`로 받으세요. / Re-run the install script or `brew reinstall --cask phonebridge`.
+
 ## 1.0.0 수정 빌드 3 (2026-10-28, 버전 번호 1.0.0 유지) / 1.0.0 updated build 3 (version number unchanged)
 빌드 202610281054, SHA-256 `19e86cd03e8f60e7a19114962a3cd423d5d86342a0faa9fe80d46290bca10258`
 

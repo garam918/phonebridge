@@ -104,6 +104,8 @@ struct AppCommands: Commands {
             Button(loc.t("menu.help.gettingStarted")) { model.showOnboarding = true }
             Button(loc.t("menu.help.troubleshooting")) { model.showTroubleshooting = true }
             Divider()
+            Button(loc.t("menu.help.checkForUpdates", AppLinks.currentVersion)) { NSWorkspace.shared.open(AppLinks.releases) }
+            Divider()
             Button(loc.t("menu.help.exportDiagnostics")) { DiagnosticsReport.export(model: model) }
             Button(loc.t("menu.help.licenses")) {
                 if let notice = Bundle.main.url(forResource: "NOTICE", withExtension: "txt") {
@@ -127,5 +129,17 @@ struct AppCommands: Commands {
                 .keyboardShortcut("r", modifiers: .command)
                 .disabled(browser.fileSystem == nil)
         }
+    }
+}
+
+/// Where "Check for Updates…" sends the user. The app has no network
+/// entitlement and makes no request itself: the default browser opens the
+/// releases page, and the user compares it with the version in the menu title
+/// (D84). Homebrew users get new versions with `brew upgrade`.
+enum AppLinks {
+    static let releases = URL(string: "https://github.com/garam918/phonebridge/releases/latest")!
+
+    static var currentVersion: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
     }
 }

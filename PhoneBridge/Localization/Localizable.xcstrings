@@ -4217,6 +4217,23 @@
         }
       }
     },
+    "menu.help.checkForUpdates": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check for Updates… (this is %@)"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "업데이트 확인… (현재 %@)"
+          }
+        }
+      }
+    },
     "menu.help.exportDiagnostics": {
       "extractionState": "manual",
       "localizations": {

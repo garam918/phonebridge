@@ -100,6 +100,7 @@ final class AppModel {
     /// The selection payload of the drag in progress: SwiftUI asks every
     /// dragged row for its item, and they all carry the same selection.
     @ObservationIgnored var dragPayloadCache: (key: DragPayloadKey, payload: DragPayload)?
+    @ObservationIgnored let dragTickets = DragTickets()
 
     init(broker: DeviceBroker, localization: LocalizationManager, settings: AppSettings,
          demoDevice: MockDeviceFileSystem = MockDeviceFileSystem(nodes: MockDeviceFileSystem.sampleTree() + MockDeviceFileSystem.demoExtras()),
@@ -303,7 +304,7 @@ final class AppModel {
     /// The Finder volume of the storage selected in the sidebar.
     var selectedFinderVolume: MTPFileRepository.Volume? {
         guard case .storage(let deviceID, let storageID) = sidebarSelection else { return nil }
-        return finder.volumes.first { $0.address.deviceID == deviceID.rawValue && $0.address.storageID == storageID }
+        return finder.volumes.first { $0.address.deviceID == deviceID.volumeKey && $0.address.storageID == storageID }
     }
 
     func showSelectedVolumeInFinder() {
@@ -349,7 +350,7 @@ final class AppModel {
         updateAppleBrowsing()
     }
 
-    /// Image Capture only while an iPhone/iPad is on USB (D78).
+    /// Image Capture starts once an iPhone/iPad is on USB (D78, D83).
     private func updateAppleBrowsing() {
         appleDevices.setBrowsing(broker.devices.contains { $0.state == .unsupported(.appleDevice) })
     }

@@ -66,6 +66,20 @@ struct FinderIPCProtocolTests {
         #expect(VolumeAddress(url: URL(string: "phonebridge://volume?device=x&storage=zz&generation=1")!) == nil)
     }
 
+    // Audit 2026-10-28: the mount source URL is visible to every user of the
+    // Mac, so it must not carry the USB serial number.
+    @Test func volumeKeysHideTheSerialNumber() {
+        let id = DeviceID("usb:04e8:R3CW70HWECP")
+        let key = id.volumeKey
+        #expect(key.hasPrefix("usb:04e8:h") && key.count == "usb:04e8:h".count + 16)
+        #expect(!key.contains("R3CW70HWECP"))
+        #expect(id.volumeKey == key, "stable within one launch")
+        #expect(DeviceID("usb:04e8:R3CW70HWECQ").volumeKey != key)
+        #expect(DeviceID.demo.volumeKey == DeviceID.demo.rawValue, "the demo device has no serial")
+        let url = VolumeAddress(deviceID: key, storageID: 0x0001_0001, generation: 7).url
+        #expect(!url.absoluteString.contains("R3CW70HWECP"))
+    }
+
     @Test func mountNamesAreASCII() {
         #expect(VolumeDescription.mountSafeName("Pixel 8 – Internal", fallback: "PhoneBridge Pixel 8") == "PhoneBridge Pixel 8",
                 "an en dash alone makes the name unusable")
@@ -147,7 +161,20 @@ final class MTPFileRepositoryTests {
         monitor.send(.attached(.fixture()))
         try await waitUntil { broker.record(for: pixelID)?.state == .connected }
         let record = try #require(broker.record(for: pixelID))
-        return VolumeAddress(deviceID: pixelID.rawValue, storageID: 0x0001_0001, generation: record.generation)
+        return VolumeAddress(deviceID: pixelID.volumeKey, storageID: 0x0001_0001, generation: record.generation)
+    }
+
+    @Test func volumesAreAddressedByKeyAndResolvedThroughTheBroker() async throws {
+        let address = try await connect([.rename])
+        #expect(!address.deviceID.contains("SERIAL1"), "the fixture serial stays out of the address")
+        #expect(repository.deviceID(forVolumeKey: address.deviceID) == pixelID)
+        #expect(repository.deviceID(forVolumeKey: pixelID.rawValue) == nil, "the raw id is not a valid address any more")
+        let volumes = repository.mountableVolumes(demoStorages: [])
+        #expect(volumes.map(\.address.deviceID) == [address.deviceID])
+        let root = try await repository.list(address, parent: remoteRootObjectID)
+        #expect(!root.isEmpty)
+        let raw = VolumeAddress(deviceID: pixelID.rawValue, storageID: address.storageID, generation: address.generation)
+        await #expect(throws: FinderIPCError.self) { _ = try await repository.list(raw, parent: remoteRootObjectID) }
     }
 
     @Test func listsDescribesAndStatsThroughTheBrokerSession() async throws {
@@ -185,7 +212,7 @@ final class MTPFileRepositoryTests {
         let staging = (try FileManager.default.contentsOfDirectory(atPath: cache.path)).filter { FileNameRules.isTemporary($0) }
         #expect(staging.isEmpty)
 
-        repository.invalidateCache(deviceID: pixelID.rawValue)
+        repository.invalidateCache(deviceID: pixelID.volumeKey)
         #expect(repository.cachedFileCount == 0)
         _ = try await repository.read(address, object: 0x13, offset: 0, length: 10)
         #expect(backend.transferCounts.fullDownloads == 2)
@@ -443,7 +470,7 @@ final class FinderIPCRoundTripTests {
         let pixelID = USBDeviceSnapshot.fixture().logicalID
         try await waitUntil { broker.record(for: pixelID)?.state == .connected }
         let record = try #require(broker.record(for: pixelID))
-        let address = VolumeAddress(deviceID: pixelID.rawValue, storageID: 0x0001_0001, generation: record.generation)
+        let address = VolumeAddress(deviceID: pixelID.volumeKey, storageID: 0x0001_0001, generation: record.generation)
         let fileSystem = try #require(broker.fileSystem(for: pixelID))
         let browser = BrowserViewModel()
         let opensBefore = backend.stats.open
@@ -500,7 +527,7 @@ final class FinderIntegrationManagerTests {
     }
 
     private var pixelID: DeviceID { USBDeviceSnapshot.fixture().logicalID }
-    private var volumeID: String { "\(pixelID.rawValue)|\(0x0001_0001 as UInt32)" }
+    private var volumeID: String { "\(pixelID.volumeKey)|\(0x0001_0001 as UInt32)" }
 
     private func mountedURL() -> URL? { model.finder.states[volumeID]?.mountURL }
 

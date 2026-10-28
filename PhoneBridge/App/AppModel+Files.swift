@@ -34,23 +34,51 @@ enum FileDialog: Identifiable, Equatable {
     }
 }
 
-/// In-app drag payload, carried as plain text so it needs no exported UTType.
-struct DragPayload: Codable, Equatable {
-    static let prefix = "phonebridge-drag:"
-
+/// What an in-app drag carries. It never leaves the process: the pasteboard
+/// only gets a ticket (`DragTickets`), so text that another app or a web page
+/// puts on the drag board cannot make PhoneBridge move device items or upload
+/// Mac files (audit 2026-10-28, M1).
+struct DragPayload: Equatable {
     var deviceID: DeviceID?
     var generation: UInt64?
     var deviceItems: [DeviceItemRef] = []
     var localURLs: [URL] = []
+}
 
-    func encoded() -> String {
-        let data = (try? JSONEncoder().encode(self)) ?? Data()
-        return Self.prefix + data.base64EncodedString()
+/// Tickets for in-app drags: the text on the drag pasteboard is
+/// `phonebridge-drag:<random token>`, and only a token this process issued
+/// resolves to a payload. The drag pasteboard is readable by every app, so a
+/// token proves at most that the user dragged this selection in this launch.
+@MainActor
+final class DragTickets {
+    static let prefix = "phonebridge-drag:"
+    /// Tokens kept; rows of one drag share a token, older drags expire.
+    static let capacity = 32
+
+    private var issued: [(token: String, payload: DragPayload)] = []
+
+    /// The ticket text for `payload` (one token per distinct payload).
+    func ticket(for payload: DragPayload) -> String {
+        if let existing = issued.first(where: { $0.payload == payload }) { return Self.prefix + existing.token }
+        var bytes = [UInt8](repeating: 0, count: 16)
+        if SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes) != errSecSuccess {
+            bytes = (0..<16).map { _ in UInt8.random(in: .min ... .max) }
+        }
+        let token = bytes.map { String(format: "%02x", $0) }.joined()
+        issued.append((token, payload))
+        if issued.count > Self.capacity { issued.removeFirst(issued.count - Self.capacity) }
+        return Self.prefix + token
     }
 
-    static func decode(_ string: String) -> DragPayload? {
-        guard string.hasPrefix(prefix), let data = Data(base64Encoded: String(string.dropFirst(prefix.count))) else { return nil }
-        return try? JSONDecoder().decode(DragPayload.self, from: data)
+    /// The payload behind a ticket text; nil for anything this process did not issue.
+    func payload(for text: String) -> DragPayload? {
+        guard text.hasPrefix(Self.prefix) else { return nil }
+        let token = String(text.dropFirst(Self.prefix.count))
+        return issued.first { $0.token == token }?.payload
+    }
+
+    func removeAll() {
+        issued.removeAll()
     }
 }
 
@@ -72,7 +100,8 @@ struct DragPayloadKey: Equatable {
 struct DeviceDragItem: Transferable, Identifiable {
     var item: DeviceItemRef
     var generation: UInt64
-    var payload: DragPayload
+    /// `DragTickets` text for the whole selection.
+    var ticket: String
     var exporter: DeviceDragExporter
 
     var id: FileItemID { item.id }
@@ -89,7 +118,7 @@ struct DeviceDragItem: Transferable, Identifiable {
         .suggestedFileName { $0.item.name }
         .exportingCondition { $0.item.isFolder }
         DataRepresentation(exportedContentType: .utf8PlainText) { drag in
-            Data(drag.payload.encoded().utf8)
+            Data(drag.ticket.utf8)
         }
     }
 }
@@ -100,8 +129,9 @@ enum DropLoader {
         var payloads: [DragPayload] = []
     }
 
+    /// `resolve` turns ticket text into the payload it stands for (`DragTickets.payload(for:)`).
     @MainActor
-    static func load(_ providers: [NSItemProvider]) async -> Contents {
+    static func load(_ providers: [NSItemProvider], resolve: (String) -> DragPayload? = { _ in nil }) async -> Contents {
         var contents = Contents()
         for provider in providers {
             if provider.hasItemConformingToTypeIdentifier(UTType.fileURL.identifier) {
@@ -113,8 +143,8 @@ enum DropLoader {
                 let text: String? = await withCheckedContinuation { continuation in
                     _ = provider.loadObject(ofClass: String.self) { text, _ in continuation.resume(returning: text) }
                 }
-                // Every row of a multi-row drag carries the same selection payload.
-                if let text, let payload = DragPayload.decode(text), !contents.payloads.contains(payload) {
+                // Every row of a multi-row drag carries the same ticket.
+                if let text, let payload = resolve(text), !contents.payloads.contains(payload) {
                     contents.payloads.append(payload)
                 }
             }
@@ -125,11 +155,12 @@ enum DropLoader {
     static let acceptedTypes: [UTType] = [.fileURL, .utf8PlainText, .plainText]
 
     /// PhoneBridge's own drag payloads on `pasteboard` (empty for drags from
-    /// other apps). Reads only the text type, never a file promise.
-    static func inAppPayloads(_ pasteboard: NSPasteboard) -> [DragPayload] {
+    /// other apps, and for forged ticket text). Reads only the text type,
+    /// never a file promise.
+    static func inAppPayloads(_ pasteboard: NSPasteboard, resolve: (String) -> DragPayload?) -> [DragPayload] {
         var payloads: [DragPayload] = []
         for item in pasteboard.pasteboardItems ?? [] {
-            guard let text = item.string(forType: .string), let payload = DragPayload.decode(text),
+            guard let text = item.string(forType: .string), let payload = resolve(text),
                   !payloads.contains(payload) else { continue }
             payloads.append(payload)
         }
@@ -290,7 +321,7 @@ extension AppModel {
             return
         }
         Task {
-            let contents = await DropLoader.load(providers)
+            let contents = await DropLoader.load(providers, resolve: dragPayload(forTicket:))
             if !contents.fileURLs.isEmpty {
                 upload(contents.fileURLs)
             } else if clipboard != nil {
@@ -315,11 +346,21 @@ extension AppModel {
         return payload
     }
 
-    /// A device item as a drag source (in-app payload + file promise).
+    /// The pasteboard text for dragging `item` (with the selection it is part of).
+    func dragTicket(for item: FileItem) -> String {
+        dragTickets.ticket(for: dragPayload(for: item))
+    }
+
+    /// A device item as a drag source (in-app ticket + file promise).
     func dragItem(for item: FileItem) -> DeviceDragItem {
         // A stale generation makes the download find the item again by path.
         DeviceDragItem(item: browser.reference(for: item), generation: browser.generation ?? 0,
-                       payload: dragPayload(for: item), exporter: dragExporter)
+                       ticket: dragTicket(for: item), exporter: dragExporter)
+    }
+
+    /// Payload of ticket text on a drop, nil unless this launch issued it.
+    func dragPayload(forTicket text: String) -> DragPayload? {
+        dragTickets.payload(for: text)
     }
 
     /// Icon view: every selected item is dragged as its own file.
@@ -330,7 +371,7 @@ extension AppModel {
 
     func localDragPayload(for item: LocalItem) -> String {
         let urls = local.selection.contains(item.url) ? local.selectedItems.map(\.url) : [item.url]
-        return DragPayload(localURLs: urls).encoded()
+        return dragTickets.ticket(for: DragPayload(localURLs: urls))
     }
 
     /// Drop onto the Android pane (current folder) or onto a folder in it.

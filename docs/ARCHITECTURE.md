@@ -155,7 +155,7 @@ LocalBrowserViewModel / LocalAccessManager: Mac 패널, 보안 범위 북마크
 
 - 기본은 Android 탐색기 하나. 툴바 버튼 / ⌥⌘2로 **Android | Mac 2분할**.
 - 하단 전송 막대: 진행 중 개수·전체 진행률·속도·남은 시간, 펼치면 작업별 진행률·실패 사유·취소/재시도/제거.
-- 드래그 페이로드는 `phonebridge-drag:` 접두어의 텍스트(JSON)로, 별도 UTType 선언 없이 앱 내부에서 주고받는다. Finder에서 오는 파일은 `fileURL`.
+- 드래그 페이로드는 `phonebridge-drag:<실행별 난수 토큰>` 텍스트로, 항목 목록은 `DragTickets`가 프로세스 메모리에 둔다(다른 앱이 만든 텍스트는 해석되지 않음, D82). Finder에서 오는 파일은 `fileURL`.
 - Android 항목은 `DeviceDragItem`으로 끌린다: 파일 프로미스(앞) + 내부 텍스트 페이로드(뒤). 다른 앱이 놓기를 받으면 `DeviceDragExporter`가 전송 대기열로 `tmp/PhoneBridgeDrag/<uuid>/`에 내려받아 넘긴다(D45).
 
 ## 10. Finder 통합 (FSKit, 4단계 1차 — 읽기 전용)

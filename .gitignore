@@ -17,3 +17,8 @@ Vendor/native/
 *.xcarchive
 ExportOptions.plist
 .env
+
+# Published elsewhere or local only: the website lives on the gh-pages branch
+# (docs/DECISIONS.md D76), .claude holds this machine's session settings
+site/
+.claude/

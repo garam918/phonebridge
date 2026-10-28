@@ -254,7 +254,7 @@ final class FinderWriteCoordinator {
             guard let data = try? Data(contentsOf: bufferDirectory.appending(path: name)),
                   let manifest = try? JSONDecoder().decode(WriteBufferManifest.self, from: data),
                   manifest.state == .writing,
-                  manifest.volume.deviceID == pending.parent.deviceID.rawValue,
+                  manifest.volume.deviceID == pending.parent.deviceID.volumeKey,
                   manifest.volume.storageID == pending.parent.storageID,
                   manifest.fileName.lowercased() == wanted,
                   pending.path == nil || manifest.folderPath == pending.path

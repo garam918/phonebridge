@@ -274,7 +274,8 @@ final class AppleDeviceTests {
     }
 
     /// A running Image Capture browser makes ptpcamerad take Android phones
-    /// too (D78): it runs only while an iPhone/iPad is on USB.
+    /// too (D78): it starts only once an iPhone/iPad is on USB (and then keeps
+    /// running, D83).
     @Test func imageCaptureRunsOnlyWhileAnAppleDeviceIsPluggedIn() async throws {
         let monitor = MockUSBMonitor()
         let defaults = freshDefaults()
@@ -302,5 +303,31 @@ final class AppleDeviceTests {
         let apple = AppleDeviceManager()
         apple.start()
         #expect(apple.records.isEmpty)
+    }
+}
+
+/// Becoming ready from Image Capture's catalog progress when the ready
+/// message does not come after an unlock (2026-10-28).
+@Suite("iPhone/iPad catalog progress")
+struct CatalogProgressWatchTests {
+    let start = ContinuousClock.now
+
+    @Test func progressIsShownUntilTheCatalogIsComplete() {
+        var watch = CatalogProgressWatch(settle: .seconds(2))
+        #expect(watch.sample(percent: 0, at: start) == .loading(0))
+        #expect(watch.sample(percent: 40, at: start + .seconds(1)) == .loading(40))
+        #expect(watch.sample(percent: 100, at: start + .seconds(2)) == .loading(nil))
+        #expect(watch.sample(percent: 100, at: start + .seconds(3)) == .loading(nil))
+        #expect(watch.sample(percent: 100, at: start + .seconds(4)) == .ready)
+    }
+
+    @Test func aLeftoverCompleteCatalogFromTheLockedPhoneIsNotTrusted() {
+        var watch = CatalogProgressWatch(settle: .seconds(2))
+        // Right after the unlock: still 100 from the empty locked catalog, then cataloging starts again.
+        #expect(watch.sample(percent: 100, at: start) == .loading(nil))
+        #expect(watch.sample(percent: 5, at: start + .milliseconds(500)) == .loading(5))
+        #expect(watch.sample(percent: 100, at: start + .seconds(2)) == .loading(nil))
+        #expect(watch.sample(percent: 100, at: start + .milliseconds(3500)) == .loading(nil))
+        #expect(watch.sample(percent: 100, at: start + .seconds(4)) == .ready)
     }
 }

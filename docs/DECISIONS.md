@@ -677,3 +677,39 @@ macOS 파일 이름은 조합형(NFD)일 수 있다(압축 해제, 오래된 디
 - 빌드 202610281455, 앱·DMG 공증 Accepted, Developer ID + Hardened Runtime, 런처 `get-task-allow` 없음, 새 `install.sh`의 인증서 요구 조건 통과. SHA-256 `dce53359…34fcef5a`.
 - 공개: v1.0.0 파일 5개 교체(한 파일은 GitHub 502로 빠져 다시 올림, 내려받아 다섯 파일 체크섬·install.sh 일치 확인) → 탭 Cask(e964324, `uninstall launchctl:`·zap에 런처 컨테이너) → 릴리스 설명 → 소스 → 웹사이트(개인정보 문구).
 - 확인(이 Mac): 공개 `install.sh`로 202610281455 설치(체크섬·인증서 요구 조건·공증 통과). 설치 전 도우미는 휴지통의 예전 실행 파일(pid 80462)로 실행 중 → 새 앱을 처음 열자 "launcher registered again for this build", 예전 도우미 종료, 새 도우미가 `/Applications/PhoneBridge.app/…/PhoneBridgeLauncher`로 실행(`validation-category 6`, parent version 202610281455). 샌드박스 거부 0건. 실제 휴대전화 연결은 미확인.
+
+## D81. 홍보용 메인 창 이미지 (2026-10-28, 사용자 요청: 휴대전화 없이 메인 창 캡처)
+- 진단 실행 인자 `-diagnostics.windowSnapshots promo`(개발 빌드 + `-diagnostics.virtualDevice YES`): 한국어 1280×800pt를 2배로 두 장면 × 라이트/다크. ① Download 폴더 + Mac 창 나란히, ② DCIM/Camera + 끝난 다운로드가 보이는 전송 목록. 결과는 앱 컨테이너 tmp/PhoneBridgePromo.
+- 가상 기기의 예시 데이터이며, 이 모드에서만 테스트 표시(주황 띠, "데모" 배지, 빈 "연결된 기기" 구역)를 숨기고 이름을 "Android 휴대전화"로 바꾼다. 실행 인자 없이는 들어갈 수 없다. 정보 패널은 가상 기기 정보(DEMO-0001 등)가 보여 끈다.
+- macOS 26+ 사이드바는 유리 효과 안에 있어 `cacheDisplay`가 그리지 못한다 → 같은 `SidebarView`를 화면 밖 일반 창에 한 번 더 그려 사이드바 자리(밝은/어두운 둥근 패널)에 합성. 선택 강조는 그려지지 않는다. 화면 기록 권한은 쓰지 않는다.
+- 링크드인용 16:9 틀(둥근 모서리·그림자)은 `build/linkedin-screenshots`(공개 저장소에 올라가지 않음).
+
+## D82. 점검 2026-10-28의 보안 항목 수정: 드래그 티켓, DMG 선검증, 볼륨 키 (2026-10-28, 사용자 결정: 1·2번과 일련번호만)
+- **드래그 페이로드(M1)**: 드래그 보드에는 더 이상 항목 목록(JSON)을 싣지 않는다. 텍스트는 `phonebridge-drag:<실행별 난수 토큰>`뿐이고, 실제 내용(기기 항목·Mac URL)은 `DragTickets`가 프로세스 메모리에 보관한다(최근 32개). 드롭은 이 프로세스가 발급한 토큰만 받아들이고, 다른 앱·웹 페이지가 만든 텍스트와 예전 JSON 형식은 무시된다. 드래그 보드는 모든 앱이 읽을 수 있으므로 토큰이 증명하는 것은 "이 실행에서 사용자가 이 선택을 끌었다"까지다 — 토큰을 가로채도 그 선택 이상을 지시할 수 없다.
+- **설치 스크립트(M3)**: `install.sh`가 DMG를 마운트하기 **전에** 이미지 자체의 서명(`codesign -R`, 앱과 같은 Developer ID 팀 요구 조건)과 공증(`spctl -t open`)을 확인한다. 체크섬은 손상 검사로만 남는다. 확인: 공개 DMG 통과, 정상 앱을 담은 서명 없는 DMG는 마운트 없이 거부(이전 스크립트는 통과시켰음). 공개된 `install.sh`는 다음 릴리스 때 바뀐다.
+- **마운트 URL의 일련번호(낮음·개인정보)**: `VolumeAddress.deviceID`에 `DeviceID.volumeKey`를 쓴다 — 실기기는 `usb:<vid>:h<SHA-256(솔트+ID) 앞 16 hex>`, 솔트는 실행마다 난수(알려진 일련번호와 대조 불가), 가상 기기는 그대로. 앱은 `MTPFileRepository.deviceID(forVolumeKey:)`로 브로커 목록에서 기기를 다시 찾는다. 키는 한 실행 안에서만 안정적이면 된다(마운트는 세션 단위, 복구 매니페스트 비교도 현재 세션). 사이드바·설정·쓰기 조정기·캐시 키 비교를 모두 `volumeKey`로 맞췄다.
+- 테스트: 새 테스트 5개(위조 텍스트 거부, 티켓은 불투명하고 발급 프로세스에서만 해석, 볼륨 키에 일련번호 없음, 키로 기기 해석·원래 ID는 거부, 서명 없는 DMG 거부는 스크립트 실행으로 확인). 수정을 끈 상태에서 3개 실패 확인. 전체 305개 중 304개 통과 — 실패 1개는 1 GiB 다운로드 성능 테스트로 이 Mac의 디스크 여유(783 MiB) 때문(D79와 같음).
+- 미배포. 실기기·실제 Finder 마운트로는 확인하지 않았다(가상 기기 통합 테스트로 마운트·해제·재연결 경로 통과).
+
+## D83. iPhone 실기기 첫 확인과 수정: 잠금 해제 뒤 멈춤, 다시 꽂으면 인식 안 됨 (2026-10-28, 사용자 제보: "사진 목록 읽는 중에서 안 넘어가")
+- 기기: iPhone(iPhone12,1, iOS 26.6), 이 Mac(macOS 26), 개발 빌드. 처음에는 케이블·포트 문제로 USB 인식 자체가 실패(커널 `persistent enumeration failures`, Apple USB 기기 0개) → 사용자가 다시 연결해 해결. 앱 문제 아님.
+- **원인 1 — 잠김 오류를 실패로 처리**: 잠긴 iPhone은 세션을 열 때 `ICReturnDeviceIsPasscodeLocked`(-9943)가 오는데 세션은 쓸 수 있다. 이를 `failed`로 바꿔 사용자가 다시 시도 → 세션을 닫고 다시 연 뒤 잠금을 풀자 ptpcamerad는 목록을 끝냈지만(로그 "notifyDeviceReady 13") `deviceDidBecomeReady`가 다시 오지 않아 "읽는 중"에 머묾. → -9943은 `needsTrust`로 두고 `cameraDeviceDidRemoveAccessRestriction`을 기다린다.
+- **보완 — 진행률 감시**: 읽는 동안 `contentCatalogPercentCompleted`를 0.5초마다 읽어 표시하고, 100%가 2초 유지되면 준비 메시지 없이도 준비 완료(`CatalogProgressWatch`; 잠금 해제 직후 잠긴 빈 목록의 100%를 믿지 않으려고 2초). 이번 실기기 시험에서는 준비 메시지가 와서 이 경로는 실제로 쓰이지 않았다.
+- **원인 2 — 탐색을 멈춘 뒤 다시 꽂은 iPhone이 보이지 않음**(배포판 포함, D78부터): iPhone을 빼면 3초 뒤 `ICDeviceBrowser`를 멈췄다. 멈춘 동안에도 이 프로세스의 Image Capture는 다시 꽂힌 iPhone을 열지만 어느 브라우저에도 알리지 않고, 같은 브라우저를 다시 시작해도·새 브라우저를 만들어도 `devices`가 0개 → 앱을 다시 실행해야 했다(세 방식 모두 실기기 로그로 확인). → 처음 iPhone·iPad가 연결될 때 탐색을 시작하고 앱이 끝날 때까지 멈추지 않는다. Android만 쓰면 지금처럼 Image Capture를 시작하지 않는다(D78 유지).
+- 실기기 확인(개발 빌드): 처음 연결 → 사용 가능(미디어 파일 8개), 잠근 채 빼고 다시 꽂기 → 0.2초 만에 발견 → 잠김 안내 → 잠금 해제 → 0.2초 뒤 사용 가능, 사진 미리보기 1장(1.8 MB, 0.08초). 이전 빌드에서 사진 1장 읽기가 32초 동안 "0바이트"만 반복한 일이 한 번 있었고 원인은 모른다(재현 안 됨). 가져오기(Mac으로 복사)·삭제는 기록으로 확인하지 못했다.
+- 로그: 상태 전환, 잠김·잠금 해제·준비 메시지, 목록 진행률과 미디어 파일 수만 남긴다(이름 없음, ID는 해시).
+- 테스트: `CatalogProgressWatch` 2개 추가. 전체 307개 중 305개 통과, 실패 2개는 1 GiB·대용량 다운로드 테스트로 디스크 여유(약 500 MB) 부족 때문. 미배포.
+- 시험 중 자동 실행 도우미를 사용자 허락으로 잠시 멈췄다가(`launchctl bootout`) 설치본을 `-diagnostics.openOnConnect YES`로 열어 다시 등록(실행 중, `validation-category 6`).
+
+## D84. 업데이트는 네트워크 없이: 버전 번호 올리기 + 도움말 "업데이트 확인…" (2026-10-28, 사용자 결정)
+- 배경: 같은 1.0.0 번호로 다섯 번 재배포해 Homebrew·설치 스크립트가 새 빌드를 알리지 못했다(D67). 앱에 네트워크 권한을 주지 않기로 해(개인정보 약속 유지) Sparkle 같은 자동 업데이트는 넣지 않는다.
+- `MARKETING_VERSION` 1.0.1. 이후 배포마다 올린다(DISTRIBUTION.md 버전 정책).
+- 도움말 › "업데이트 확인… (현재 1.0.1)": `NSWorkspace.open`으로 릴리스 페이지(`AppLinks.releases`)를 기본 브라우저에 넘긴다. 앱은 요청을 보내지 않고, 네트워크 권한도 추가하지 않는다. 사용자가 페이지의 최신 버전과 메뉴의 현재 버전을 비교한다.
+- README·릴리스 노트·DISTRIBUTION에 안내: Homebrew는 `brew upgrade --cask phonebridge`, DMG·스크립트 사용자는 메뉴로 확인. 1.0.0 → 1.0.1은 번호가 같았던 탓에 한 번 직접 받아야 한다.
+- 나중에 완전 자동 업데이트를 원하면 Sparkle 2 + 네트워크 권한 + 처리방침 변경이 함께 필요하다.
+
+## V31. 1.0.1 릴리스 빌드 (2026-10-28 21:57–22:05, 공개 전)
+- 내용: D82(드래그 티켓, DMG 선검증, 볼륨 키), D84(버전 1.0.1, 도움말 "업데이트 확인…"), 그리고 다른 세션의 D83(iPhone 잠김·목록 멈춤·재연결 수정, iPhone 1대 확인). 사전 검사: 현지화·로그 개인정보 OK, 정적 분석 경고 0, 테스트 307개 중 306개(1 GiB 다운로드 성능 테스트는 디스크 여유 부족).
+- 빌드 202610282157, 첫 시도 성공. 앱·DMG 공증 Accepted, Gatekeeper "Notarized Developer ID", 번들 4개 `get-task-allow` 없음, 네트워크 권한 없음, 최소 macOS 15·arm64. SHA-256 `33a0d843…e539eab4`. 새 `install.sh`(DMG 선검증)로 `--check` 통과.
+- Cask 1.0.1로 갱신(`publish-metadata.sh`). 첫 **새 태그** 릴리스(v1.0.1): 기존 v1.0.0 파일은 그대로 둔다(D84).
+- 업로드는 사용자가 실행(공개 작업). 업로드 뒤 확인: `curl … | bash -s -- --check`, `brew update && brew fetch`, 저장소 README.

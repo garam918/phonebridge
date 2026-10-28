@@ -358,7 +358,9 @@ final class FinderIntegrationManager {
             if replacement?.address != address {
                 // Device unplugged or reconnected with a new session.
                 repository.invalidateCache(deviceID: address.deviceID)
-                await repository.writes.finishAllPendingDeletes(deviceID: DeviceID(address.deviceID))
+                if let deviceID = repository.deviceID(forVolumeKey: address.deviceID) {
+                    await repository.writes.finishAllPendingDeletes(deviceID: deviceID)
+                }
                 await unmount(id: id)
             }
         }
@@ -418,7 +420,7 @@ final class FinderIntegrationManager {
     /// Unmounts every volume of one device ("안전하게 연결 해제"); false when
     /// one of them stays mounted (files open in Finder).
     func unmountVolumes(of deviceID: DeviceID) async -> Bool {
-        let ids = mountedAddresses.filter { $0.value.deviceID == deviceID.rawValue }.map(\.key)
+        let ids = mountedAddresses.filter { $0.value.deviceID == deviceID.volumeKey }.map(\.key)
         for id in ids {
             await unmount(id: id)
         }

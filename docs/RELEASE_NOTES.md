@@ -1,5 +1,15 @@
 # 릴리스 노트 / Release Notes
 
+## 1.0.1 (미공개 / unreleased)
+- 보안: 다른 앱·웹 페이지가 만든 드래그 텍스트가 앱 안 드래그로 처리되지 않습니다. 설치 스크립트가 DMG를 열기 전에 서명·공증을 확인합니다. Finder 볼륨 주소에 휴대전화 일련번호가 들어가지 않습니다.
+- 도움말 › **업데이트 확인…**: 릴리스 페이지를 브라우저로 엽니다(앱은 외부에 접속하지 않음). 메뉴에 현재 버전이 표시됩니다.
+- 이번부터 배포마다 버전 번호가 올라갑니다. Homebrew: `brew upgrade --cask phonebridge`. 1.0.0에서 올라오는 것은 번호가 같았던 탓에 한 번은 직접 받아야 합니다.
+- iPhone·iPad(D83): 잠긴 채 연결하면 잠금 해제를 기다리고, 잠금 해제 뒤 "사진 목록을 읽는 중"에서 멈추던 문제와 다시 꽂은 iPhone을 인식하지 못하던 문제를 고쳤습니다(iPhone 1대로 확인).
+- Security: drag text made by other apps or web pages is no longer treated as an in-app drag; the install script verifies the DMG's signature and notarization before opening it; Finder volume addresses no longer carry the phone's serial number.
+- Help › **Check for Updates…** opens the releases page in the browser (the app itself makes no network request); the menu shows your version.
+- From now on every release gets a new version number. Homebrew: `brew upgrade --cask phonebridge`. Coming from 1.0.0 is a manual step once, since its builds shared a number.
+- iPhone/iPad (D83): a locked device waits for unlock instead of failing; fixed getting stuck at "reading the photo list" after unlocking and a re-plugged iPhone not being recognised (checked with one iPhone).
+
 ## 1.0.0 수정 빌드 5 (2026-10-28, 버전 번호 1.0.0 유지) / 1.0.0 updated build 5 (version number unchanged)
 빌드 202610281455, SHA-256 `dce53359a33362f3469d811602a54d3ceb156f420cc7c59a633e282134fcef5a`
 

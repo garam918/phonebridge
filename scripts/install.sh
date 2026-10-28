@@ -9,10 +9,12 @@
 #
 # Safety: a file downloaded with curl carries no quarantine flag, so macOS
 # Gatekeeper would not check it at first launch. This script therefore does
-# the same checks itself and refuses to install unless the app is
-#   - signed with a valid Developer ID certificate of the PhoneBridge team,
-#   - notarized by Apple (spctl assessment, stapled ticket),
-#   - and the DMG matches its published SHA-256 (downloads).
+# the same checks itself and refuses to install unless
+#   - the disk image is signed with the PhoneBridge team's Developer ID and
+#     notarized by Apple (checked before it is mounted),
+#   - the app inside is signed with a valid Developer ID certificate of the
+#     PhoneBridge team and notarized by Apple (spctl assessment, stapled ticket),
+#   - and the DMG matches its published SHA-256 (downloads; detects corruption).
 # It never disables Gatekeeper, never removes quarantine flags and never uses
 # sudo by itself. Written for macOS's bash 3.2.
 set -euo pipefail
@@ -23,6 +25,10 @@ TEAM_ID="KB2PLX99H6"
 BUNDLE_ID="com.phonebridge.PhoneBridge"
 MIN_MACOS="15.0"
 APP_NAME="PhoneBridge.app"
+# A Developer ID Application certificate issued by Apple to the PhoneBridge
+# team: the Developer ID CA intermediate and the Developer ID leaf OIDs plus
+# the team. Checked on the disk image and on the app inside it.
+DEVELOPER_ID_REQUIREMENT="anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] and certificate leaf[field.1.2.840.113635.100.6.1.13] and certificate leaf[subject.OU] = \"$TEAM_ID\""
 LSREGISTER="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister"
 
 dmg=""
@@ -95,7 +101,7 @@ verify_app() {  # <path to PhoneBridge.app>
   esac
   # The certificate chain itself, not only the text above: a Developer ID
   # Application leaf issued by Apple for this team.
-  codesign --verify --deep --strict -R="anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] and certificate leaf[field.1.2.840.113635.100.6.1.13] and certificate leaf[subject.OU] = \"$TEAM_ID\"" "$app" 2>/dev/null \
+  codesign --verify --deep --strict -R="$DEVELOPER_ID_REQUIREMENT" "$app" 2>/dev/null \
     || die "배포용(Developer ID) 서명이 아닙니다 / not a Developer ID signature from team $TEAM_ID"
   spctl --assess --type execute "$app" 2>/dev/null \
     || die "Apple 공증(notarization)을 확인할 수 없습니다 / not notarized by Apple"
@@ -121,6 +127,18 @@ forget_copy() {  # <path to PhoneBridge.app>
 # the new app registers its own launcher when it first opens (D79).
 stop_launcher() {
   launchctl bootout "gui/$(id -u)/$BUNDLE_ID.Launcher" >/dev/null 2>&1 || true
+}
+
+# The disk image itself, before it is handed to the kernel: release.sh signs
+# and notarizes the DMG with the same Developer ID, and the checksum alone
+# cannot tell a substituted image from the real one (it is served from the
+# same place). Only an image that passes is mounted (audit 2026-10-28, M3).
+verify_dmg() {  # <path to .dmg>
+  codesign --verify -R="$DEVELOPER_ID_REQUIREMENT" "$1" 2>/dev/null \
+    || die "디스크 이미지의 서명이 올바르지 않습니다(PhoneBridge 팀의 Developer ID 서명이 아님) / the disk image is not signed with the PhoneBridge team's Developer ID"
+  spctl --assess --type open --context context:primary-signature "$1" 2>/dev/null \
+    || die "디스크 이미지의 Apple 공증(notarization)을 확인할 수 없습니다 / the disk image is not notarized by Apple"
+  say "disk image verified: Developer ID ($TEAM_ID), notarized"
 }
 
 # --- download / mount -----------------------------------------------------
@@ -199,6 +217,7 @@ move_to_trash() {  # <path>
 install_app() {
   check_mac
   fetch_dmg
+  verify_dmg "$dmg"
   mount_dmg
   verify_app "$mount_point/$APP_NAME"
   [ "$mode" = "check" ] && { say "check only: nothing installed"; return 0; }

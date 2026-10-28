@@ -217,7 +217,7 @@ struct DragExportTests {
             provider.register(drag)
             return provider
         }
-        let contents = await DropLoader.load(providers)
+        let contents = await DropLoader.load(providers, resolve: model.dragPayload(forTicket:))
         #expect(contents.fileURLs.isEmpty)
         #expect(contents.payloads.count == 1)
         #expect(Set(contents.payloads.first?.deviceItems.map(\.name) ?? []) == ["메모.txt", "가계부 2026.xlsx"])
@@ -253,12 +253,12 @@ struct DragExportTests {
         try await enter("Documents", in: model)
         let memo = try item("메모.txt", in: model), budget = try item("가계부 2026.xlsx", in: model)
         model.browser.selection = [memo.id, budget.id]
-        let payload = model.dragPayload(for: memo).encoded()
+        let payload = model.dragTicket(for: memo)
         let trap = PromiseTrap()
         let pasteboard = dragPasteboard([payload, payload], trap: trap)
         defer { pasteboard.releaseGlobally() }
 
-        let payloads = DropLoader.inAppPayloads(pasteboard)
+        let payloads = DropLoader.inAppPayloads(pasteboard, resolve: model.dragPayload(forTicket:))
         #expect(payloads.count == 1, "both rows carry the same selection")
         #expect(Set(payloads.first?.deviceItems.map(\.name) ?? []) == ["메모.txt", "가계부 2026.xlsx"])
         #expect(trap.askedTypes.isEmpty, "the file promise is for Finder, not for PhoneBridge's own panes")
@@ -282,10 +282,11 @@ struct DragExportTests {
         try await enter("Documents", in: model)
         let memo = try item("메모.txt", in: model), folder = try item("빈 폴더", in: model)
         let trap = PromiseTrap()
-        let pasteboard = dragPasteboard([model.dragPayload(for: memo).encoded()], trap: trap)
+        let pasteboard = dragPasteboard([model.dragTicket(for: memo)], trap: trap)
         defer { pasteboard.releaseGlobally() }
 
-        model.dropOnDevice(DropLoader.Contents(payloads: DropLoader.inAppPayloads(pasteboard)), onto: folder)
+        model.dropOnDevice(DropLoader.Contents(payloads: DropLoader.inAppPayloads(pasteboard, resolve: model.dragPayload(forTicket:))),
+                           onto: folder)
         await model.transfers.waitUntilIdle()
         #expect(trap.askedTypes.isEmpty)
         #expect(model.transfers.jobs.first?.state == .completed)
@@ -293,12 +294,56 @@ struct DragExportTests {
         #expect(moved == ["메모.txt"])
     }
 
-    @Test func dragsFromOtherAppsHaveNoInAppPayload() {
+    @Test func dragsFromOtherAppsHaveNoInAppPayload() async throws {
+        let model = try await makeModel()
         let trap = PromiseTrap()
-        let pasteboard = dragPasteboard(["/Users/someone/file.txt", "phonebridge-drag:not-base64"], trap: trap)
+        let pasteboard = dragPasteboard(["/Users/someone/file.txt", "phonebridge-drag:not-a-ticket"], trap: trap)
         defer { pasteboard.releaseGlobally() }
-        #expect(DropLoader.inAppPayloads(pasteboard).isEmpty)
+        #expect(DropLoader.inAppPayloads(pasteboard, resolve: model.dragPayload(forTicket:)).isEmpty)
         #expect(trap.askedTypes.isEmpty)
+    }
+
+    // Audit 2026-10-28 M1: text another app or a web page puts on the drag
+    // board must never act as an in-app drag.
+
+    @Test func forgedPayloadTextIsIgnored() async throws {
+        let model = try await makeModel()
+        try await enter("Documents", in: model)
+        let folder = try item("빈 폴더", in: model)
+        // The old wire format: a JSON payload naming device items by path and
+        // Mac files by URL. Nothing in it was ever issued by this process.
+        let forged = #"{"deviceID":{"rawValue":"demo:virtual-android"},"generation":1,"deviceItems":[{"id":{"deviceID":{"rawValue":"demo:virtual-android"},"storageID":65537,"objectID":4919},"name":"메모.txt","isFolder":false,"path":["Documents","메모.txt"]}],"localURLs":["file:///Users/someone/Downloads/secret.txt"]}"#
+        let texts = ["phonebridge-drag:" + Data(forged.utf8).base64EncodedString(),
+                     "phonebridge-drag:" + String(repeating: "0", count: 32),
+                     "phonebridge-drag:"]
+        let trap = PromiseTrap()
+        let pasteboard = dragPasteboard(texts, trap: trap)
+        defer { pasteboard.releaseGlobally() }
+
+        let payloads = DropLoader.inAppPayloads(pasteboard, resolve: model.dragPayload(forTicket:))
+        #expect(payloads.isEmpty)
+        model.dropOnDevice(DropLoader.Contents(payloads: payloads), onto: folder)
+        model.dropOnLocal(DropLoader.Contents(payloads: payloads), into: directory)
+        await model.transfers.waitUntilIdle()
+        #expect(model.transfers.jobs.isEmpty, "nothing moves or uploads from forged text")
+        #expect(try await model.demoDevice.contents(of: folder.id).isEmpty)
+    }
+
+    @Test func ticketsCarryNoItemsAndResolveOnlyInTheIssuingProcess() async throws {
+        let model = try await makeModel()
+        try await enter("Documents", in: model)
+        let memo = try item("메모.txt", in: model)
+        let ticket = model.dragTicket(for: memo)
+        #expect(ticket.hasPrefix(DragTickets.prefix))
+        #expect(!ticket.contains("메모") && !ticket.contains("Documents") && !ticket.contains("file:"),
+                "the pasteboard text is an opaque token, not the selection")
+        #expect(model.dragPayload(forTicket: ticket)?.deviceItems.map(\.name) == ["메모.txt"])
+        #expect(model.dragTicket(for: memo) == ticket, "rows of one drag share a token")
+
+        let other = try await makeModel()
+        #expect(other.dragPayload(forTicket: ticket) == nil, "another process (or launch) does not know the token")
+        let local = model.localDragPayload(for: LocalItem(url: directory, name: "drop", isFolder: true, size: nil, modified: nil))
+        #expect(!local.contains(directory.path) && model.dragPayload(forTicket: local)?.localURLs == [directory])
     }
 
     @Test func iconViewDragsEverySelectedItem() async throws {

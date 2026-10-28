@@ -21,6 +21,36 @@ struct AppleDeviceRecord: Identifiable, Equatable, Sendable {
     var generation: UInt64
 }
 
+/// Decides when a catalog is complete from Image Capture's progress (0–100).
+/// After an unlock Image Capture catalogs the photos again but does not always
+/// send `deviceDidBecomeReady` a second time (iPhone, iOS 26.6, 2026-10-28:
+/// stuck at "reading the photo list" although ptpcamerad had finished). Right
+/// after the unlock the progress can still read 100 from the empty locked
+/// catalog, so 100 has to hold for `settle` before it counts.
+struct CatalogProgressWatch {
+    enum Decision: Equatable {
+        case loading(Int?)
+        case ready
+    }
+
+    var settle: Duration = .seconds(2)
+    private var completeSince: ContinuousClock.Instant?
+
+    init(settle: Duration = .seconds(2)) {
+        self.settle = settle
+    }
+
+    mutating func sample(percent: Int, at now: ContinuousClock.Instant) -> Decision {
+        guard percent >= 100 else {
+            completeSince = nil
+            return .loading(max(0, percent))
+        }
+        let since = completeSince ?? now
+        completeSince = since
+        return now - since >= settle ? .ready : .loading(nil)
+    }
+}
+
 struct AppleDeviceChange: Sendable {
     let id: DeviceID
     /// nil: the device was unplugged.
@@ -45,6 +75,8 @@ final class AppleDeviceManager: NSObject {
     @ObservationIgnored private var cameras: [DeviceID: ICCameraDevice] = [:]
     @ObservationIgnored private var fileSystems: [DeviceID: ImageCaptureFileSystem] = [:]
     @ObservationIgnored private var nextGeneration = UInt64(Date().timeIntervalSince1970 * 1000)
+    @ObservationIgnored private var catalogWatches: [DeviceID: Task<Void, Never>] = [:]
+    @ObservationIgnored var catalogPollInterval: Duration = .milliseconds(500)
 
     /// `enabled` false (tests): never starts Image Capture.
     init(enabled: Bool = false, storageName: @escaping () -> String = { "Photos & Videos" }) {
@@ -54,29 +86,22 @@ final class AppleDeviceManager: NSObject {
 
     /// Whether an iPhone/iPad is on USB (set by `AppModel` from the USB monitor).
     private(set) var wantsBrowsing = false
-    @ObservationIgnored private var pendingStop: Task<Void, Never>?
-    /// An iPhone briefly leaves the bus when it is trusted or restarts its USB
-    /// stack; browsing stops only once it has stayed away this long.
-    @ObservationIgnored var stopDelay: Duration = .seconds(3)
 
-    /// Image Capture runs only while an iPhone or iPad is connected. A running
+    /// Image Capture starts only once an iPhone or iPad is connected. A running
     /// device browser makes macOS's ptpcamerad open every PTP-class device,
     /// Android phones in File transfer mode included, and libmtp then finds
     /// them taken ("ptpcamerad" busy, 2026-10-28, D78).
+    ///
+    /// Once started it keeps running until the app quits (D83). Stopping did
+    /// not stop Image Capture in this process: it still opened an iPhone
+    /// plugged in again, but announced it to no browser, and neither a
+    /// restarted nor a new `ICDeviceBrowser` reported it afterwards (iPhone,
+    /// macOS 26, 2026-10-28) — the iPhone could not be used again until
+    /// PhoneBridge was restarted.
     func setBrowsing(_ wanted: Bool) {
         guard wanted != wantsBrowsing else { return }
         wantsBrowsing = wanted
-        pendingStop?.cancel()
-        pendingStop = nil
-        if wanted {
-            start()
-        } else if browser != nil {
-            pendingStop = Task { [weak self, stopDelay] in
-                try? await Task.sleep(for: stopDelay)
-                guard !Task.isCancelled, let self, !self.wantsBrowsing else { return }
-                self.stop()
-            }
-        }
+        if wanted { start() }
     }
 
     func start() {
@@ -96,6 +121,8 @@ final class AppleDeviceManager: NSObject {
         self.browser = nil
         for camera in cameras.values { camera.requestCloseSession() }
         cameras.removeAll()
+        for watch in catalogWatches.values { watch.cancel() }
+        catalogWatches.removeAll()
         for record in records { removeRecord(record.id) }
         Log.app.info("iPhone/iPad browsing stopped")
     }
@@ -144,8 +171,39 @@ final class AppleDeviceManager: NSObject {
         onChange?(AppleDeviceChange(id: id, record: record, previous: previous))
     }
 
-    private func becameReady(_ camera: ICCameraDevice) {
+    /// Follows the catalog while the record is loading: shows the percentage
+    /// and becomes ready when it is complete, even without `deviceDidBecomeReady`.
+    private func watchCatalog(_ camera: ICCameraDevice) {
         guard let id = id(of: camera) else { return }
+        catalogWatches[id]?.cancel()
+        catalogWatches[id] = Task { [weak self, weak camera, catalogPollInterval] in
+            var watch = CatalogProgressWatch()
+            var lastPercent = -1
+            while !Task.isCancelled {
+                guard let self, let camera, case .loading = self.record(for: id)?.state else { return }
+                guard !camera.isAccessRestrictedAppleDevice else { return }
+                let percent = Int(camera.contentCatalogPercentCompleted)
+                if percent != lastPercent {
+                    lastPercent = percent
+                    Log.app.info("iPhone/iPad \(id, privacy: .private(mask: .hash)) catalog \(percent)%, \(camera.mediaFiles?.count ?? 0) media files")
+                }
+                switch watch.sample(percent: percent, at: .now) {
+                case .ready:
+                    Log.app.info("iPhone/iPad \(id, privacy: .private(mask: .hash)) catalog complete without a ready message")
+                    self.becameReady(camera)
+                    return
+                case .loading(let shown):
+                    if let shown { self.update(id) { $0.state = .loading(shown) } }
+                }
+                try? await Task.sleep(for: catalogPollInterval)
+            }
+        }
+    }
+
+    private func becameReady(_ camera: ICCameraDevice) {
+        guard let id = id(of: camera), record(for: id)?.state != .ready else { return }
+        catalogWatches[id]?.cancel()
+        catalogWatches[id] = nil
         nextGeneration += 1
         let generation = nextGeneration
         fileSystems[id] = ImageCaptureFileSystem(deviceID: id, generation: generation,
@@ -159,6 +217,8 @@ final class AppleDeviceManager: NSObject {
     private func remove(_ device: ICDevice) {
         guard let id = id(of: device) else { return }
         cameras[id] = nil
+        catalogWatches[id]?.cancel()
+        catalogWatches[id] = nil
         removeRecord(id)
     }
 
@@ -227,12 +287,24 @@ extension AppleDeviceManager: @preconcurrency ICCameraDeviceDelegate {
         guard let id = id(of: device) else { return }
         if let error {
             let nsError = error as NSError
+            // A locked iPhone: the session stays usable and Image Capture
+            // reports the unlock with `cameraDeviceDidRemoveAccessRestriction`.
+            if nsError.domain == ICErrorDomain, nsError.code == ICReturn.Code.deviceIsPasscodeLocked.rawValue {
+                Log.app.info("iPhone/iPad \(id, privacy: .private(mask: .hash)) is locked")
+                update(id) { $0.state = .needsTrust }
+                return
+            }
             Log.app.error("iPhone/iPad session failed: \(nsError.domain, privacy: .public) \(nsError.code)")
             update(id) { $0.state = .failed("\(nsError.domain) \(nsError.code)") }
             return
         }
-        let restricted = (device as? ICCameraDevice)?.isAccessRestrictedAppleDevice ?? false
-        update(id) { $0.state = restricted ? .needsTrust : .loading(nil) }
+        let camera = device as? ICCameraDevice
+        if camera?.isAccessRestrictedAppleDevice ?? false {
+            update(id) { $0.state = .needsTrust }
+        } else if let camera, record(for: id)?.state != .ready {
+            update(id) { $0.state = .loading(nil) }
+            watchCatalog(camera)
+        }
     }
 
     func device(_ device: ICDevice, didCloseSessionWithError error: (any Error)?) {}
@@ -243,16 +315,23 @@ extension AppleDeviceManager: @preconcurrency ICCameraDeviceDelegate {
 
     func cameraDeviceDidEnableAccessRestriction(_ device: ICDevice) {
         guard let id = id(of: device) else { return }
+        Log.app.info("iPhone/iPad \(id, privacy: .private(mask: .hash)) access restricted")
+        catalogWatches[id]?.cancel()
+        catalogWatches[id] = nil
         fileSystems[id] = nil
         update(id) { $0.state = .needsTrust }
     }
 
     func cameraDeviceDidRemoveAccessRestriction(_ device: ICDevice) {
         guard let id = id(of: device) else { return }
+        Log.app.info("iPhone/iPad \(id, privacy: .private(mask: .hash)) access restriction removed")
+        guard record(for: id)?.state != .ready else { return }
         update(id) { $0.state = .loading(nil) }
+        if let camera = device as? ICCameraDevice { watchCatalog(camera) }
     }
 
     func deviceDidBecomeReady(withCompleteContentCatalog device: ICCameraDevice) {
+        Log.app.info("iPhone/iPad ready message (restricted: \(device.isAccessRestrictedAppleDevice), \(device.mediaFiles?.count ?? 0) media files)")
         if device.isAccessRestrictedAppleDevice {
             if let id = id(of: device) { update(id) { $0.state = .needsTrust } }
             return

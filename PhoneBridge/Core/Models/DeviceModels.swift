@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 
 /// Stable identity of a physical device across re-enumerations.
@@ -19,6 +20,31 @@ struct DeviceID: Hashable, Sendable, Codable, CustomStringConvertible {
 
     /// An iPhone/iPad served by `AppleDeviceManager` (D75).
     var isAppleMobile: Bool { rawValue.hasPrefix("ios:") }
+
+    /// The form of this id in a Finder volume address. The raw id holds the
+    /// USB serial number, and the mount source URL is visible to every user
+    /// of the Mac (`mount`, `statfs`), so real devices get a keyed hash that
+    /// is stable for this launch only: `usb:04e8:h<16 hex>` (audit 2026-10-28).
+    /// The demo device keeps its name. Resolve with `DeviceBroker`'s records.
+    var volumeKey: String {
+        if self == .demo { return rawValue }
+        let parts = rawValue.split(separator: ":", maxSplits: 2, omittingEmptySubsequences: false)
+        let prefix = parts.count == 3 ? "\(parts[0]):\(parts[1]):" : "dev:"
+        var hasher = SHA256()
+        hasher.update(data: Self.volumeSalt)
+        hasher.update(data: Data(rawValue.utf8))
+        let digest = hasher.finalize().prefix(8).map { String(format: "%02x", $0) }.joined()
+        return prefix + "h" + digest
+    }
+
+    /// Random per launch: a key cannot be matched against a known serial.
+    private static let volumeSalt: Data = {
+        var bytes = [UInt8](repeating: 0, count: 16)
+        if SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes) != errSecSuccess {
+            bytes = (0..<16).map { _ in UInt8.random(in: .min ... .max) }
+        }
+        return Data(bytes)
+    }()
 }
 
 /// Identifies a file or folder on a device: MTP object handles are only unique

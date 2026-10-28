@@ -70,3 +70,12 @@
 - 빌드 202610251403, SHA-256 `1faeffdf…ae64622d`. v1.0.0 릴리스 파일 교체, Homebrew Cask 갱신(V23).
 - 소스 공개: https://github.com/garam918/phonebridge (MIT, D69).
 - 같은 버전으로 파일을 바꿀 때는 **파일 교체와 탭 갱신을 바로 이어서** 한다(사이에는 `brew install`이 체크섬 불일치로 실패).
+
+## 버전 정책 (2026-10-28, D84)
+- **1.0.1부터 배포마다 `MARKETING_VERSION`을 올린다**(같은 번호 재배포 중단). 릴리스마다 새 태그 `v<버전>`을 만들고, 기존 태그의 파일은 바꾸지 않는다.
+- 앱은 외부에 접속하지 않으므로 업데이트를 스스로 알리지 않는다. 도움말 › "업데이트 확인…"이 릴리스 페이지를 브라우저로 열고(메뉴에 현재 버전 표시), Homebrew 사용자는 `brew upgrade --cask phonebridge`로 받는다(Cask `livecheck`가 최신 태그를 본다).
+- 1.0.0 사용자는 번호가 같았던 탓에 1.0.1로 올라올 때 한 번은 직접 받아야 한다(설치 스크립트 재실행, DMG, 또는 `brew update && brew upgrade --cask phonebridge`).
+
+## 1.0.1 (2026-10-28, 업로드 전)
+- 첫 번호 올림 릴리스(D84). 산출물 `~/Library/Developer/PhoneBridge/release/1.0.1-202610282157/`, SHA-256 `33a0d843…e539eab4`, 공증·스테이플 완료(V31).
+- 순서: `gh release create v1.0.1`(파일 5개 + 설명) → 탭 Cask 푸시 → 소스 푸시 → 웹사이트는 "최신 릴리스" 링크라 변경 없음.

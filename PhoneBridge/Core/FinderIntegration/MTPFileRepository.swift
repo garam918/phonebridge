@@ -73,7 +73,7 @@ final class MTPFileRepository {
         var result: [Volume] = []
         for record in broker.devices where record.state.isMTPReady {
             for storage in record.storages {
-                result.append(Volume(address: VolumeAddress(deviceID: record.id.rawValue, storageID: storage.id,
+                result.append(Volume(address: VolumeAddress(deviceID: record.id.volumeKey, storageID: storage.id,
                                                             generation: record.generation),
                                      deviceName: record.displayName, storageName: storage.name, isDemo: false))
             }
@@ -149,7 +149,7 @@ final class MTPFileRepository {
                     try checkScope(fs, parentPath)
                 }
                 try await writes.delete(folder(fs, address, object), in: folder(fs, address, parent), path: parentPath, fileSystem: fs)
-                invalidateCache(deviceID: fs.deviceID.rawValue)
+                invalidateCache(deviceID: fs.deviceID.volumeKey)
                 return (.done, Data())
             }
         } catch {
@@ -264,7 +264,7 @@ final class MTPFileRepository {
 
     /// Entry for a written item; cached reads of the device are dropped.
     private func wrote(_ item: FileItem, parent: UInt32, fs: any DeviceFileSystem) -> RemoteEntry {
-        invalidateCache(deviceID: fs.deviceID.rawValue)
+        invalidateCache(deviceID: fs.deviceID.volumeKey)
         return Self.entry(item, parent: parent)
     }
 
@@ -289,9 +289,16 @@ final class MTPFileRepository {
 
     // MARK: - Helpers
 
+    /// The device behind a volume address (`DeviceID.volumeKey`), if connected.
+    func deviceID(forVolumeKey key: String) -> DeviceID? {
+        if key == DeviceID.demo.rawValue { return .demo }
+        return broker.devices.first { $0.id.volumeKey == key }?.id
+    }
+
     private func fileSystem(for address: VolumeAddress) throws(FinderIPCError) -> any DeviceFileSystem {
-        let deviceID = DeviceID(address.deviceID)
-        let fs: (any DeviceFileSystem)? = deviceID == .demo ? (includeDemoDevice ? demoDevice : nil) : broker.fileSystem(for: deviceID)
+        let deviceID = deviceID(forVolumeKey: address.deviceID)
+        let fs: (any DeviceFileSystem)? = deviceID == .demo ? (includeDemoDevice ? demoDevice : nil)
+            : deviceID.flatMap { broker.fileSystem(for: $0) }
         guard let fs else { throw FinderIPCError(code: ENXIO, message: "device not connected") }
         // Handles from an older session are meaningless: force a remount.
         guard fs.generation == address.generation else { throw FinderIPCError(code: ESTALE, message: "session changed") }

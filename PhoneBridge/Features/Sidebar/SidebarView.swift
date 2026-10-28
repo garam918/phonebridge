@@ -9,6 +9,8 @@ struct SidebarView: View {
     var body: some View {
         @Bindable var model = model
         List(selection: $model.sidebarSelection) {
+            // Announcement images (WindowSnapshots promo) show the sample device only.
+            if !(WindowSnapshots.isPromo && androidDevices.isEmpty) {
             Section(loc.t("sidebar.devices")) {
                 if androidDevices.isEmpty {
                     Text(loc.t("sidebar.noDevices"))
@@ -31,6 +33,7 @@ struct SidebarView: View {
                         }
                     }
                 }
+            }
             }
 
             if !model.appleDevices.records.isEmpty {
@@ -56,7 +59,7 @@ struct SidebarView: View {
                     DeviceRow(name: loc.t("demo.deviceName"),
                               status: loc.t("demo.status"),
                               state: .connected,
-                              isDemo: true)
+                              isDemo: !WindowSnapshots.isPromo)
                         .tag(SidebarItem.device(.demo))
                     ForEach(model.demoStorages) { storage in
                         StorageRow(storage: storage, finder: finderStatus(.demo, storage.id))
@@ -78,7 +81,7 @@ struct SidebarView: View {
 
     private func finderStatus(_ deviceID: DeviceID, _ storageID: UInt32) -> StorageRow.FinderStatus {
         let finder = model.finder
-        guard let volume = finder.volumes.first(where: { $0.address.deviceID == deviceID.rawValue && $0.address.storageID == storageID })
+        guard let volume = finder.volumes.first(where: { $0.address.deviceID == deviceID.volumeKey && $0.address.storageID == storageID })
         else { return .none }
         if finder.problem(of: volume) != nil { return .problem }
         return finder.state(of: volume).mountURL != nil ? .mounted : .none
@@ -249,7 +252,7 @@ private struct FinderMountMenu: View {
 
     var body: some View {
         let finder = model.finder
-        if finder.isAvailable, let volume = finder.volumes.first(where: { $0.address.deviceID == deviceID.rawValue && $0.address.storageID == storageID }) {
+        if finder.isAvailable, let volume = finder.volumes.first(where: { $0.address.deviceID == deviceID.volumeKey && $0.address.storageID == storageID }) {
             switch finder.state(of: volume) {
             case .mounted(let url):
                 Button(loc.t("finder.showInFinder")) { NSWorkspace.shared.activateFileViewerSelecting([url]) }

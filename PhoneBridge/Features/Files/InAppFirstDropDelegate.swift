@@ -14,6 +14,8 @@ import SwiftUI
 struct InAppFirstDropDelegate: DropDelegate {
     @Binding var isTargeted: Bool
     var isEnabled: () -> Bool = { true }
+    /// Ticket text → payload; only tickets this launch issued resolve.
+    let resolve: (String) -> DragPayload?
     let perform: (DropLoader.Contents) -> Void
 
     func validateDrop(info: DropInfo) -> Bool {
@@ -31,14 +33,14 @@ struct InAppFirstDropDelegate: DropDelegate {
     func performDrop(info: DropInfo) -> Bool {
         isTargeted = false
         guard isEnabled() else { return false }
-        let payloads = DropLoader.inAppPayloads(NSPasteboard(name: .drag))
+        let payloads = DropLoader.inAppPayloads(NSPasteboard(name: .drag), resolve: resolve)
         if !payloads.isEmpty {
             perform(DropLoader.Contents(payloads: payloads))
             return true
         }
         let providers = info.itemProviders(for: [.fileURL])
         guard !providers.isEmpty else { return false }
-        Task { perform(await DropLoader.load(providers)) }
+        Task { perform(await DropLoader.load(providers, resolve: resolve)) }
         return true
     }
 }
@@ -60,7 +62,8 @@ private struct DeviceFolderDrop: ViewModifier {
         if item.isFolder {
             content.onDrop(of: DropLoader.acceptedTypes,
                            delegate: InAppFirstDropDelegate(isTargeted: .constant(false),
-                                                            isEnabled: { model.canWriteHere }) {
+                                                            isEnabled: { model.canWriteHere },
+                                                            resolve: model.dragPayload(forTicket:)) {
                                model.dropOnDevice($0, onto: item)
                            })
         } else {

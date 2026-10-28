@@ -58,8 +58,12 @@ final class LocalizationManager {
 
     /// Localized string for `key` in the selected language. Missing keys fall
     /// back to the key itself so they are easy to spot.
+    /// Labels replaced while `WindowSnapshots` draws announcement images.
+    static var promoOverrides: [String: String] = [:]
+
     func t(_ key: String) -> String {
-        bundle.localizedString(forKey: key, value: key, table: "Localizable")
+        if let promo = Self.promoOverrides[key] { return promo }
+        return bundle.localizedString(forKey: key, value: key, table: "Localizable")
     }
 
     /// Localized format string with `String(format:)` arguments (%@, %d, %lld).

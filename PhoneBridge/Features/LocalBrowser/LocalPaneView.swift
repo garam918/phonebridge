@@ -43,7 +43,11 @@ struct LocalPaneView: View {
             .onDrop(of: DropLoader.acceptedTypes, delegate: InAppFirstDropDelegate(
                 isTargeted: $isDropTargeted,
                 // Only Android items download here; Finder files and text are not taken.
-                isEnabled: { DropLoader.inAppPayloads(NSPasteboard(name: .drag)).contains { !$0.deviceItems.isEmpty } }) {
+                isEnabled: {
+                    DropLoader.inAppPayloads(NSPasteboard(name: .drag), resolve: model.dragPayload(forTicket:))
+                        .contains { !$0.deviceItems.isEmpty }
+                },
+                resolve: model.dragPayload(forTicket:)) {
                 model.dropOnLocal($0)
             })
         }

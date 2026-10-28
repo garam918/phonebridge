@@ -11,7 +11,7 @@ struct BrowserView: View {
     var body: some View {
         let browser = model.browser
         VStack(spacing: 0) {
-            if browser.isShowingMock {
+            if browser.isShowingMock && !WindowSnapshots.isPromo {
                 Banner(symbol: "testtube.2", text: loc.t("demo.banner"), tint: .orange)
                 Divider()
             }
@@ -34,7 +34,8 @@ struct BrowserView: View {
                     }
                 }
                 .onDrop(of: DropLoader.acceptedTypes,
-                        delegate: InAppFirstDropDelegate(isTargeted: $isDropTargeted, isEnabled: { model.canWriteHere }) {
+                        delegate: InAppFirstDropDelegate(isTargeted: $isDropTargeted, isEnabled: { model.canWriteHere },
+                                                         resolve: model.dragPayload(forTicket:)) {
                             model.dropOnDevice($0)
                         })
                 .accessibilityHint(model.canWriteHere ? loc.t("a11y.dropTarget") : "")

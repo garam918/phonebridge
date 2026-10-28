@@ -35,9 +35,10 @@ brew trust --cask garam918/phonebridge/phonebridge   # Homebrew 7 이상: 외부
 brew install --cask garam918/phonebridge/phonebridge
 ```
 
-**업데이트 / Updating** — 같은 버전 번호(예: 1.0.0)로 수정 빌드를 다시 올리는 경우가 있어 업데이트 알림이 오지 않을 수 있습니다. 설치 스크립트를 다시 실행하거나, Homebrew는 탭을 먼저 갱신하세요(갱신하지 않으면 "reports different checksum" 오류가 납니다). / Updated builds may keep the same version number. Re-run the install script, or refresh the tap first with Homebrew (otherwise it reports a different checksum).
+**업데이트 / Updating** — PhoneBridge는 외부에 접속하지 않으므로 새 버전을 스스로 알리지 않습니다. 도움말 › **업데이트 확인…**이 릴리스 페이지를 브라우저로 열어 주며(메뉴에 현재 버전이 표시됨), 새 버전이면 DMG를 받거나 설치 스크립트를 다시 실행하세요. Homebrew는 `brew upgrade`로 받습니다. 1.0.1부터는 배포마다 버전 번호가 올라갑니다(이전 1.0.0 수정 빌드들은 번호가 같아 한 번은 직접 받아야 합니다).
+PhoneBridge never contacts a server, so it cannot announce new versions itself. Help › **Check for Updates…** opens the releases page in your browser (the menu shows your version); if there is a newer one, download the DMG or re-run the install script. Homebrew users: `brew upgrade`. From 1.0.1 every release has a new version number (the earlier 1.0.0 builds shared one, so that update is manual).
 ```sh
-brew update && brew reinstall --cask phonebridge
+brew update && brew upgrade --cask phonebridge
 ```
 
 **Finder 연결 켜기 / Turn on Finder volumes** (macOS 26+)

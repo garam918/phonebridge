@@ -643,3 +643,4 @@ macOS 파일 이름은 조합형(NFD)일 수 있다(압축 해제, 오래된 디
 - 범위: D78만(수정 빌드 3 대비 소스 변경은 `AppModel`·`AppleDeviceManager`·테스트). 실제 Android 확인 전 배포 — 릴리스 설명에 "실제 기기로는 아직 확인하지 않음"으로 표기.
 - 배포 전 테스트 295개 통과. 빌드 202610281257, 앱·DMG 공증 Accepted(첫 시도), Developer ID + Hardened Runtime, `get-task-allow` 없음, 최소 macOS 15·arm64, Gatekeeper Notarized Developer ID. SHA-256 `9666ce9f…2846302c`.
 - 공개 순서: v1.0.0 파일 5개 교체 → 탭 Cask(d0435ba) → 릴리스 설명(수정 빌드 4, 새 체크섬) → 소스 푸시. 웹사이트는 바꿀 내용 없음.
+- 확인: `install.sh --check` 통과(체크섬·Developer ID·공증), 탭 Cask sha256 반영, `curl … | bash`로 이 Mac 설치본을 202610281257로 교체. 실행 시 broker·USB 감시 시작, iPhone 기기가 없으니 "iPhone/iPad browsing started" 기록 없음(D78 동작), 샌드박스 거부 0건. 실제 Android 연결은 확인하지 않았다.

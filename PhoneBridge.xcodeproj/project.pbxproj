@@ -28,6 +28,13 @@
 			remoteGlobalIDString = 5B00000000000000000000A3;
 			remoteInfo = PhoneBridgeUnmounter;
 		};
+		5B00000000000000000000D2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5B0000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5B00000000000000000000C8;
+			remoteInfo = PhoneBridgeLauncher;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXBuildFile section */
@@ -35,6 +42,7 @@
 		5B00000000000000000000A7 /* PhoneBridgeUnmounter.xpc in Embed XPC Services */ = {isa = PBXBuildFile; fileRef = 5B00000000000000000000A0 /* PhoneBridgeUnmounter.xpc */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5B00000000000000000000C3 /* libmtp.9.dylib in Embed Native Libraries */ = {isa = PBXBuildFile; fileRef = 5B00000000000000000000C0 /* libmtp.9.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		5B00000000000000000000C4 /* libusb-1.0.0.dylib in Embed Native Libraries */ = {isa = PBXBuildFile; fileRef = 5B00000000000000000000C1 /* libusb-1.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		5B00000000000000000000D0 /* PhoneBridgeLauncher.app in Embed Login Items */ = {isa = PBXBuildFile; fileRef = 5B00000000000000000000CF /* PhoneBridgeLauncher.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -72,6 +80,17 @@
 			name = "Embed Native Libraries";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5B00000000000000000000D1 /* Embed Login Items */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Library/LoginItems";
+			dstSubfolderSpec = 16;
+			files = (
+				5B00000000000000000000D0 /* PhoneBridgeLauncher.app in Embed Login Items */,
+			);
+			name = "Embed Login Items";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -86,6 +105,7 @@
 		5B00000000000000000000A1 /* PhoneBridgeUnmounter-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PhoneBridgeUnmounter-Info.plist"; sourceTree = "<group>"; };
 		5B00000000000000000000C0 /* libmtp.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libmtp.9.dylib; sourceTree = "<group>"; };
 		5B00000000000000000000C1 /* libusb-1.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libusb-1.0.0.dylib"; sourceTree = "<group>"; };
+		5B00000000000000000000CF /* PhoneBridgeLauncher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhoneBridgeLauncher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -112,6 +132,16 @@
 		5B00000000000000000000A2 /* PhoneBridgeUnmounter */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = PhoneBridgeUnmounter;
+			sourceTree = "<group>";
+		};
+		5B00000000000000000000C6 /* USBDetection */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = USBDetection;
+			sourceTree = "<group>";
+		};
+		5B00000000000000000000C7 /* PhoneBridgeLauncher */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PhoneBridgeLauncher;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -145,6 +175,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5B00000000000000000000CA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -156,6 +193,8 @@
 				5B0000000000000000000075 /* PhoneBridgeFinder */,
 				5B0000000000000000000007 /* PhoneBridgeTests */,
 				5B00000000000000000000A2 /* PhoneBridgeUnmounter */,
+				5B00000000000000000000C7 /* PhoneBridgeLauncher */,
+				5B00000000000000000000C6 /* USBDetection */,
 				5B0000000000000000000009 /* Config */,
 				5B00000000000000000000C2 /* Vendor */,
 				5B0000000000000000000003 /* Products */,
@@ -169,6 +208,7 @@
 				5B0000000000000000000005 /* PhoneBridgeTests.xctest */,
 				5B0000000000000000000070 /* PhoneBridgeFinder.appex */,
 				5B00000000000000000000A0 /* PhoneBridgeUnmounter.xpc */,
+				5B00000000000000000000CF /* PhoneBridgeLauncher.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -208,16 +248,19 @@
 				5B0000000000000000000084 /* Embed ExtensionKit Extensions */,
 				5B00000000000000000000A8 /* Embed XPC Services */,
 				5B00000000000000000000C5 /* Embed Native Libraries */,
+				5B00000000000000000000D1 /* Embed Login Items */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				5B0000000000000000000086 /* PBXTargetDependency */,
 				5B00000000000000000000AA /* PBXTargetDependency */,
+				5B00000000000000000000D3 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				5B0000000000000000000006 /* PhoneBridge */,
 				5B0000000000000000000074 /* Shared */,
+				5B00000000000000000000C6 /* USBDetection */,
 			);
 			name = PhoneBridge;
 			packageProductDependencies = (
@@ -295,6 +338,29 @@
 			productReference = 5B00000000000000000000A0 /* PhoneBridgeUnmounter.xpc */;
 			productType = "com.apple.product-type.xpc-service";
 		};
+		5B00000000000000000000C8 /* PhoneBridgeLauncher */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5B00000000000000000000CE /* Build configuration list for PBXNativeTarget "PhoneBridgeLauncher" */;
+			buildPhases = (
+				5B00000000000000000000C9 /* Sources */,
+				5B00000000000000000000CA /* Frameworks */,
+				5B00000000000000000000CB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				5B00000000000000000000C7 /* PhoneBridgeLauncher */,
+				5B00000000000000000000C6 /* USBDetection */,
+			);
+			name = PhoneBridgeLauncher;
+			packageProductDependencies = (
+			);
+			productName = PhoneBridgeLauncher;
+			productReference = 5B00000000000000000000CF /* PhoneBridgeLauncher.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -355,6 +421,7 @@
 				5B0000000000000000000020 /* PhoneBridgeTests */,
 				5B0000000000000000000080 /* PhoneBridgeFinder */,
 				5B00000000000000000000A3 /* PhoneBridgeUnmounter */,
+				5B00000000000000000000C8 /* PhoneBridgeLauncher */,
 			);
 		};
 /* End PBXProject section */
@@ -382,6 +449,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		5B0000000000000000000023 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5B00000000000000000000CB /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -419,6 +493,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5B00000000000000000000C9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -436,6 +517,11 @@
 			isa = PBXTargetDependency;
 			target = 5B00000000000000000000A3 /* PhoneBridgeUnmounter */;
 			targetProxy = 5B00000000000000000000A9 /* PBXContainerItemProxy */;
+		};
+		5B00000000000000000000D3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5B00000000000000000000C8 /* PhoneBridgeLauncher */;
+			targetProxy = 5B00000000000000000000D2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -776,6 +862,46 @@
 			};
 			name = Release;
 		};
+		5B00000000000000000000CC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Config/PhoneBridgeLauncher.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "$(PB_DISPLAY_NAME) Launcher";
+				INFOPLIST_KEY_LSBackgroundOnly = YES;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.phonebridge.PhoneBridge$(PB_BUNDLE_SUFFIX).Launcher";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+			};
+			name = Debug;
+		};
+		5B00000000000000000000CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Config/PhoneBridgeLauncher.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "$(PB_DISPLAY_NAME) Launcher";
+				INFOPLIST_KEY_LSBackgroundOnly = YES;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.phonebridge.PhoneBridge$(PB_BUNDLE_SUFFIX).Launcher";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -820,6 +946,15 @@
 			buildConfigurations = (
 				5B00000000000000000000AC /* Debug */,
 				5B00000000000000000000AD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5B00000000000000000000CE /* Build configuration list for PBXNativeTarget "PhoneBridgeLauncher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5B00000000000000000000CC /* Debug */,
+				5B00000000000000000000CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

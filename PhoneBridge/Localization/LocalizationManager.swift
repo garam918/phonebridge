@@ -125,6 +125,16 @@ final class LocalizationManager {
         }
     }
 
+    func appleStateTitle(_ state: AppleDeviceState) -> String {
+        switch state {
+        case .connecting: t("apple.state.connecting")
+        case .needsTrust: t("apple.state.needsTrust")
+        case .loading: t("apple.state.loading")
+        case .ready: t("apple.state.ready")
+        case .failed: t("apple.state.failed")
+        }
+    }
+
     func formatBytes(_ value: UInt64) -> String {
         Int64(clamping: value).formatted(.byteCount(style: .file).locale(locale))
     }

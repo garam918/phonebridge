@@ -40,11 +40,13 @@ struct USBDeviceSnapshot: Hashable, Sendable {
     /// libusb's darwin backend uses `locationID >> 24` as the bus number.
     var busNumber: UInt32 { locationID >> 24 }
 
-    var logicalID: DeviceID {
+    /// Same physical device across re-enumeration (mode switches, replug on
+    /// the same port): vendor + serial number, or the port without a serial.
+    var logicalKey: String {
         if let serial = serialNumber?.trimmingCharacters(in: .whitespaces), !serial.isEmpty {
-            return DeviceID(String(format: "usb:%04x:", vendorID) + serial)
+            return String(format: "usb:%04x:", vendorID) + serial
         }
-        return DeviceID(String(format: "loc:%08x", locationID))
+        return String(format: "loc:%08x", locationID)
     }
 
     var displayName: String {

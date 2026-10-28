@@ -47,7 +47,7 @@ struct AppCommands: Commands {
             .disabled(!model.canRenameHere || browser.selectedItem == nil)
             Button(loc.t("action.deleteEllipsis")) { model.requestDelete(browser.selectedItems) }
                 .keyboardShortcut(.delete, modifiers: .command)
-                .disabled(!model.hasDeviceSelection || !model.canWriteHere)
+                .disabled(!model.hasDeviceSelection || !model.canDeleteHere)
         }
 
         CommandGroup(after: .toolbar) {

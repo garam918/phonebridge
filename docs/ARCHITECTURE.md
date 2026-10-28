@@ -48,7 +48,7 @@ AppModel (@MainActor, 조합 루트 · DI)          LocalizationManager · AppSe
    │              └ open 실패(1회 자동 재시도 후) ─► failed(error)
    ├─ 충전 전용/ADB만 ─► waitingForMTP(.fileTransferModeRequired)
    ├─ PTP 모드 ───────► waitingForMTP(.ptpModeSelected)
-   ├─ iPhone/카메라 ──► unsupported(reason)
+   ├─ iPhone/카메라 ──► unsupported(reason)  (iPhone·iPad 사진은 AppleDeviceManager, D75)
    └─ 무관한 기기 ────► (목록에 표시 안 함)
 
 USB detach ─► reconnecting ─(유예 8초 내 같은 기기 재연결)─► 다시 분류
@@ -193,3 +193,12 @@ PhoneBridge.app                 ▼
 - `LocalStagingJournal`(Mac 쪽 다운로드 임시 파일), `DeviceLeftoverJournal`(기기 쪽), `FinderWriteRecovery`(Finder 쓰기 버퍼): 비정상 종료 복구 세 갈래.
 - 릴리스: `scripts/release.sh` → `~/Library/Developer/PhoneBridge/release/<버전-빌드>/`(iCloud 밖).
 
+## iPhone·iPad 사진 (D75)
+- `Core/Apple/`: `AppleDeviceManager`(ImageCaptureCore `ICDeviceBrowser`, 메인 액터) → 기기별 `AppleDeviceRecord`(connecting / needsTrust / loading / ready / failed)와 준비된 기기의 `ImageCaptureFileSystem`.
+- `ImageCaptureFileSystem: DeviceFileSystem` ← `CameraBackend` 프로토콜(`ICCameraBackend` 실기기 / 테스트 가짜). 읽기·섬네일·삭제만, 쓰기 계열은 `unsupportedOperation`. 브라우저·전송 대기열·드래그·미리보기는 Android와 공용.
+- `AppModel`: 기기 ID가 `ios:`로 시작하면 `appleDevices`에서 찾는다(`detailContent` `.appleDeviceState`, `syncBrowser`, 전송 `fileSystemProvider`). `DeviceBroker`(libmtp)는 iPhone을 열지 않는다.
+
+## 연결 시 자동 실행 (D73)
+- `PhoneBridgeLauncher.app`(로그인 항목, `Contents/Library/LoginItems`, 백그라운드 전용, 샌드박스 + USB 권한): `IOKitUSBMonitor` 이벤트를 `PhoneAttachDetector`로 판단해 Android 기기가 새로 꽂히면 `NSWorkspace.openApplication`으로 PhoneBridge를 연다. 기기와 통신하지 않는다.
+- `USBDetection/`(앱과 런처가 함께 컴파일): `USBDeviceSnapshot`, `USBDeviceClassifier`(+`UnsupportedReason`), `USBDeviceMonitoring`, `IOKitUSBMonitor`, `PhoneAttachDetector`. 앱 전용 `logicalID`(`DeviceID`)는 `PhoneBridge/Core/USB/USBDeviceSnapshot+DeviceID.swift`.
+- 앱: `LaunchOnConnectSetting`이 `SMAppService.loginItem(identifier: <앱 ID>.Launcher)`를 등록·해제한다. 상태의 원본은 macOS(로그인 항목)이고 앱은 따로 저장하지 않는다.

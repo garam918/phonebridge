@@ -63,7 +63,7 @@ struct DeviceStateContent: View {
         case .waitingForMTP(.fileTransferModeRequired), .waitingForMTP(.ptpModeSelected):
             FileTransferGuide()
         case .waitingForMTP(.deviceLocked):
-            UnlockGuide()
+            StorageAccessGuide()
         case .failed(.deviceBusy(let owner)):
             AccessConflictGuide(owner: owner)
         case .failed(.sessionOpenFailed), .failed(.noMTPInterface):

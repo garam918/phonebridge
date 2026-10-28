@@ -80,15 +80,20 @@ APP="$OUT/export/PhoneBridge.app"
 echo "== verify"
 codesign --verify --deep --strict "$APP" || { echo "strict signature verification failed"; exit 1; }
 echo "signature: valid (strict)"
+LAUNCHER="$APP/Contents/Library/LoginItems/PhoneBridgeLauncher.app"
+[[ -d "$LAUNCHER" ]] || { echo "  ERROR: login-item launcher missing (D73)"; exit 1; }
 for bundle in "$APP" "$APP/Contents/Extensions/PhoneBridgeFinder.appex" "$APP/Contents/XPCServices/PhoneBridgeUnmounter.xpc" \
-              "$APP/Contents/Frameworks/libmtp.9.dylib" "$APP/Contents/Frameworks/libusb-1.0.0.dylib"; do
+              "$LAUNCHER" "$APP/Contents/Frameworks/libmtp.9.dylib" "$APP/Contents/Frameworks/libusb-1.0.0.dylib"; do
   flags=$(codesign -dv "$bundle" 2>&1 | grep -o "flags=[^ ]*" || true)
   authority=$(codesign -dvv "$bundle" 2>&1 | grep -m1 "Authority=" | sed 's/Authority=//' || true)
   echo "  ${bundle#$APP/}: $flags, $authority"
 done
-if codesign -d --entitlements - "$APP" 2>/dev/null | grep -q "get-task-allow"; then
-  echo "  WARNING: get-task-allow present (debug entitlement); notarization would reject it."
-fi
+for bundle in "$APP" "$APP/Contents/Extensions/PhoneBridgeFinder.appex" "$APP/Contents/XPCServices/PhoneBridgeUnmounter.xpc" "$LAUNCHER"; do
+  if codesign -d --entitlements - "$bundle" 2>/dev/null | grep -q "get-task-allow"; then
+    echo "  ERROR: get-task-allow (debug entitlement) in ${bundle#$APP/}; notarization would reject it."
+    exit 1
+  fi
+done
 # Minimum macOS: the app, its libraries and the helper run on 15; the Finder
 # extension needs 26 (FSKit URL resources) and is simply not used before that.
 check_minos() {  # <binary> <expected>
@@ -98,6 +103,7 @@ check_minos() {  # <binary> <expected>
 }
 check_minos "$APP/Contents/MacOS/PhoneBridge" "$MIN_MACOS"
 check_minos "$APP/Contents/XPCServices/PhoneBridgeUnmounter.xpc/Contents/MacOS/PhoneBridgeUnmounter" "$MIN_MACOS"
+check_minos "$LAUNCHER/Contents/MacOS/PhoneBridgeLauncher" "$MIN_MACOS"
 for lib in "$APP/Contents/Frameworks/"*.dylib; do check_minos "$lib" "$MIN_MACOS"; done
 check_minos "$APP/Contents/Extensions/PhoneBridgeFinder.appex/Contents/MacOS/PhoneBridgeFinder" 26.0
 [[ "$(/usr/libexec/PlistBuddy -c 'Print :LSMinimumSystemVersion' "$APP/Contents/Info.plist")" == "$MIN_MACOS" ]] \

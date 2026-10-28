@@ -241,20 +241,20 @@ final class FinderWriteRecoveryTests {
         #expect(recovery.scan() == 0, "nothing new the second time")
     }
 
-    @Test func savingCopiesTheBytesAndForgetsTheBuffer() throws {
+    @Test func savingCopiesTheBytesAndForgetsTheBuffer() async throws {
         let name = try buffer("되살린 내용")
         recovery.scan()
         let file = try #require(recovery.files.first)
         let destination = FileManager.default.temporaryDirectory.appending(path: "PBSaved-\(UUID().uuidString).txt")
         defer { try? FileManager.default.removeItem(at: destination) }
         try "old".write(to: destination, atomically: true, encoding: .utf8)
-        try recovery.save(file, to: destination)
+        try await recovery.save(file, to: destination)
         #expect(try String(contentsOf: destination, encoding: .utf8) == "되살린 내용")
         #expect(!exists(name) && !exists(WriteBufferManifest.manifestName(for: name)))
         #expect(recovery.files.isEmpty)
     }
 
-    @Test func failedSaveLeavesTheExistingMacFileAlone() throws {
+    @Test func failedSaveLeavesTheExistingMacFileAlone() async throws {
         let name = try buffer("되살린 내용")
         recovery.scan()
         let file = try #require(recovery.files.first)
@@ -263,11 +263,11 @@ final class FinderWriteRecoveryTests {
         try "old".write(to: destination, atomically: true, encoding: .utf8)
         // The buffer disappears between the scan and the save (committed meanwhile).
         try FileManager.default.removeItem(at: directory.appending(path: name))
-        #expect(throws: (any Error).self) { try self.recovery.save(file, to: destination) }
+        await #expect(throws: (any Error).self) { try await self.recovery.save(file, to: destination) }
         #expect(try String(contentsOf: destination, encoding: .utf8) == "old", "audit 2026-10-23, M4")
     }
 
-    @Test func buffersInUseCanBeSavedButNotDiscarded() throws {
+    @Test func buffersInUseCanBeSavedButNotDiscarded() async throws {
         let name = try buffer("still mounted", state: .failed, locked: true)
         recovery.scan()
         let file = try #require(recovery.files.first)
@@ -275,7 +275,7 @@ final class FinderWriteRecoveryTests {
         #expect(exists(name))
         let copy = FileManager.default.temporaryDirectory.appending(path: "PBCopy-\(UUID().uuidString).txt")
         defer { try? FileManager.default.removeItem(at: copy) }
-        try recovery.save(file, to: copy)
+        try await recovery.save(file, to: copy)
         #expect(exists(name), "the volume still uses it")
         #expect(FileManager.default.fileExists(atPath: copy.path))
     }

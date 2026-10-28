@@ -143,6 +143,8 @@ struct DetailView: View {
             EmptyStateView()
         case .deviceState(let record):
             DeviceStateView(record: record)
+        case .appleDeviceState(let record):
+            AppleDeviceStateView(record: record)
         case .browser:
             BrowserView()
         }

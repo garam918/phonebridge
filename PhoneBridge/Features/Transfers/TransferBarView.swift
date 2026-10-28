@@ -84,7 +84,7 @@ struct TransferBarView: View {
         case .deviceConnected: "checkmark.circle.fill"
         case .deviceDisconnected: "cable.connector.slash"
         case .connectionFailed: "exclamationmark.triangle.fill"
-        case .finderRecovery: "doc.badge.exclamationmark"
+        case .finderRecovery: "doc.badge.clock"
         case .safelyDisconnected: "eject.circle.fill"
         case .disconnectBlocked, .transferFailed: "exclamationmark.triangle.fill"
         case .transferCompleted: "checkmark.circle.fill"

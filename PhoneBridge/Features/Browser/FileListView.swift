@@ -24,11 +24,13 @@ struct FileListView: View {
                     FileIcon(item: item)
                 }
                 .opacity(isCut(item) ? 0.5 : 1)
+                .folderDropCell(item, model: model)
             }
             .width(min: 180, ideal: 320)
             TableColumn(loc.t("column.modified"), value: \.modifiedSortKey) { item in
                 Text(item.modified.map(loc.formatDate) ?? "—")
                     .foregroundStyle(.secondary)
+                    .folderDropCell(item, model: model)
             }
             .width(min: 130, ideal: 170)
             TableColumn(loc.t("column.size"), value: \.sizeSortKey) { item in
@@ -36,20 +38,21 @@ struct FileListView: View {
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .trailing)
+                    .folderDropCell(item, model: model)
             }
             .width(min: 70, ideal: 90)
             TableColumn(loc.t("column.kind"), value: \.kindSortKey) { item in
                 Text(loc.t(item.category.localizationKey))
                     .foregroundStyle(.secondary)
+                    .folderDropCell(item, model: model)
             }
             .width(min: 80, ideal: 110)
         } rows: {
             ForEach(browser.displayedItems) { item in
+                // Folder drops are on the cells (`deviceFolderDrop`): a row-level
+                // `dropDestination` reads the drag through item providers (D77).
                 TableRow(item)
                     .draggable(model.dragItem(for: item))
-                    .dropDestination(for: String.self) { payloads in
-                        model.dropOnDevice(strings: payloads, onto: item)
-                    }
             }
         }
         .contextMenu(forSelectionType: FileItemID.self) { ids in
@@ -145,7 +148,7 @@ struct FileContextMenu: View {
                 model.browser.selection = ids
                 model.copyDeviceSelection(cut: true)
             }
-            .disabled(!model.canWriteHere)
+            .disabled(!model.canDeleteHere)
             if model.canPasteIntoDevice {
                 Button(loc.t("action.pasteHere")) { model.pasteIntoDevice() }
             }
@@ -155,7 +158,7 @@ struct FileContextMenu: View {
                     .disabled(!model.canRenameHere)
             }
             Button(loc.t("action.deleteEllipsis")) { model.requestDelete(items) }
-                .disabled(!model.canWriteHere)
+                .disabled(!model.canDeleteHere)
             Divider()
             Button(loc.t("action.getInfo")) {
                 model.browser.selection = ids
@@ -177,5 +180,30 @@ struct BackgroundMenuItems: View {
         if model.canPasteIntoDevice {
             Button(loc.t("action.pasteHere")) { model.pasteIntoDevice() }
         }
+    }
+}
+
+/// Each cell of a folder row is a drop target for that folder; file rows leave
+/// drops to the pane (current folder). The model is passed in, not read from
+/// the environment: a row's drag image renders these cells without it.
+private struct FolderDropCell: ViewModifier {
+    let item: FileItem
+    let model: AppModel
+
+    func body(content: Content) -> some View {
+        if item.isFolder {
+            content
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
+                .deviceFolderDrop(item, model: model)
+        } else {
+            content
+        }
+    }
+}
+
+private extension View {
+    func folderDropCell(_ item: FileItem, model: AppModel) -> some View {
+        modifier(FolderDropCell(item: item, model: model))
     }
 }

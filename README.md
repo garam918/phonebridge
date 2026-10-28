@@ -44,6 +44,7 @@ brew install --cask garam918/phonebridge/phonebridge
 - Mac ↔ Android 전송: 원본을 지키는 교체, 크기 검증, 진행률·취소·재시도 / transfers with safe replace, size verification, progress, cancel, retry
 - Android → Finder로 바로 끌어 놓기 / drag straight from Android to Finder
 - Finder 사이드바에 기기 저장소 연결(기본 읽기 전용) / Finder volumes for each storage (read-only by default)
+- iPhone·iPad 사진·동영상 탐색·가져오기·삭제(macOS 이미지 캡처 사용, 실기기 미검증) / iPhone & iPad photos and videos: browse, import, delete (via macOS Image Capture; not yet verified on a device)
 - 앱 안에서 즉시 바뀌는 한국어·영어 / Korean and English, switchable without restarting
 
 ## 호환성 / Compatibility

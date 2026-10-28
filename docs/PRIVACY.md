@@ -16,6 +16,8 @@
 | Finder 쓰기 버퍼(실험 기능 사용 시) | 업로드 전 보관, 실패 시 복구 | App Group 컨테이너 | 없음 |
 | 앱 설정(언어, 보기 방식 등) | 설정 유지 | UserDefaults(앱 컨테이너) | 없음 |
 | Finder 확장 상태(이벤트 종류·오류 코드, 최근 100개, 이름 없음) | 진단 정보 내보내기 | App Group 컨테이너 `ExtensionStatus.json` | 없음 |
+| iPhone·iPad 사진·동영상 목록과 내용(macOS 이미지 캡처를 통해) | 사용자가 요청한 탐색·가져오기·삭제 | 메모리, 사용자가 고른 Mac 폴더 | 없음 |
+| USB 연결 감지("휴대전화를 연결하면 열기"를 켰을 때) | Android 기기나 iPhone·iPad가 꽂히면 PhoneBridge 열기 | 메모리(기기 종류만 판단, 저장하지 않음) | 없음 |
 
 ### 시스템 기록(로그)
 - 문제 진단을 위해 macOS 통합 기록(Unified Log)에 앱 동작을 남깁니다.
@@ -38,6 +40,7 @@ PhoneBridge는 휴대전화에 앱을 설치하지 않습니다. 업로드·교�
 - **Phone files and folders** are read only when you browse, copy or preview them, and are written only where you choose.
 - **Temporary copies** (previews: app cache, at most 2 GB, cleared at launch and quit; drag to Finder: app tmp, removed after 30 minutes or at next launch) stay inside the app's container.
 - **Device details** (model, manufacturer, USB ids, serial number) identify the device for reconnection and stay in memory.
+- **Open on connect** (when turned on): a login-item helper reads USB descriptors to recognise an Android device and opens PhoneBridge. It stores nothing and never accesses the phone.
 - **Finder extension status** (event kinds and error codes, last 100, no names) is kept in the App Group container for diagnostics.
 - **Logs** go to the macOS unified log. File and folder names, device names and Mac paths are logged as private values (shown as `<private>`); identifiers containing serial numbers are logged only as hashes.
 - **Help › Export Diagnostics** writes one text file where you choose. Nothing is sent automatically; you decide whether to attach it to a support request. It contains versions, Mac model, settings, device models / USB ids / states (serials as short hashes), Finder and transfer state without file names, and this launch's log with private values redacted.

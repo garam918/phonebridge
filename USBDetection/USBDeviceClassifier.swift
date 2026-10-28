@@ -14,6 +14,13 @@ enum USBDeviceClass: Equatable, Sendable {
     case ignored
 }
 
+enum UnsupportedReason: Equatable, Sendable {
+    /// iPhone / iPad exposes a PTP camera interface but is not an Android device.
+    case appleDevice
+    /// A plain PTP camera that does not speak MTP.
+    case ptpCamera
+}
+
 enum USBDeviceClassifier {
     /// USB vendor ids of Android phone/tablet makers. Some of these vendors also
     /// make keyboards, monitors or SSDs, so a vendor match alone is not enough.

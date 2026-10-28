@@ -33,16 +33,23 @@ enum DiagnosticsReport {
         lines.append("language: \(model.localization.language.rawValue)")
         lines.append("finder integration: \(settings.finderIntegrationEnabled), auto mount: \(settings.finderAutoMount), writes: \(settings.finderWritesEnabled)")
         lines.append("virtual device (diagnostics): \(settings.showDemoDevice), dual pane: \(settings.dualPane)")
+        model.launchOnConnect.refresh()
+        lines.append("open on connect: \(String(describing: model.launchOnConnect.state))")
         lines.append("")
 
         lines.append("[devices]")
-        if model.broker.devices.isEmpty { lines.append("none") }
+        if model.broker.devices.isEmpty, model.appleDevices.records.isEmpty { lines.append("none") }
         for record in model.broker.devices {
             let usb = record.usb
             lines.append(String(format: "- id #%@ usb %04x:%04x", shortHash(record.id.rawValue), usb.vendorID, usb.productID)
                          + " state \(record.state.name) generation \(record.generation)")
             lines.append("  model: \(record.info?.manufacturer ?? "?") \(record.info?.model ?? "?"), version \(record.info?.deviceVersion ?? "?")")
             lines.append("  storages: \(record.storages.count), capabilities: 0x\(String(record.capabilities.rawValue, radix: 16))")
+        }
+        // iPhone/iPad over Image Capture (D75); the device name stays out.
+        for record in model.appleDevices.records {
+            lines.append("- id #\(shortHash(record.id.rawValue)) \(record.isTablet ? "iPad" : "iPhone") (Image Capture)"
+                         + " state \(String(describing: record.state)) generation \(record.generation)")
         }
         lines.append("")
 

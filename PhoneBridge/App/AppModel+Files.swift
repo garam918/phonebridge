@@ -123,6 +123,18 @@ enum DropLoader {
     }
 
     static let acceptedTypes: [UTType] = [.fileURL, .utf8PlainText, .plainText]
+
+    /// PhoneBridge's own drag payloads on `pasteboard` (empty for drags from
+    /// other apps). Reads only the text type, never a file promise.
+    static func inAppPayloads(_ pasteboard: NSPasteboard) -> [DragPayload] {
+        var payloads: [DragPayload] = []
+        for item in pasteboard.pasteboardItems ?? [] {
+            guard let text = item.string(forType: .string), let payload = DragPayload.decode(text),
+                  !payloads.contains(payload) else { continue }
+            payloads.append(payload)
+        }
+        return payloads
+    }
 }
 
 extension AppModel {
@@ -131,6 +143,12 @@ extension AppModel {
     var canWriteHere: Bool {
         guard let fileSystem = browser.fileSystem, browser.currentFolder != nil else { return false }
         return fileSystem.capabilities.canWrite && browser.storage?.isReadOnly != true
+    }
+
+    /// Delete (and cut) also work on devices that cannot be written to (iPhone photos).
+    var canDeleteHere: Bool {
+        guard let fileSystem = browser.fileSystem, browser.currentFolder != nil else { return false }
+        return fileSystem.capabilities.canDelete && browser.storage?.isReadOnly != true
     }
 
     var canRenameHere: Bool {
@@ -201,7 +219,7 @@ extension AppModel {
     }
 
     func requestDelete(_ items: [FileItem]) {
-        guard !items.isEmpty, canWriteHere else { return }
+        guard !items.isEmpty, canDeleteHere else { return }
         activeDialog = .confirmDelete(items)
     }
 
@@ -338,15 +356,6 @@ extension AppModel {
                                   destinationName: target.path.last ?? browser.storage?.name ?? "")
             }
         }
-    }
-
-    func dropOnDevice(strings: [String], onto folderItem: FileItem) {
-        guard folderItem.isFolder else { return }
-        var payloads: [DragPayload] = []
-        for payload in strings.compactMap(DragPayload.decode) where !payloads.contains(payload) {
-            payloads.append(payload)
-        }
-        dropOnDevice(DropLoader.Contents(payloads: payloads), onto: folderItem)
     }
 
     /// Drop onto the Mac pane: device items are downloaded there.

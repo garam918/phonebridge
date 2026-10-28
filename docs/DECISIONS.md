@@ -569,3 +569,64 @@ macOS 파일 이름은 조합형(NFD)일 수 있다(압축 해제, 오래된 디
 - GitHub에서 확인: 두 이름의 체크섬 일치, `curl … | bash -s -- --check` 통과, `curl … | bash`로 이 Mac 설치본을 새 빌드로 갱신(Gatekeeper 통과, 실행).
 - Homebrew 7은 외부 탭 Cask를 "신뢰"해야 읽는다(K45): 임시 설정 폴더에서 `brew trust` 후 `brew info`·`brew fetch`(체크섬)·`brew audit --online` 통과. 설치 안내 4곳에 `brew trust` 단계 추가·푸시.
 - 남음: 설정 화면에서 가상 기기 항목이 사라진 것과 Finder 쓰기 확인 창 문구는 실제 화면에서 보지 않았다(문자열·코드·테스트로 확인).
+
+## D73. 휴대전화를 연결하면 PhoneBridge 열기 (2026-10-27, 사용자 요청, 기본 꺼짐)
+- 설정 › 일반 "휴대전화를 연결하면 PhoneBridge 열기". 켜면 `SMAppService.loginItem`으로 로그인 항목 `PhoneBridgeLauncher`(앱 안 `Contents/Library/LoginItems`)를 등록하고, 끄면 해제한다. on/off의 원본은 macOS 로그인 항목 상태(앱이 따로 저장하지 않음). 허용이 필요하면 안내와 "로그인 항목 설정 열기" 버튼, 등록 실패는 오류로 표시.
+- 런처: 백그라운드 전용 앱(LSBackgroundOnly), App Sandbox + `device.usb`, 최소 macOS 15. USB 장치 등장(IORegistry 읽기만, 기기 I/O 없음)을 `PhoneAttachDetector`로 판단해 `NSWorkspace.openApplication`(실행 중이면 앞으로).
+- 여는 조건: 앱과 같은 분류기(`USBDeviceClassifier`)로 Android 기기(파일 전송·사진 전송·충전 전용 모두 — 충전 전용이면 앱이 "파일 전송 모드" 안내를 보여 줌). 런처 시작 3초 안에 이미 있던 기기(로그인·설정을 켤 때 꽂혀 있던 기기)는 무시. 같은 기기(제조사+일련번호)가 20초 안에 다시 나타나면(USB 모드 변경 재열거) 무시. 아이폰·카메라·키보드·저장장치 무시.
+- 공유 코드: USB 감지 파일을 `USBDetection/` 폴더로 옮겨 앱과 런처가 함께 컴파일(분류 규칙 하나). `IOKitUSBMonitor`의 로그는 같은 subsystem·category의 자체 Logger.
+- 진단 실행 인자: 앱 `-diagnostics.openOnConnect on|off`(UI 없이 설정 전환), 런처 `-diagnostics.openNow YES`(여는 단계를 한 번 실행). 진단 보고서에 "open on connect" 상태.
+- `release.sh`: 런처 존재, 서명, minos 15.0, `get-task-allow` 없음(이제 4개 번들 모두 오류로 처리) 검사.
+- 테스트 11개(판단 규칙 6, 설정 5).
+
+## V25. 연결 시 자동 실행 확인 (2026-10-27 10:42–10:44, 이 Mac, 팀 서명 개발 빌드, 휴대전화 미연결)
+- 테스트 276개 통과, 현지화·로그 개인정보 검사 OK.
+- 설정 켜기(진단 인자): 상태 on, launchd에 `com.phonebridge.PhoneBridge.Launcher` 등록·실행, 런처 "watching for Android devices", 연결돼 있던 USB 장치로는 열지 않음.
+- 런처가 앱 열기: PhoneBridge를 종료한 상태에서 런처의 여는 단계 실행 → 앱이 실행됨("opened PhoneBridge"). 샌드박스 런처에서 앱 열기가 동작함을 확인.
+- 끄기: 상태 off, 런처 멈춤(수동으로 띄운 시험 인스턴스는 직접 종료). 기본값(꺼짐)으로 되돌려 둠.
+- 미확인: 실제 Android 기기를 꽂았을 때 열리는지, macOS "백그라운드 항목 추가" 알림·승인 흐름의 실제 모양, 공증 빌드에서의 동작(배포 전).
+
+## D74. "저장소 없음" 상태 안내는 잠금과 USB 모드를 함께 다룬다 (2026-10-27, 사용자 제보)
+- 제보: USB 사용 목적이 "파일 전송/Android Auto"가 아니면 "기기 잠금을 해제해 주세요"가 표시됨. 원인: Samsung은 모든 USB 모드에서 MTP 인터페이스를 유지하고, 파일 전송이 아니면 세션은 열되 저장소를 0개로 답한다 — 화면 잠김·데이터 접근 미허용과 같은 응답이라 USB로는 구분할 수 없다.
+- 상태 이름은 그대로(`deviceLocked`), 문구를 바꿈: 제목 "휴대전화에서 파일 접근을 허용해 주세요", 설명·해결 문구·안내 단계에 ① 잠금 해제 ② USB 사용 목적 '파일 전송'(삼성: '파일 전송/Android Auto') ③ '허용'. `UnlockGuide` → `StorageAccessGuide`.
+- 렌더 테스트로 화면 확인(한국어). 실기기에서의 확인은 사용자 제보 상황 그대로 재현 필요.
+
+## D75. iPhone·iPad 사진·동영상: Image Capture로 탐색·가져오기·삭제 (2026-10-27, 사용자 요청)
+- 요청: "아이폰·아이패드를 연결하면 사진·동영상을 탐색·Mac으로 가져오기·삭제", "연결하면 자동으로 열기도 아이폰에 적용".
+- 경로: iPhone·iPad는 MTP가 아니라 PTP 카메라로 보이고, 사진 외의 파일(앱 문서 등)은 Apple 비공개 프로토콜(AFC/lockdown)이라 외부 라이브러리 없이 쓸 수 없다. macOS 내장 **ImageCaptureCore**(`ICDeviceBrowser`·`ICCameraDevice`)를 쓴다 — 외부 의존성 없음, macOS의 `ptpcamerad`가 기기와 신뢰(Trust) 처리를 맡는다. libmtp·`DeviceBroker`는 그대로 iPhone을 `unsupported(.appleDevice)`로 두고 열지 않는다.
+- 범위: 카메라 롤(DCIM/100APPLE…)의 사진·동영상만. 읽기(가져오기, 훑어보기, 섬네일, Finder로 끌어 놓기, "Mac으로 이동")와 **삭제**만 가능. 기기에 쓰기·이름 변경·폴더 만들기는 iOS가 허용하지 않아 `unsupportedOperation`. iOS 폴더는 지우지 않는다(비어 있으면 성공으로 넘김, 비어 있지 않으면 `folderNotEmpty`). Finder 마운트는 대상 아님(Android만).
+- 구조: `CameraBackend`(카탈로그·범위 읽기·섬네일·삭제) ← `ICCameraBackend`(실기기, 메인 액터에서 IC 객체 접근) / 테스트용 가짜. `ImageCaptureFileSystem: DeviceFileSystem`이라 브라우저·전송 대기열(임시 파일 → 크기 확인 → 원자적 이동)·드래그·미리보기를 Android와 같은 코드로 쓴다. 다운로드는 8 MiB 범위 읽기 반복.
+- `FileSystemCapabilities.allowsDeleteWithoutWrite`/`canDelete`: 쓰기 불가지만 삭제 가능한 저장소. 삭제·잘라내기 메뉴와 단축키는 `canDeleteHere`로 판단.
+- `AppleDeviceManager`(메인 액터, `@Observable`): 상태 connecting → (needsTrust) → loading → ready / failed. 잠김·신뢰 전에는 파일 시스템을 내주지 않는다. 사이드바 "iPhone·iPad" 구역, 준비 전에는 안내 화면(잠금 해제·신뢰·케이블), 실패 시 다시 시도. 같은 기기의 broker 항목("지원하지 않는 기기")은 Image Capture가 기기를 잡고 있는 동안 숨긴다. 기기 ID `ios:<일련번호>`.
+- 연결 시 자동 실행(D73): `PhoneAttachDetector`가 Apple 기기(벤더 0x05AC + 이미지 인터페이스)도 휴대전화로 본다. 설정 설명 문구에 iPhone·iPad 추가.
+- 샌드박스: 새 권한 없음. macOS에는 Image Capture 접근 허락 창이 없다(SDK에서 `requestContentsAuthorization`은 iOS 전용). 팀 서명 빌드에서 `ptpcamerad` 연결이 거부 없이 열림을 로그로 확인(V26).
+- 개인정보: 기기 이름은 로그에 남기지 않음(ID는 해시), 진단 보고서에는 종류·상태·세대만.
+
+## V26. iPhone·iPad 기능 확인 (2026-10-27 11:10, 이 Mac, 팀 서명 개발 빌드, **iPhone·iPad 미연결**)
+- 테스트 291개 통과(새 테스트: 가짜 Image Capture 백엔드로 탐색·짧은 읽기로 정확한 바이트 가져오기·폴더 가져오기·"Mac으로 이동" 뒤 삭제·삭제·폴더 규칙·잠김 접근 거부·앱 모델 상태 흐름·다른 기기 화면 유지·실패 표시, 자동 실행 판단, 상태 화면 렌더 한/영·라이트/다크). 현지화·로그 개인정보 검사 OK.
+- 설치본 실행: "iPhone/iPad browsing started", `ICDeviceBrowser` 시작, `com.apple.ptpcamerad` XPC 연결에 샌드박스 거부 없음.
+- 함께 고침: 존재하지 않는 SF Symbol `doc.badge.exclamationmark`(Finder 복구 알림·설정) → `doc.badge.clock`.
+- **미확인(실기기 필요)**: 실제 iPhone·iPad 발견, 신뢰 흐름, 카탈로그 읽기 시간, HEIC·MOV·Live Photo 가져오기, 삭제 허용 여부, 꽂을 때 자동으로 열리는지.
+
+## D76. 웹사이트: GitHub Pages `gh-pages` 브랜치 (2026-10-27, 사용자 요청)
+- 주소 `https://garam918.github.io/phonebridge/`(영어 `/en/`). 원본은 이 프로젝트의 `site/`, 공개는 `garam918/phonebridge`의 `gh-pages` 브랜치(소스만 담은 고아 브랜치, `main`과 분리). 게시 작업 폴더: `~/Library/Developer/PhoneBridge/publish/phonebridge-pages`(git worktree).
+- 구성: 메인(소개·기능 6개·개인정보·설치 3가지·필요 환경), 개인정보 처리방침, 지원(FAQ 10개·문의). 한국어 기본 + 영어. 정적 HTML·CSS, 외부 글꼴·라이브러리·쿠키·분석 없음. 스크립트는 복사 버튼뿐(없어도 동작).
+- 내려받기 버튼은 버전 없는 릴리스 파일 `releases/latest/download/PhoneBridge.dmg`를 가리킨다 — 릴리스마다 `PhoneBridge.dmg`도 함께 올려야 한다(`release.sh`가 이미 올림).
+- 넣지 않은 것: 확인된 기기 목록(사용자 결정으로 삭제, FAQ는 "MTP 파일 전송 지원 기기용으로 만들었고 기기별로 다를 수 있음"으로만 안내), 배포 전 기능(iPhone·iPad D75, 연결 시 자동 실행 D73), 스크린샷(실기기·시험 폴더로 찍어야 함).
+- App Store Connect의 개인정보 처리방침 URL·지원 URL로 `privacy.html`·`support.html`을 쓸 수 있다.
+- 갱신: `site/`를 고친 뒤 `rsync -a --delete --exclude .git --exclude .DS_Store site/ <phonebridge-pages>/` → 커밋 → `git push`. 로컬 미리보기는 `.claude/launch.json`의 `site`(127.0.0.1:8765).
+- 연결(2026-10-27, 사용자 요청): `garam918/phonebridge` About의 Website, 탭 Cask `homepage`를 사이트 주소로 변경. `publish-metadata.sh`는 이제 `homepage`를 `https://<owner>.github.io/<repo>/`로 쓴다(이전: 저장소 주소) — 다음 릴리스에서도 유지된다.
+
+## D77. 창 안 드롭은 끌어온 앱 자신의 텍스트 페이로드를 먼저 읽는다 (2026-10-28, 사용자 제보: 멈춤)
+- 제보: 다른 맥북(배포판 1.0.0)에서 휴대전화 파일을 Mac 창으로 끌어다 놓으면 무지개 커서·응답 없음.
+- 재현(이 Mac, 개발 빌드 + 진단용 가상 기기, 합성 마우스 이벤트): 휴대전화 창의 폴더를 Mac 창에 놓는 순간 멈춤. `sample` 메인 스레드: `FunctionalDropDelegate.performDrop` → `DropInfo_Mac.itemProviders(for:)` → `NSPasteboard readObjectsForClasses` → 같은 프로세스의 파일 약속 해결 → SwiftUI `PasteboardDataProvider` → `NSItemProvider.loadURLSynchronously` → `semaphore_wait`. 드롭 영역이 `onDrop(of: [.fileURL, …])`이라 SwiftUI가 드롭 즉시 파일 URL을 메인 스레드에서 **동기적으로** 요구하고, 그 URL은 D45의 파일 약속(`DeviceDragExporter`, 메인 액터)이 내려받아야 만들어지므로 영원히 기다린다(교착). 휴대전화 창 빈 곳에 놓을 때도 같은 구조. 폴더 위에 놓기(목록 행·아이콘의 `dropDestination(for: String.self)`)도 멈췄다(점검에서 재현: `AppKitOutlineTableCoordinator acceptDrop` → `DropOntoConfiguration.performDrop` → 같은 `itemProviders` → `loadURLSynchronously`). 문자열만 요청해도 SwiftUI가 항목 공급자를 만들면서 파일 약속을 푼다.
+- 기존 테스트가 놓친 이유: `DragExportTests`는 `NSItemProvider.register`로 만든 공급자를 직접 읽었다. 실제 드롭은 드래그 보드에서 공급자를 다시 만들며, 이때 파일 약속이 '약속된 파일 URL'로 보여 `.fileURL` 요청에 걸린다.
+- 수정: 두 창과 휴대전화 창의 폴더(목록 행의 각 칸, 아이콘) 드롭을 `InAppFirstDropDelegate`로 바꿨다(`deviceFolderDrop`). 폴더 위에 놓은 Finder 파일은 그 폴더로 올라간다(이전에는 받지 않았음). 목록 행 수정자는 모델을 직접 받는다 — 행의 드래그 이미지가 환경 없이 셀을 그려 `@Environment(AppModel.self)`가 없으면 종료됐다(점검 중 개발 빌드에서 발생, 고침). 놓을 때 드래그 보드(`NSPasteboard(name: .drag)`)에서 텍스트 형식만 읽어 PhoneBridge 페이로드(`DropLoader.inAppPayloads`)가 있으면 그것만 쓰고, 없을 때(Finder 등 다른 앱)만 `itemProviders(for: [.fileURL])`로 파일 URL을 받는다. Finder로 끄는 기능(파일 약속)은 그대로.
+- 확인(V27, 가상 기기·합성 마우스 드래그): 휴대전화 → Mac 창, 아이콘 보기 폴더 위, 목록 보기 폴더 행(이름 칸·날짜 칸) 모두 멈추지 않고 이동·내려받기 완료(메인 스레드 대기 프레임 0), Finder 파일 → 휴대전화 창 업로드 정상. 테스트 294개(새 테스트 3: 파일 약속을 건드리지 않고 페이로드 읽기·내려받기, 폴더 위 놓기 이동, 다른 앱 드래그는 페이로드 없음). Finder로 끌어내기는 이번에 합성 드래그가 Finder 창에 놓이지 않아 다시 보지 못했다(코드 변경 없음).
+
+## V28. 수정 빌드 3 배포 (2026-10-28 10:38–11:05, 1.0.0 유지, 사용자 결정: 개발본 전체)
+- 범위: D73(연결 시 자동 실행), D74(USB 모드 안내), D75(iPhone·iPad — **실기기 미검증**으로 표기), D77(드래그 멈춤), K49-3(복구 저장 백그라운드), 아이콘 기호 수정.
+- 빌드 202610281054. 첫 시도는 내보내기 서명에서 "timestamps differ by 888 seconds"(K43과 같음, sntp 오차 0.002초) → 재시도 성공. 앱·DMG 공증 Accepted, 번들 6개(앱·Finder 확장·해제 도우미·로그인 항목 도우미·libmtp·libusb) Developer ID + Hardened Runtime, `get-task-allow` 없음, 최소 macOS 15(Finder 확장 26)·arm64. 도우미 권한은 샌드박스 + USB만. Gatekeeper: 앱·도우미 모두 Notarized Developer ID. SHA-256 `19e86cd0…bca10258`.
+- 공개 순서: ① v1.0.0 파일 5개 교체 → ② 탭 Cask(7d17860) → ③ 릴리스 설명(수정 빌드 3, 새 체크섬, iPhone 미검증) → ④ 소스 푸시 → ⑤ 웹사이트에 새 기능 카드(iPhone은 "시험 단계").
+- 확인: `curl … | bash -s -- --check` 통과, `curl … | bash`로 이 Mac 설치본을 공개 빌드로 교체(이전 팀 개발 빌드는 휴지통), 실행 시 broker·USB 감시·iPhone 탐색 시작, 샌드박스 거부 0건.
+- 미확인: 실제 휴대전화로 드래그·자동 실행, iPhone·iPad 전체, macOS 15·26.

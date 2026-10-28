@@ -80,14 +80,20 @@ final class FinderWriteRecovery {
     /// panel already asked) and forgets it unless a volume still uses it. The
     /// copy is made first and swapped in atomically, so a failed copy (full
     /// disk, buffer gone) leaves the existing file alone (audit 2026-10-23, M4).
-    func save(_ file: RecoverableFile, to destination: URL) throws {
+    /// The copy runs off the main thread: to another disk it is not a clone
+    /// and a large file would stall the app (K49).
+    func save(_ file: RecoverableFile, to destination: URL) async throws {
         guard let directory else { return }
         let source = directory.appending(path: file.id)
+        try await Task.detached(priority: .userInitiated) { try Self.copy(source, to: destination) }.value
+        if !file.inUse { remove(file) }
+        scan()
+    }
+
+    nonisolated private static func copy(_ source: URL, to destination: URL) throws {
         let fileManager = FileManager.default
         guard fileManager.fileExists(atPath: destination.path(percentEncoded: false)) else {
             try fileManager.copyItem(at: source, to: destination)
-            if !file.inUse { remove(file) }
-            scan()
             return
         }
         let scratch = try fileManager.url(for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: destination, create: true)
@@ -95,8 +101,6 @@ final class FinderWriteRecovery {
         let copy = scratch.appending(path: destination.lastPathComponent)
         try fileManager.copyItem(at: source, to: copy)
         _ = try fileManager.replaceItemAt(destination, withItemAt: copy)
-        if !file.inUse { remove(file) }
-        scan()
     }
 
     func discard(_ file: RecoverableFile) {

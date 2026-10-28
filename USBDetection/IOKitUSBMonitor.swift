@@ -1,6 +1,11 @@
 import Foundation
 import IOKit
 import IOKit.usb
+import OSLog
+
+/// Same subsystem and category as the app's `Log.usb`; this file is shared
+/// with the login-item launcher, which has no `Log`.
+private let usbLog = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.phonebridge.PhoneBridge", category: "usb")
 
 /// Watches IOUSBHostDevice / IOUSBHostInterface publication and termination.
 ///
@@ -47,7 +52,7 @@ final class IOKitUSBMonitor: USBDeviceMonitoring, @unchecked Sendable {
     private func startOnQueue() {
         guard notificationPort == nil else { return }
         guard let port = IONotificationPortCreate(kIOMainPortDefault) else {
-            Log.usb.error("IONotificationPortCreate failed; USB hot-plug detection is unavailable")
+            usbLog.error("IONotificationPortCreate failed; USB hot-plug detection is unavailable")
             return
         }
         notificationPort = port
@@ -74,7 +79,7 @@ final class IOKitUSBMonitor: USBDeviceMonitoring, @unchecked Sendable {
         }) {
             drain(iterator)
         }
-        Log.usb.info("USB monitor started")
+        usbLog.info("USB monitor started")
     }
 
     private func stopOnQueue() {
@@ -88,7 +93,7 @@ final class IOKitUSBMonitor: USBDeviceMonitoring, @unchecked Sendable {
         }
         retainedSelf?.release()
         retainedSelf = nil
-        Log.usb.info("USB monitor stopped")
+        usbLog.info("USB monitor stopped")
     }
 
     private func addNotification(_ port: IONotificationPortRef, _ type: String, _ className: String,
@@ -97,7 +102,7 @@ final class IOKitUSBMonitor: USBDeviceMonitoring, @unchecked Sendable {
         var iterator: io_iterator_t = 0
         let result = IOServiceAddMatchingNotification(port, type, IOServiceMatching(className), callback, context, &iterator)
         guard result == KERN_SUCCESS else {
-            Log.usb.error("IOServiceAddMatchingNotification(\(type, privacy: .public), \(className, privacy: .public)) failed: \(result)")
+            usbLog.error("IOServiceAddMatchingNotification(\(type, privacy: .public), \(className, privacy: .public)) failed: \(result)")
             return nil
         }
         iterators.append(iterator)
@@ -173,13 +178,13 @@ final class IOKitUSBMonitor: USBDeviceMonitoring, @unchecked Sendable {
     private func emit(_ event: USBEvent) {
         switch event {
         case .attached(let snapshot):
-            Log.usb.debug("""
+            usbLog.debug("""
                 attached \(snapshot.idPairDescription, privacy: .public) \(snapshot.displayName, privacy: .public) \
                 registry=\(snapshot.registryID) bus=\(snapshot.busNumber) addr=\(snapshot.address) \
                 interfaces=\(snapshot.interfaces.count) settled=\(snapshot.interfacesSettled)
                 """)
         case .detached(let registryID):
-            Log.usb.debug("detached registry=\(registryID)")
+            usbLog.debug("detached registry=\(registryID)")
         }
         continuation.yield(event)
     }

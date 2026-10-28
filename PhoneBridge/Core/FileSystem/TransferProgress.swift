@@ -48,6 +48,11 @@ struct FileSystemCapabilities: Equatable, Sendable {
     /// Large uploads go in pieces (Android edit extension), so browsing the
     /// same device does not wait for the whole upload.
     var canUploadInChunks: Bool = false
+    /// Items can be deleted although nothing can be written (iPhone/iPad
+    /// photos: browse, copy to the Mac, delete — D75).
+    var allowsDeleteWithoutWrite: Bool = false
+
+    var canDelete: Bool { canWrite || allowsDeleteWithoutWrite }
 
     static let full = FileSystemCapabilities(canWrite: true, canRename: true, canMoveNatively: true,
                                              canCopyNatively: true, canThumbnail: true, canReadPartially: true)

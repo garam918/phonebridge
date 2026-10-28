@@ -21,6 +21,8 @@ enum SidebarItem: Hashable, Sendable {
 enum DetailContent: Equatable {
     case welcome
     case deviceState(DeviceRecord)
+    /// An iPhone/iPad that is not ready yet (trust, loading, failed).
+    case appleDeviceState(AppleDeviceRecord)
     case browser
 }
 
@@ -66,6 +68,10 @@ final class AppModel {
     let finder: FinderIntegrationManager
     /// Hidden objects in flight on devices, swept in their next session (W3).
     let journal: DeviceLeftoverJournal
+    /// Settings › General › open PhoneBridge when a phone is plugged in (D73).
+    let launchOnConnect: LaunchOnConnectSetting
+    /// iPhones and iPads (photos and videos over Image Capture, D75).
+    let appleDevices: AppleDeviceManager
 
     /// Internal clipboard for copy / cut / paste of files.
     var clipboard: FileClipboard?
@@ -104,7 +110,9 @@ final class AppModel {
          finderSocketURL: @escaping () -> URL? = FinderIPC.defaultSocketURL,
          journal: DeviceLeftoverJournal = DeviceLeftoverJournal(fileURL: nil),
          localJournal: LocalStagingJournal = LocalStagingJournal(fileURL: nil),
-         dragDirectory: URL? = nil) {
+         dragDirectory: URL? = nil,
+         launchOnConnect: LaunchOnConnectSetting? = nil,
+         appleDevices: AppleDeviceManager? = nil) {
         self.broker = broker
         self.localization = localization
         self.settings = settings
@@ -112,12 +120,17 @@ final class AppModel {
         self.localAccess = localAccess
         self.previews = previews
         self.journal = journal
+        self.launchOnConnect = launchOnConnect ?? LaunchOnConnectSetting()
+        let appleDevices = appleDevices ?? AppleDeviceManager()
+        self.appleDevices = appleDevices
         browser = BrowserViewModel()
         browser.sort.foldersFirst = settings.foldersFirst
         local = LocalBrowserViewModel()
         local.sort.foldersFirst = settings.foldersFirst
         transfers = TransferManager(fileSystemProvider: { id in
-            id == .demo ? demoDevice : broker.fileSystem(for: id)
+            if id == .demo { return demoDevice }
+            if id.isAppleMobile { return appleDevices.fileSystem(for: id) }
+            return broker.fileSystem(for: id)
         }, volume: localVolume, journal: journal, localJournal: localJournal)
         let transfers = transfers
         dragExporter = dragDirectory.map { DeviceDragExporter(transfers: transfers, directory: $0) }
@@ -132,6 +145,9 @@ final class AppModel {
                                           socketURLProvider: finderSocketURL,
                                           demoStorages: { demoStorageList() })
         broker.onChange = { [weak self] change in
+            self?.handle(change)
+        }
+        appleDevices.onChange = { [weak self] change in
             self?.handle(change)
         }
         demoStorageList = { [weak self] in self?.demoStorages ?? [] }
@@ -156,9 +172,12 @@ final class AppModel {
                 faults.chunkDelay = .seconds(1 / settings.demoUploadRate)
             }
         }
-        return AppModel(broker: broker, localization: LocalizationManager(), settings: settings, demoDevice: demo,
+        let localization = LocalizationManager()
+        let appleDevices = AppleDeviceManager(enabled: true, storageName: { localization.t("apple.storageName") })
+        return AppModel(broker: broker, localization: localization, settings: settings, demoDevice: demo,
                         journal: DeviceLeftoverJournal(fileURL: DeviceLeftoverJournal.defaultFileURL),
-                        localJournal: LocalStagingJournal(fileURL: LocalStagingJournal.defaultFileURL))
+                        localJournal: LocalStagingJournal(fileURL: LocalStagingJournal.defaultFileURL),
+                        appleDevices: appleDevices)
     }
 
     /// Hosted unit tests run inside the app process; they get a model whose
@@ -174,6 +193,11 @@ final class AppModel {
         if startBroker {
             Log.app.info("libmtp \(LibMTPBackend.libmtpVersion, privacy: .public)")
             broker.start()
+            appleDevices.start()
+            // Diagnostics (launch argument only): flip "open on connect" without the UI.
+            if let value = UserDefaults.standard.string(forKey: "diagnostics.openOnConnect") {
+                launchOnConnect.setEnabled(value == "on" || value == "YES")
+            }
         }
         previews.purgeCache()
         dragExporter.removeOld(olderThan: 0)
@@ -186,7 +210,7 @@ final class AppModel {
         }
         await finder.start()
         if !settings.onboardingCompleted { showOnboarding = true }
-        if sidebarSelection == nil, settings.showDemoDevice, broker.devices.isEmpty, let first = demoStorages.first {
+        if sidebarSelection == nil, settings.showDemoDevice, broker.devices.isEmpty, appleDevices.records.isEmpty, let first = demoStorages.first {
             sidebarSelection = .storage(.demo, first.id)
         }
     }
@@ -203,19 +227,24 @@ final class AppModel {
     var detailContent: DetailContent {
         guard let selection = sidebarSelection else { return .welcome }
         if selection.deviceID == .demo { return .browser }
+        if selection.deviceID.isAppleMobile {
+            guard let record = appleDevices.record(for: selection.deviceID) else { return .welcome }
+            return record.state == .ready ? .browser : .appleDeviceState(record)
+        }
         guard let record = broker.record(for: selection.deviceID) else { return .welcome }
         return record.state.isMTPReady ? .browser : .deviceState(record)
     }
 
     var selectedDeviceName: String? {
         if isDemoSelected { return localization.t("demo.deviceName") }
+        if let id = sidebarSelection?.deviceID, id.isAppleMobile { return appleDevices.record(for: id)?.name }
         return selectedRecord?.displayName
     }
 
     // MARK: - Actions
 
     func refresh() {
-        if let id = sidebarSelection?.deviceID, id != .demo {
+        if let id = sidebarSelection?.deviceID, id != .demo, !id.isAppleMobile {
             broker.refreshStorages(id)
         }
         Task { await browser.reload() }
@@ -317,6 +346,32 @@ final class AppModel {
         finder.scheduleRefresh()
     }
 
+    // MARK: - iPhone/iPad → UI
+
+    private func handle(_ change: AppleDeviceChange) {
+        if let record = change.record {
+            let firstSeen = change.previous == nil
+            let becameReady = record.state == .ready && change.previous?.state != .ready
+            // Open a new device (its trust guide first) unless the user is browsing another real device.
+            if firstSeen, sidebarSelection == nil || isDemoSelected {
+                sidebarSelection = .device(record.id)
+            }
+            if becameReady {
+                post(.deviceConnected(record.name))
+                if sidebarSelection == nil || isDemoSelected || sidebarSelection == .device(record.id) {
+                    sidebarSelection = .storage(record.id, ImageCaptureFileSystem.storageID)
+                }
+            } else if case .failed = record.state, change.previous.map({ if case .failed = $0.state { true } else { false } }) != true {
+                post(.connectionFailed(record.name))
+            }
+        } else if let previous = change.previous {
+            post(.deviceDisconnected(previous.name))
+        }
+        if change.id == sidebarSelection?.deviceID {
+            syncBrowser()
+        }
+    }
+
     /// Makes the browser reflect the selection and the device's current
     /// session. A new session generation always starts at the storage root:
     /// MTP object handles do not survive a reconnect.
@@ -333,6 +388,11 @@ final class AppModel {
                 browser.setRoot(demoDevice, storage: storage)
                 Task { await browser.reload() }
             }
+            return
+        }
+
+        if selection.deviceID.isAppleMobile {
+            syncAppleBrowser(selection.deviceID)
             return
         }
 
@@ -354,6 +414,21 @@ final class AppModel {
             return
         }
         browser.setRoot(fileSystem, storage: storage)
+        Task { await browser.reload() }
+    }
+
+    private func syncAppleBrowser(_ id: DeviceID) {
+        guard let record = appleDevices.record(for: id) else {
+            browser.reset()
+            sidebarSelection = nil
+            return
+        }
+        guard let fileSystem = appleDevices.fileSystem(for: id) else {
+            browser.reset()
+            return
+        }
+        if browser.deviceID == id, browser.generation == record.generation { return }
+        browser.setRoot(fileSystem, storage: fileSystem.storage)
         Task { await browser.reload() }
     }
 

@@ -42,6 +42,7 @@ private struct GeneralSettingsView: View {
                     set: { model.setFoldersFirst($0) }
                 ))
             }
+            OpenOnConnectSection(setting: model.launchOnConnect)
         }
         .formStyle(.grouped)
     }
@@ -73,3 +74,36 @@ private struct DiagnosticsSettingsView: View {
         }
     }
 }
+
+/// Settings › General: open PhoneBridge when a phone is plugged in (D73).
+private struct OpenOnConnectSection: View {
+    @Environment(LocalizationManager.self) private var loc
+    let setting: LaunchOnConnectSetting
+
+    var body: some View {
+        Section {
+            Toggle(loc.t("settings.openOnConnect"), isOn: Binding(
+                get: { setting.isOn },
+                set: { setting.setEnabled($0) }
+            ))
+            Text(loc.t("settings.openOnConnect.note"))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            switch setting.state {
+            case .needsApproval:
+                Label(loc.t("settings.openOnConnect.needsApproval"), systemImage: "exclamationmark.triangle")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+                Button(loc.t("settings.openOnConnect.openSettings")) { setting.openLoginItemsSettings() }
+            case .unavailable(let detail):
+                Label(loc.t("settings.openOnConnect.failed", detail), systemImage: "xmark.octagon")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            case .on, .off:
+                EmptyView()
+            }
+        }
+        .onAppear { setting.refresh() }
+    }
+}
+

@@ -40,10 +40,9 @@ struct LocalPaneView: View {
                     RoundedRectangle(cornerRadius: 6).strokeBorder(Color.accentColor, lineWidth: 3).padding(2)
                 }
             }
-            .onDrop(of: DropLoader.acceptedTypes, isTargeted: $isDropTargeted) { providers in
-                Task { model.dropOnLocal(await DropLoader.load(providers)) }
-                return true
-            }
+            .onDrop(of: DropLoader.acceptedTypes, delegate: InAppFirstDropDelegate(isTargeted: $isDropTargeted) {
+                model.dropOnLocal($0)
+            })
         }
     }
 

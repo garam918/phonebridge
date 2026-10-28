@@ -15,7 +15,10 @@ struct BrowserView: View {
                 Banner(symbol: "testtube.2", text: loc.t("demo.banner"), tint: .orange)
                 Divider()
             }
-            if browser.storage?.isReadOnly == true || browser.fileSystem?.capabilities.canWrite == false {
+            if browser.fileSystem is ImageCaptureFileSystem {
+                Banner(symbol: "photo.on.rectangle", text: loc.t("browser.applePhotos"), tint: .secondary)
+                Divider()
+            } else if browser.storage?.isReadOnly == true || browser.fileSystem?.capabilities.canWrite == false {
                 Banner(symbol: "lock", text: loc.t("browser.readOnly"), tint: .secondary)
                 Divider()
             }
@@ -30,11 +33,10 @@ struct BrowserView: View {
                         RoundedRectangle(cornerRadius: 6).strokeBorder(Color.accentColor, lineWidth: 3).padding(2)
                     }
                 }
-                .onDrop(of: DropLoader.acceptedTypes, isTargeted: $isDropTargeted) { providers in
-                    guard model.canWriteHere else { return false }
-                    Task { model.dropOnDevice(await DropLoader.load(providers)) }
-                    return true
-                }
+                .onDrop(of: DropLoader.acceptedTypes,
+                        delegate: InAppFirstDropDelegate(isTargeted: $isDropTargeted, isEnabled: { model.canWriteHere }) {
+                            model.dropOnDevice($0)
+                        })
                 .accessibilityHint(model.canWriteHere ? loc.t("a11y.dropTarget") : "")
             Divider()
             PathBarView()
@@ -148,7 +150,7 @@ struct FileCommandsModifier: ViewModifier {
                 return model.browser.selectedItems.map { NSItemProvider(object: $0.name as NSString) }
             }
             .onCutCommand {
-                guard model.canWriteHere else { return [] }
+                guard model.canDeleteHere else { return [] }
                 model.copyDeviceSelection(cut: true)
                 return model.browser.selectedItems.map { NSItemProvider(object: $0.name as NSString) }
             }

@@ -116,3 +116,23 @@
 - [x] Developer ID 인증서·공증 빌드(V19)
 - [x] 1.0.0 공개: garam918/phonebridge 릴리스, garam918/homebrew-phonebridge(V20)
 - [ ] macOS 15·26 실행 확인(가상 머신 또는 실제 Mac), M1 실기 확인
+
+## iPhone·iPad 사진 (D75)
+- [x] Image Capture 기반 `ImageCaptureFileSystem`·`AppleDeviceManager`, 사이드바 구역·안내 화면, 삭제 전용 권한(`canDelete`)
+- [x] 연결 시 자동 실행에 iPhone·iPad 포함, 진단 보고서
+- [x] 가짜 백엔드 테스트(V26)
+- [ ] 실제 iPhone·iPad로 확인: 발견·신뢰·목록·가져오기(HEIC/MOV/Live Photo)·삭제·자동 실행
+
+## 웹사이트 (D76)
+- [x] 한/영 메인·개인정보 처리방침·지원 페이지(`site/`), 라이트·다크·휴대전화 폭 확인
+- [x] GitHub Pages 공개(`gh-pages`)
+- [ ] 스크린샷(시험 폴더로 촬영) 추가
+- [x] 저장소 About Website·Cask `homepage`를 웹사이트 주소로(`publish-metadata.sh`도 이 주소를 씀)
+- [ ] 다음 배포 때 새 기능(D73·D75)을 사이트에 반영
+
+## 드래그 멈춤 수정 (D77)
+- [x] 원인 재현(가상 기기)·`InAppFirstDropDelegate`(두 창·폴더 위)·회귀 테스트 3개(V27)
+- [x] K49 3(복구 파일 저장 백그라운드)·4(겹친 시트: 문제 아님 확인)
+- [ ] K49 1(Finder 연동 대기 시간 제한)·2(iPhone 대기·카탈로그) — 2는 실기기 확인 때
+- [ ] 실제 휴대전화로 휴대전화 → Mac 창 끌어다 놓기 확인
+- [x] 배포: 1.0.0 수정 빌드 3(V28)

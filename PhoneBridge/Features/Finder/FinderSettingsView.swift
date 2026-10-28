@@ -238,11 +238,12 @@ private struct RecoveryRow: View {
     let file: RecoverableFile
     @State private var confirmDiscard = false
     @State private var saveError: String?
+    @State private var isSaving = false
 
     var body: some View {
         let name = file.fileName ?? loc.t("finder.recovery.unnamed")
         HStack(alignment: .top) {
-            Image(systemName: "doc.badge.exclamationmark")
+            Image(systemName: "doc.badge.clock")
                 .foregroundStyle(.orange)
             VStack(alignment: .leading, spacing: 2) {
                 Text(name)
@@ -259,9 +260,13 @@ private struct RecoveryRow: View {
                 }
             }
             Spacer()
+            if isSaving {
+                ProgressView().controlSize(.small)
+            }
             Button(loc.t("finder.recovery.save")) { save(name: name) }
+                .disabled(isSaving)
             Button(loc.t("finder.recovery.discard"), role: .destructive) { confirmDiscard = true }
-                .disabled(file.inUse)
+                .disabled(file.inUse || isSaving)
         }
         .confirmationDialog(loc.t("finder.recovery.discardConfirm", name), isPresented: $confirmDiscard) {
             Button(loc.t("finder.recovery.discard"), role: .destructive) { model.finder.recovery.discard(file) }
@@ -286,11 +291,15 @@ private struct RecoveryRow: View {
         panel.nameFieldStringValue = name
         panel.canCreateDirectories = true
         guard panel.runModal() == .OK, let url = panel.url else { return }
-        do {
-            try model.finder.recovery.save(file, to: url)
-            saveError = nil
-        } catch {
-            saveError = error.localizedDescription
+        isSaving = true
+        Task {
+            do {
+                try await model.finder.recovery.save(file, to: url)
+                saveError = nil
+            } catch {
+                saveError = error.localizedDescription
+            }
+            isSaving = false
         }
     }
 }

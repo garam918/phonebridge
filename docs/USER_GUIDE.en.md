@@ -12,12 +12,21 @@ PhoneBridge lets you browse and move files on an Android phone or tablet connect
 |---|---|---|
 | Select File Transfer Mode | Charging-only mode | Pick "File transfer" in the device's notification |
 | Connected in Photo Transfer (PTP) Mode | Photo transfer mode | Switch to "File transfer" |
-| Unlock Your Device | Locked, or data access not allowed | Unlock and tap Allow |
+| Allow File Access on Your Phone | Locked, data access not allowed, or “Use USB for” is not File transfer (Samsung connects but shows no files) | Unlock → set “Use USB for” to File transfer (Samsung: Transferring files / Android Auto) → Allow |
 | Another program is using the device | Image Capture, Android File Transfer, Smart Switch etc. hold the device | Quit that app and click **Retry** |
 | Waiting to reconnect | Cable unplugged or mode changing | Reconnect within 8 seconds to continue |
 | Safely Disconnected | You can unplug now | Unplug, or click **Reconnect** |
 
 If the device does not show up, open **Help › Connection Troubleshooting**.
+
+### iPhone & iPad
+On iPhone and iPad, PhoneBridge handles **photos and videos** only (not yet verified on a real device).
+1. Connect the cable and unlock the device.
+2. When "Trust This Computer?" appears, tap **Trust** and enter the passcode.
+3. The device appears under **iPhone & iPad**; after the photo list is read, **Photos & Videos** opens (a large library can take a few minutes).
+4. You can import photos and videos to the Mac (drag, download, move to Mac) and delete them. iOS does not allow adding or renaming files on the device.
+
+With iCloud Photos set to Optimize iPhone Storage, photos whose originals are not on the device may not appear. If Photos or Image Capture is using the device, quit it and try again.
 
 ## 2. Browse
 - Double-click a folder to open it. Back ⌘[, Forward ⌘], Enclosing Folder ⌘↑, Refresh ⌘R.
@@ -54,6 +63,7 @@ Turn on **Enable Finder integration** in Settings › Finder and enable the "Pho
 
 ## 6. Settings
 - **General › Language**: 한국어 / English. The app's windows switch immediately; a few texts drawn by macOS (Services and Quit in the app menu, file panel buttons) follow after a relaunch.
+- **General › Open PhoneBridge when a phone is connected** (off by default): a small helper starts when you log in and only watches USB; plugging in an Android device, iPhone or iPad opens PhoneBridge (or brings it to the front). Switching USB modes while plugged in does not reopen it, and drives, cameras and other devices are ignored. macOS may show a "Background Items Added" notice; if approval is needed, enable PhoneBridge in System Settings › General › Login Items & Extensions. Turning it off stops the helper.
 
 ## 7. When something goes wrong
 1. Go through **Help › Connection Troubleshooting** (cable, port, unlock, other apps).

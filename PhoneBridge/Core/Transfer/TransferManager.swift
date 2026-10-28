@@ -582,7 +582,7 @@ final class TransferManager {
     private func runDelete(items: [DeviceItemRef], generation: UInt64, context: JobContext) async throws(DeviceError) {
         let job = context.job
         let fs = context.fileSystem
-        guard fs.capabilities.canWrite else { throw .unsupportedOperation }
+        guard fs.capabilities.canDelete else { throw .unsupportedOperation }
         var trees: [[RemoteTreeEntry]] = []
         for ref in items {
             try Self.checkCancelled(job)

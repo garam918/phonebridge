@@ -29,11 +29,7 @@ struct FileGridView: View {
                             model.openSelection()
                         }
                         .modifier(GridDragSource(item: item))
-                        .dropDestination(for: String.self) { payloads, _ in
-                            guard item.isFolder else { return false }
-                            model.dropOnDevice(strings: payloads, onto: item)
-                            return true
-                        }
+                        .deviceFolderDrop(item, model: model)
                         .contextMenu {
                             FileContextMenu(ids: browser.selection.contains(item.id) ? browser.selection : [item.id])
                         }

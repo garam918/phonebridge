@@ -10,13 +10,13 @@ struct SidebarView: View {
         @Bindable var model = model
         List(selection: $model.sidebarSelection) {
             Section(loc.t("sidebar.devices")) {
-                if model.broker.devices.isEmpty {
+                if androidDevices.isEmpty {
                     Text(loc.t("sidebar.noDevices"))
                         .font(.callout)
                         .foregroundStyle(.secondary)
                         .selectionDisabled()
                 }
-                ForEach(model.broker.devices) { record in
+                ForEach(androidDevices) { record in
                     DeviceRow(name: record.displayName,
                               status: loc.stateTitle(record.state),
                               state: record.state,
@@ -28,6 +28,24 @@ struct SidebarView: View {
                             StorageRow(storage: storage, finder: finderStatus(record.id, storage.id))
                                 .tag(SidebarItem.storage(record.id, storage.id))
                                 .contextMenu { FinderMountMenu(deviceID: record.id, storageID: storage.id) }
+                        }
+                    }
+                }
+            }
+
+            if !model.appleDevices.records.isEmpty {
+                Section(loc.t("sidebar.appleDevices")) {
+                    ForEach(model.appleDevices.records) { record in
+                        AppleDeviceRow(record: record)
+                            .tag(SidebarItem.device(record.id))
+                            .contextMenu {
+                                if case .failed = record.state {
+                                    Button(loc.t("action.retry")) { model.appleDevices.retry(record.id) }
+                                }
+                            }
+                        if record.state == .ready, let storage = model.appleDevices.fileSystem(for: record.id)?.storage {
+                            StorageRow(storage: storage, symbol: "photo.on.rectangle")
+                                .tag(SidebarItem.storage(record.id, storage.id))
                         }
                     }
                 }
@@ -49,6 +67,13 @@ struct SidebarView: View {
             }
         }
         .listStyle(.sidebar)
+    }
+
+    /// The broker also sees an iPhone/iPad over USB (as unsupported); it is
+    /// listed once, under iPhone·iPad, while Image Capture serves it.
+    private var androidDevices: [DeviceRecord] {
+        guard !model.appleDevices.records.isEmpty else { return model.broker.devices }
+        return model.broker.devices.filter { $0.state != .unsupported(.appleDevice) }
     }
 
     private func finderStatus(_ deviceID: DeviceID, _ storageID: UInt32) -> StorageRow.FinderStatus {
@@ -118,6 +143,48 @@ private struct DeviceRow: View {
     }
 }
 
+private struct AppleDeviceRow: View {
+    @Environment(LocalizationManager.self) private var loc
+    let record: AppleDeviceRecord
+
+    var body: some View {
+        Label {
+            VStack(alignment: .leading, spacing: 1) {
+                Text(record.name).lineLimit(1)
+                Text(loc.appleStateTitle(record.state))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+        } icon: {
+            Image(systemName: record.isTablet ? "ipad" : "iphone")
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .overlay(alignment: .trailing) {
+            Group {
+                switch record.state {
+                case .connecting, .loading:
+                    ProgressView().controlSize(.small)
+                default:
+                    Circle()
+                        .fill(color)
+                        .frame(width: 7, height: 7)
+                }
+            }
+            .accessibilityLabel(loc.t("a11y.statusIndicator", loc.appleStateTitle(record.state)))
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    private var color: Color {
+        switch record.state {
+        case .ready: .green
+        case .failed: .red
+        default: .orange
+        }
+    }
+}
+
 /// Small trailing indicator: spinner while busy, colored dot otherwise.
 struct StatusIndicator: View {
     @Environment(LocalizationManager.self) private var loc
@@ -153,6 +220,7 @@ struct StorageRow: View {
     @Environment(LocalizationManager.self) private var loc
     let storage: StorageInfo
     var finder: FinderStatus = .none
+    var symbol: String?
 
     var body: some View {
         Label {
@@ -165,7 +233,7 @@ struct StorageRow: View {
                 }
             }
         } icon: {
-            Image(systemName: storage.kind == .removable ? "sdcard" : "internaldrive")
+            Image(systemName: symbol ?? (storage.kind == .removable ? "sdcard" : "internaldrive"))
         }
         .padding(.leading, 14)
         .accessibilityElement(children: .combine)

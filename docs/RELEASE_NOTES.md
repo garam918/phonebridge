@@ -1,5 +1,17 @@
 # 릴리스 노트 / Release Notes
 
+## 1.0.0 수정 빌드 3 (2026-10-28, 버전 번호 1.0.0 유지) / 1.0.0 updated build 3 (version number unchanged)
+빌드 202610281054, SHA-256 `19e86cd03e8f60e7a19114962a3cd423d5d86342a0faa9fe80d46290bca10258`
+
+- **휴대전화를 연결하면 PhoneBridge 열기**(설정 › 일반, 기본 꺼짐): 켜 두면 Android 기기를 꽂을 때 PhoneBridge가 자동으로 열립니다. / **Open PhoneBridge when a phone is connected** (Settings › General, off by default).
+- **iPhone·iPad 사진·동영상**: 연결하면 사이드바 "iPhone·iPad"에 나타나고, 카메라 롤의 사진과 동영상을 탐색·Mac으로 가져오기·삭제할 수 있습니다(기기에 쓰기·이름 변경은 iOS가 허용하지 않음). 처음 연결할 때 기기에서 '신뢰'를 선택해야 합니다. "휴대전화를 연결하면 PhoneBridge 열기"도 iPhone·iPad에 적용됩니다. 실제 iPhone·iPad로는 아직 검증하지 않았습니다. / **iPhone & iPad photos and videos**: browse, import to the Mac and delete camera-roll photos and videos (iOS does not allow writing or renaming). Trust the Mac on the device the first time. "Open PhoneBridge when a phone is connected" also covers iPhone and iPad. Not yet verified on a real iPhone or iPad.
+- Finder 복구 알림과 설정에 아이콘이 비어 보이던 문제를 고쳤습니다. / Fixed a missing icon in the Finder recovery notice and settings.
+- **멈춤 수정**: 휴대전화 파일을 오른쪽 Mac 창, 휴대전화 창의 빈 곳이나 폴더 위로 끌어다 놓으면 앱이 응답 없음 상태로 멈추던 문제를 고쳤습니다. 폴더 위에 놓은 Finder 파일은 이제 그 폴더로 올라갑니다. 1.0.0의 모든 빌드에 있던 문제입니다. 그동안에는 우클릭 › '다운로드'나 툴바의 다운로드 버튼, 휴대전화 안에서는 잘라내기·붙여넣기를 쓰면 됩니다. / **Hang fixed**: dragging phone files onto the Mac pane, an empty spot of the phone pane or a folder in it froze the app. Finder files dropped on a folder now go into that folder. This affected every 1.0.0 build; until the update, use right-click › Download or the Download toolbar button, and Cut/Paste within the phone.
+- 설정 › Finder에서 복구 파일을 다른 디스크에 저장할 때 큰 파일이면 앱이 잠시 응답하지 않던 문제를 고쳤습니다(복사를 백그라운드에서 함). / Saving a recovered Finder file to another disk no longer stalls the app.
+- USB 사용 목적이 '파일 전송'이 아닐 때 '잠금 해제' 대신 '파일 전송/Android Auto' 선택까지 함께 안내합니다. / When the phone's USB mode is not File transfer, the guidance now says so instead of only asking to unlock.
+- 이미 1.0.0을 설치했다면 업데이트 알림이 오지 않습니다. 설치 스크립트를 다시 실행하거나 `brew reinstall --cask phonebridge`로 받으세요. / Same version number: re-run the install script or `brew reinstall --cask phonebridge`.
+
+
 ## 1.0.0 수정 빌드 2 (2026-10-26, 버전 번호 1.0.0 유지)
 
 - **새 앱 아이콘**: Android(녹색)와 Mac(파란색)을 잇는 다리.

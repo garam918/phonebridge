@@ -224,6 +224,83 @@ struct DragExportTests {
         #expect(model.transfers.jobs.isEmpty, "an in-app drop must not download through the promise")
     }
 
+    /// Stands in for the file promise on a real drag pasteboard: on a drop in
+    /// the same app, asking for it blocked the main thread for good (D77).
+    final class PromiseTrap: NSObject, NSPasteboardItemDataProvider {
+        private(set) var askedTypes: [NSPasteboard.PasteboardType] = []
+
+        func pasteboard(_ pasteboard: NSPasteboard?, item: NSPasteboardItem, provideDataForType type: NSPasteboard.PasteboardType) {
+            askedTypes.append(type)
+            item.setString("file:///promised", forType: type)
+        }
+    }
+
+    private func dragPasteboard(_ texts: [String], trap: PromiseTrap) -> NSPasteboard {
+        let pasteboard = NSPasteboard(name: NSPasteboard.Name("DragExportTests-\(UUID().uuidString)"))
+        pasteboard.clearContents()
+        let items = texts.map { text in
+            let item = NSPasteboardItem()
+            item.setDataProvider(trap, forTypes: [.fileURL])
+            item.setString(text, forType: .string)
+            return item
+        }
+        pasteboard.writeObjects(items)
+        return pasteboard
+    }
+
+    @Test func paneDropsReadInAppDragsWithoutTouchingTheFilePromise() async throws {
+        let model = try await makeModel()
+        try await enter("Documents", in: model)
+        let memo = try item("메모.txt", in: model), budget = try item("가계부 2026.xlsx", in: model)
+        model.browser.selection = [memo.id, budget.id]
+        let payload = model.dragPayload(for: memo).encoded()
+        let trap = PromiseTrap()
+        let pasteboard = dragPasteboard([payload, payload], trap: trap)
+        defer { pasteboard.releaseGlobally() }
+
+        let payloads = DropLoader.inAppPayloads(pasteboard)
+        #expect(payloads.count == 1, "both rows carry the same selection")
+        #expect(Set(payloads.first?.deviceItems.map(\.name) ?? []) == ["메모.txt", "가계부 2026.xlsx"])
+        #expect(trap.askedTypes.isEmpty, "the file promise is for Finder, not for PhoneBridge's own panes")
+        #expect(model.transfers.jobs.isEmpty)
+
+        // Dropped on the Mac pane: one ordinary download of both files.
+        let destination = directory.appending(path: "drop", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: destination, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        model.dropOnLocal(DropLoader.Contents(payloads: payloads), into: destination)
+        await model.transfers.waitUntilIdle()
+        #expect(model.transfers.jobs.count == 1)
+        #expect(model.transfers.jobs.first?.isDragExport == false)
+        #expect(model.transfers.jobs.first?.state == .completed)
+        let names = try FileManager.default.contentsOfDirectory(atPath: destination.path(percentEncoded: false))
+        #expect(Set(names) == ["메모.txt", "가계부 2026.xlsx"])
+    }
+
+    @Test func droppingOnADeviceFolderMovesTheDraggedItemsIntoIt() async throws {
+        let model = try await makeModel()
+        try await enter("Documents", in: model)
+        let memo = try item("메모.txt", in: model), folder = try item("빈 폴더", in: model)
+        let trap = PromiseTrap()
+        let pasteboard = dragPasteboard([model.dragPayload(for: memo).encoded()], trap: trap)
+        defer { pasteboard.releaseGlobally() }
+
+        model.dropOnDevice(DropLoader.Contents(payloads: DropLoader.inAppPayloads(pasteboard)), onto: folder)
+        await model.transfers.waitUntilIdle()
+        #expect(trap.askedTypes.isEmpty)
+        #expect(model.transfers.jobs.first?.state == .completed)
+        let moved = try await model.demoDevice.contents(of: folder.id).map(\.name)
+        #expect(moved == ["메모.txt"])
+    }
+
+    @Test func dragsFromOtherAppsHaveNoInAppPayload() {
+        let trap = PromiseTrap()
+        let pasteboard = dragPasteboard(["/Users/someone/file.txt", "phonebridge-drag:not-base64"], trap: trap)
+        defer { pasteboard.releaseGlobally() }
+        #expect(DropLoader.inAppPayloads(pasteboard).isEmpty)
+        #expect(trap.askedTypes.isEmpty)
+    }
+
     @Test func iconViewDragsEverySelectedItem() async throws {
         let model = try await makeModel()
         try await enter("Documents", in: model)

@@ -16,6 +16,9 @@ struct DeviceID: Hashable, Sendable, Codable, CustomStringConvertible {
     var description: String { rawValue }
 
     static let demo = DeviceID("demo:virtual-android")
+
+    /// An iPhone/iPad served by `AppleDeviceManager` (D75).
+    var isAppleMobile: Bool { rawValue.hasPrefix("ios:") }
 }
 
 /// Identifies a file or folder on a device: MTP object handles are only unique

@@ -88,6 +88,17 @@ struct ViewRenderingTests {
         try renderMatrix("state-\(name)") { _ in DeviceStateContent(record: record(state)) }
     }
 
+    @Test(arguments: [
+        ("connecting", AppleDeviceState.connecting),
+        ("needs-trust", .needsTrust),
+        ("loading", .loading(nil)),
+        ("failed", .failed("com.apple.ImageCaptureCore -9912")),
+    ])
+    func appleDeviceState(name: String, state: AppleDeviceState) throws {
+        let record = AppleDeviceRecord(id: DeviceID("ios:TEST"), name: "iPhone", isTablet: false, state: state, generation: 1)
+        try renderMatrix("apple-\(name)") { _ in AppleDeviceStateContent(record: record) }
+    }
+
     @Test func noDeviceWelcome() throws {
         try renderMatrix("welcome") { _ in WelcomeContent() }
     }

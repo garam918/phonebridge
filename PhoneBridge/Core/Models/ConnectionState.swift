@@ -6,16 +6,11 @@ enum WaitingReason: Equatable, Sendable {
     case fileTransferModeRequired
     /// Android is in "PTP / transfer photos" mode instead of "File transfer".
     case ptpModeSelected
-    /// The MTP session is open but the device reports no storage (screen locked
-    /// or the "Allow access to device data?" prompt not answered yet).
+    /// The MTP session is open but the device reports no storage: screen
+    /// locked, "Allow access to device data?" not answered, or a USB mode other
+    /// than "File transfer" (Samsung keeps its MTP interface in every mode and
+    /// answers with no storage). The three cannot be told apart over USB.
     case deviceLocked
-}
-
-enum UnsupportedReason: Equatable, Sendable {
-    /// iPhone / iPad exposes a PTP camera interface but is not an Android device.
-    case appleDevice
-    /// A plain PTP camera that does not speak MTP.
-    case ptpCamera
 }
 
 /// Connection lifecycle for one logical device.

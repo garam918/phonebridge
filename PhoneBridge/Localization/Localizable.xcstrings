@@ -545,6 +545,278 @@
         }
       }
     },
+    "apple.guide.footnote": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PhoneBridge can only import and delete photos and videos on iPhone and iPad. With iCloud Photos set to Optimize iPhone Storage, items whose originals aren’t on the device may not appear."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PhoneBridge는 iPhone·iPad의 사진과 동영상만 가져오고 삭제할 수 있습니다. iCloud 사진의 ‘iPhone 저장 공간 최적화’가 켜져 있으면 원본이 기기에 없는 항목은 보이지 않을 수 있습니다."
+          }
+        }
+      }
+    },
+    "apple.guide.step1": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlock the device."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기기의 잠금을 해제하세요."
+          }
+        }
+      }
+    },
+    "apple.guide.step2": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When “Trust This Computer?” appears, tap Trust and enter the device passcode."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "‘이 컴퓨터를 신뢰하겠습니까?’가 나타나면 ‘신뢰’를 누르고 기기 암호를 입력하세요."
+          }
+        }
+      }
+    },
+    "apple.guide.step3": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If it still doesn’t work, reconnect the cable. If Photos or Image Capture is using the device, quit it and try again."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그래도 안 되면 케이블을 다시 연결하세요. 사진 앱이나 이미지 캡처가 기기를 사용 중이면 닫은 뒤 다시 시도하세요."
+          }
+        }
+      }
+    },
+    "apple.guide.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To Access Photos on iPhone or iPad"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone·iPad 사진에 접근하려면"
+          }
+        }
+      }
+    },
+    "apple.state.connecting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connecting"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "연결하는 중"
+          }
+        }
+      }
+    },
+    "apple.state.connecting.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connecting to the iPhone or iPad."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone 또는 iPad와 연결하고 있습니다."
+          }
+        }
+      }
+    },
+    "apple.state.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn’t Connect"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "연결하지 못함"
+          }
+        }
+      }
+    },
+    "apple.state.failed.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PhoneBridge couldn’t access the photos on the iPhone or iPad. Check the steps below, then try again."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone 또는 iPad의 사진에 접근하지 못했습니다. 아래 단계를 확인한 뒤 다시 시도하세요."
+          }
+        }
+      }
+    },
+    "apple.state.loading": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reading Photo Library"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사진 목록을 읽는 중"
+          }
+        }
+      }
+    },
+    "apple.state.loading.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This can take a few minutes for a large library. Keep the device unlocked meanwhile."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사진과 동영상이 많으면 몇 분 걸릴 수 있습니다. 그동안 기기의 잠금을 해제한 상태로 두세요."
+          }
+        }
+      }
+    },
+    "apple.state.needsTrust": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlock and Trust Required"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "잠금 해제와 신뢰가 필요함"
+          }
+        }
+      }
+    },
+    "apple.state.needsTrust.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlock the device and choose Trust when it asks “Trust This Computer?”"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기기의 잠금을 해제하고 ‘이 컴퓨터를 신뢰하겠습니까?’에서 ‘신뢰’를 선택하세요."
+          }
+        }
+      }
+    },
+    "apple.state.ready": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos & Videos Available"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사진 및 동영상 사용 가능"
+          }
+        }
+      }
+    },
+    "apple.storageName": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos & Videos"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사진 및 동영상"
+          }
+        }
+      }
+    },
+    "browser.applePhotos": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos and videos on the iPhone or iPad. You can import them to the Mac and delete them, but you can’t add or rename files on the device."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone·iPad의 사진과 동영상입니다. Mac으로 가져오기와 삭제만 할 수 있고, 기기에 파일을 넣거나 이름을 바꿀 수는 없습니다."
+          }
+        }
+      }
+    },
     "browser.emptyFolder": {
       "extractionState": "manual",
       "localizations": {
@@ -3560,13 +3832,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Storage appears automatically once the device is unlocked. If it doesn't, click Retry or reconnect the cable."
+            "value": "Once all three are done the storage appears by itself. If it still doesn't, click Retry or reconnect the cable."
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "잠금을 해제하면 저장소가 자동으로 나타납니다. 계속 보이지 않으면 '다시 시도'를 누르거나 케이블을 다시 연결하세요."
+            "value": "세 가지가 모두 되면 저장소가 자동으로 나타납니다. 계속 보이지 않으면 '다시 시도'를 누르거나 케이블을 다시 연결하세요."
           }
         }
       }
@@ -3577,13 +3849,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Turn on the screen and unlock the device."
+            "value": "Turn on the phone's screen and unlock it."
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "기기 화면을 켜고 잠금을 해제합니다."
+            "value": "휴대전화 화면을 켜고 잠금을 해제합니다."
           }
         }
       }
@@ -3594,7 +3866,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "If asked “Allow access to device data?”, tap “Allow”."
+            "value": "If it asks “Allow access to device data?”, tap Allow."
           }
         },
         "ko": {
@@ -3605,19 +3877,36 @@
         }
       }
     },
+    "guide.locked.stepUSBMode": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the “USB settings” (or “Charging via USB”) notification and set “Use USB for” to “File transfer”. On Samsung Galaxy it is “Transferring files / Android Auto”."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "알림창의 'USB 설정'(또는 'USB로 충전 중')을 눌러 USB 사용 목적을 '파일 전송'으로 바꿉니다. 삼성 Galaxy는 '파일 전송/Android Auto'입니다."
+          }
+        }
+      }
+    },
     "guide.locked.title": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unlock the Device"
+            "value": "Allow File Access on Your Phone"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "기기 잠금 해제"
+            "value": "휴대전화에서 파일 접근 허용하기"
           }
         }
       }
@@ -4682,13 +4971,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unlock the device, allow access to its data, then try again."
+            "value": "Unlock the phone, set “Use USB for” to “File transfer” (Samsung: “Transferring files / Android Auto”), allow access to its data, then try again."
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "기기의 잠금을 해제하고 데이터 접근을 허용한 뒤 다시 시도하세요."
+            "value": "휴대전화 잠금을 풀고, USB 사용 목적을 '파일 전송'(삼성: '파일 전송/Android Auto')으로 바꾸고, 데이터 접근을 허용한 뒤 다시 시도하세요."
           }
         }
       }
@@ -4999,6 +5288,91 @@
         }
       }
     },
+    "settings.openOnConnect": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open PhoneBridge when a phone is connected"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "휴대전화를 연결하면 PhoneBridge 열기"
+          }
+        }
+      }
+    },
+    "settings.openOnConnect.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't turn this on (%@)"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "켜지 못했습니다 (%@)"
+          }
+        }
+      }
+    },
+    "settings.openOnConnect.needsApproval": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow PhoneBridge in System Settings › General › Login Items & Extensions for this to work."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시스템 설정 › 일반 › 로그인 항목 및 확장 프로그램에서 PhoneBridge를 허용해야 동작합니다."
+          }
+        }
+      }
+    },
+    "settings.openOnConnect.note": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When on, a small helper starts when you log in and only watches for USB connections. It opens PhoneBridge when an Android device, iPhone or iPad is connected and never accesses the device's files."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "켜 두면 Mac에 로그인할 때 작은 도우미가 함께 실행되어 USB 연결만 지켜봅니다. Android 기기나 iPhone·iPad를 연결하면 PhoneBridge를 열고, 기기의 파일에는 접근하지 않습니다."
+          }
+        }
+      }
+    },
+    "settings.openOnConnect.openSettings": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Login Items Settings"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "로그인 항목 설정 열기"
+          }
+        }
+      }
+    },
     "settings.tab.diagnostics": {
       "extractionState": "manual",
       "localizations": {
@@ -5046,6 +5420,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "일반"
+          }
+        }
+      }
+    },
+    "sidebar.appleDevices": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone & iPad"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone·iPad"
           }
         }
       }
@@ -5277,13 +5668,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unsupported Device (iPhone/iPad)"
+            "value": "iPhone/iPad (Waiting for Photos Access)"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "지원하지 않는 기기 (iPhone/iPad)"
+            "value": "iPhone·iPad (사진 연결 대기)"
           }
         }
       }
@@ -5294,13 +5685,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "PhoneBridge is for Android devices. Use Finder or Image Capture for iPhone and iPad."
+            "value": "On iPhone and iPad, only photos and videos are available. If the device doesn’t appear under iPhone & iPad after a moment, unlock it and reconnect the cable."
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "PhoneBridge는 Android 기기용입니다. iPhone과 iPad는 Finder 또는 이미지 캡처를 사용하세요."
+            "value": "iPhone과 iPad는 사진과 동영상만 사용할 수 있습니다. 잠시 기다려도 ‘iPhone·iPad’ 목록에 나타나지 않으면 기기의 잠금을 해제하고 케이블을 다시 연결하세요."
           }
         }
       }
@@ -5413,13 +5804,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unlock Your Device"
+            "value": "Allow File Access on Your Phone"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "기기 잠금을 해제해 주세요"
+            "value": "휴대전화에서 파일 접근을 허용해 주세요"
           }
         }
       }
@@ -5430,13 +5821,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The device is connected but locked, so its files aren’t visible yet. Unlock it and allow access to its data, and PhoneBridge continues automatically."
+            "value": "The phone is connected, but its files aren't available yet. Unlock it, make sure “Use USB for” is set to “File transfer” (Samsung: “Transferring files / Android Auto”), and tap Allow if it asks about access to its data. PhoneBridge then continues automatically."
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "기기는 연결되었지만 잠겨 있어 파일을 볼 수 없습니다. 기기의 잠금을 해제하고 데이터 접근을 허용하면 자동으로 이어집니다."
+            "value": "휴대전화는 연결되었지만 아직 파일을 볼 수 없습니다. 화면 잠금을 풀고, USB 사용 목적이 '파일 전송'(삼성: '파일 전송/Android Auto')인지 확인한 뒤, 데이터 접근을 묻는 창이 뜨면 '허용'을 눌러 주세요. 그러면 자동으로 이어집니다."
           }
         }
       }

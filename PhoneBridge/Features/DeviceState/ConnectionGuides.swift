@@ -16,13 +16,17 @@ struct FileTransferGuide: View {
     }
 }
 
-struct UnlockGuide: View {
+/// The MTP session is open but the phone shows no storage. A locked screen
+/// and a USB mode other than "File transfer" look the same (Samsung keeps its
+/// MTP interface in every mode), so both are covered.
+struct StorageAccessGuide: View {
     @Environment(LocalizationManager.self) private var loc
 
     var body: some View {
         GuideBox(title: loc.t("guide.locked.title"),
                  steps: [
                      loc.t("guide.locked.step1"),
+                     loc.t("guide.locked.stepUSBMode"),
                      loc.t("guide.locked.step2"),
                  ],
                  footnote: loc.t("guide.locked.footnote"))
@@ -70,7 +74,7 @@ struct AccessConflictGuide: View {
     }
 }
 
-private struct GuideBox: View {
+struct GuideBox: View {
     let title: String
     let steps: [String]
     let footnote: String?

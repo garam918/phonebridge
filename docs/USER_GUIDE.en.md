@@ -26,7 +26,7 @@ On iPhone and iPad, PhoneBridge handles **photos and videos** only (not yet veri
 3. The device appears under **iPhone & iPad**; after the photo list is read, **Photos & Videos** opens (a large library can take a few minutes).
 4. You can import photos and videos to the Mac (drag, download, move to Mac) and delete them. iOS does not allow adding or renaming files on the device.
 
-With iCloud Photos set to Optimize iPhone Storage, photos whose originals are not on the device may not appear. If Photos or Image Capture is using the device, quit it and try again.
+With iCloud Photos set to Optimize iPhone Storage, photos whose originals are not on the device may not appear. If Photos or Image Capture is using the device, quit it and try again. With an iPhone or iPad and an Android device connected at the same time, the Android device may fail with "in use by another program: ptpcamerad"; unplug the iPhone or iPad, wait a few seconds and reconnect the Android device.
 
 ## 2. Browse
 - Double-click a folder to open it. Back ⌘[, Forward ⌘], Enclosing Folder ⌘↑, Refresh ⌘R.
@@ -40,7 +40,7 @@ With iCloud Photos set to Optimize iPhone Storage, photos whose originals are no
 |---|---|
 | Copy to the Mac | Select, then **Download** (⇧⌘D, to Downloads) or **Download To…** (⌥⇧⌘D) |
 | Drag straight to Finder | Drag from the Android list to a Finder window or the Desktop; the file appears once it has been downloaded |
-| Copy to the device | **Upload from Mac…** (⌘U), or drag from Finder into the Android list |
+| Copy to the device | **Upload from Mac…** (⌘U), or drag from Finder into the Android list (drop on a folder to put it there) |
 | Side by side with the Mac | **Show Mac Pane** (⌥⌘2): Android left, Mac right; drag between them |
 | Move within the device | Drag onto a folder, or Cut ⌘X then Paste ⌘V |
 | New folder, rename, delete | ⇧⌘N, Rename…, ⌘⌫ (asks first; the device has no Trash, so deletion is permanent) |

@@ -34,10 +34,11 @@ Finder 사이드바에서 기기를 일반 디스크처럼 보려면 파일 시�
 
 ### 제거
 1. 기기가 Finder에 연결되어 있으면 PhoneBridge에서 **기기 › 안전하게 연결 해제**(⌘E)를 누르거나 앱을 종료합니다(종료 시 PhoneBridge 볼륨을 해제함).
-2. PhoneBridge를 종료하고 응용 프로그램 폴더의 `PhoneBridge.app`을 휴지통으로 옮깁니다(또는 `install.sh --uninstall`, `brew uninstall --cask phonebridge`). Finder 확장과 해제 도우미는 앱 안에 들어 있어 함께 제거됩니다.
+2. "휴대전화를 연결하면 PhoneBridge 열기"를 켜 두었다면 설정 › 일반에서 먼저 끕니다(앱을 휴지통으로 옮기기만 하면 다시 로그인할 때까지 도우미가 남습니다. `install.sh --uninstall`과 `brew uninstall`은 도우미도 멈춥니다). PhoneBridge를 종료하고 응용 프로그램 폴더의 `PhoneBridge.app`을 휴지통으로 옮깁니다(또는 `install.sh --uninstall`, `brew uninstall --cask phonebridge`). Finder 확장, 해제 도우미, 연결 시 열기 도우미는 앱 안에 들어 있어 함께 제거됩니다.
 3. (선택) 설정·기록·캐시까지 지우려면 Finder에서 ⇧⌘G로 다음 폴더를 열어 휴지통으로 옮깁니다.
    - `~/Library/Containers/com.phonebridge.PhoneBridge`
    - `~/Library/Containers/com.phonebridge.PhoneBridge.FinderVolume`
+   - `~/Library/Containers/com.phonebridge.PhoneBridge.Launcher`
    - `~/Library/Group Containers/group.com.phonebridge.shared`
 4. 휴대전화에는 아무것도 설치되지 않으므로 제거할 것이 없습니다. PhoneBridge가 휴대전화에 만든 임시 파일(`.phonebridge-`로 시작하는 숨김 파일)은 다음 연결 때 자동으로 정리되며, 제거 후에도 남아 있으면 휴대전화의 파일 앱에서 지워도 됩니다.
 
@@ -72,9 +73,10 @@ Replace PhoneBridge in Applications with the one from the new DMG. Settings are 
 
 ### Uninstall
 1. If a device is mounted in Finder, choose **Device › Safely Disconnect** (⌘E) or quit PhoneBridge (quitting unmounts its volumes).
-2. Quit PhoneBridge and move `PhoneBridge.app` from Applications to the Trash (or `install.sh --uninstall`, or `brew uninstall --cask phonebridge`). The Finder extension and the unmount helper live inside the app and go with it.
+2. If "Open PhoneBridge when a phone is connected" is on, turn it off in Settings › General first (if you only move the app to the Trash, its helper stays until you log out again; `install.sh --uninstall` and `brew uninstall` stop it). Quit PhoneBridge and move `PhoneBridge.app` from Applications to the Trash (or `install.sh --uninstall`, or `brew uninstall --cask phonebridge`). The Finder extension, the unmount helper and the open-on-connect helper live inside the app and go with it.
 3. (Optional) To remove settings, logs and caches, open these folders with ⇧⌘G in Finder and move them to the Trash:
    - `~/Library/Containers/com.phonebridge.PhoneBridge`
    - `~/Library/Containers/com.phonebridge.PhoneBridge.FinderVolume`
+   - `~/Library/Containers/com.phonebridge.PhoneBridge.Launcher`
    - `~/Library/Group Containers/group.com.phonebridge.shared`
 4. Nothing is installed on the phone. Hidden temporary files PhoneBridge may have left there (names starting with `.phonebridge-`) are cleaned at the next connection; after uninstalling you can delete any that remain with the phone's Files app.

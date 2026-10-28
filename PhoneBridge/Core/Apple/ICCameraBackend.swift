@@ -78,8 +78,16 @@ final class ICCameraBackend: CameraBackend, @unchecked Sendable {
         }.get()
         let result: Result<Void, DeviceError> = await withCheckedContinuation { continuation in
             Task { @MainActor in
-                _ = target.value.0.requestDeleteFiles(target.value.1, deleteFailed: { _ in }) { _, error in
-                    continuation.resume(returning: error.map { .failure(Self.map($0)) } ?? .success(()))
+                // iOS reports files it refused here, and the completion may then carry no error.
+                var refused = false
+                _ = target.value.0.requestDeleteFiles(target.value.1, deleteFailed: { failed in
+                    if !failed.isEmpty { refused = true }
+                }) { _, error in
+                    if let error {
+                        continuation.resume(returning: .failure(Self.map(error)))
+                    } else {
+                        continuation.resume(returning: refused ? .failure(.accessDenied) : .success(()))
+                    }
                 }
             }
         }

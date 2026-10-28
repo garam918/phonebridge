@@ -51,6 +51,8 @@ final class MockMTPBackend: MTPBackend, @unchecked Sendable {
                                     freeSpace: 64_000_000_000, kind: .internalStorage)]
         /// Number of `storages()` calls that report zero storages (locked).
         var lockedPolls = 0
+        /// `storages()` fails with this (e.g. GetStorageInfo refused).
+        var storagesError: DeviceError?
         /// Simulated blocking time per call.
         var callDelay: TimeInterval = 0
         /// Simulated blocking time per 64 KiB transfer chunk.
@@ -160,6 +162,10 @@ final class MockMTPBackend: MTPBackend, @unchecked Sendable {
 
     fileprivate func deviceInfo() -> MTPDeviceInfo { instrumented { script.info } }
     fileprivate func capabilities() -> MTPCapabilities { instrumented { script.capabilities } }
+
+    fileprivate func storagesError() -> DeviceError? {
+        lock.withLock { script.storagesError }
+    }
 
     fileprivate func storages() -> [StorageInfo] {
         instrumented {
@@ -398,6 +404,7 @@ private final class MockMTPConnection: MTPConnection {
 
     func storages() throws(DeviceError) -> [StorageInfo] {
         try requireOpen()
+        if let error = backend.storagesError() { throw error }
         return backend.storages()
     }
 

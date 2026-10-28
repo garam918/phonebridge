@@ -38,11 +38,16 @@ func openPhoneBridge() {
     }
 }
 
+func phoneBridgeIsRunning() -> Bool {
+    guard let id = hostApp().flatMap({ Bundle(url: $0)?.bundleIdentifier }) else { return false }
+    return !NSRunningApplication.runningApplications(withBundleIdentifier: id).isEmpty
+}
+
 let monitor = IOKitUSBMonitor()
 Task { @MainActor in
     var detector = PhoneAttachDetector()
     for await event in monitor.events {
-        if detector.handle(event) { openPhoneBridge() }
+        if detector.handle(event, appIsRunning: phoneBridgeIsRunning) { openPhoneBridge() }
     }
 }
 monitor.start()

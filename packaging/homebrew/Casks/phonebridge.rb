@@ -1,6 +1,6 @@
 cask "phonebridge" do
   version "1.0.0"
-  sha256 "9666ce9f6269fea0d1f8cbce06fbc5c18292ee05b6b900613657354c2846302c"
+  sha256 "dce53359a33362f3469d811602a54d3ceb156f420cc7c59a633e282134fcef5a"
 
   url "https://github.com/garam918/phonebridge/releases/download/v#{version}/PhoneBridge-#{version}.dmg"
   name "PhoneBridge"
@@ -17,11 +17,13 @@ cask "phonebridge" do
 
   app "PhoneBridge.app"
 
-  uninstall quit: "com.phonebridge.PhoneBridge"
+  uninstall quit:      "com.phonebridge.PhoneBridge",
+            launchctl: "com.phonebridge.PhoneBridge.Launcher"
 
   zap trash: [
     "~/Library/Containers/com.phonebridge.PhoneBridge",
     "~/Library/Containers/com.phonebridge.PhoneBridge.FinderVolume",
+    "~/Library/Containers/com.phonebridge.PhoneBridge.Launcher",
     "~/Library/Group Containers/group.com.phonebridge.shared",
   ]
 end

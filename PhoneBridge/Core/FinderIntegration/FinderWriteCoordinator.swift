@@ -209,9 +209,15 @@ final class FinderWriteCoordinator {
         }
         let inside = try await fs.contents(of: folder.id)
         if inside.contains(where: { !FileNameRules.isTemporary($0.name) }) { throw .folderNotEmpty }
+        // A `.bak` is the original of a replace that has not finished (or is
+        // journaled for recovery): never delete it with the folder.
+        if inside.contains(where: { $0.name.hasSuffix(".bak") }) { throw .folderNotEmpty }
         for leftover in inside where !leftover.isFolder {
             try await fs.delete(leftover.id)
         }
+        // `contents` leaves out objects libmtp cannot read, and Android deletes
+        // a folder recursively: ask the device itself whether it is empty.
+        if try await fs.childCount(of: folder.id) > 0 { throw .folderNotEmpty }
         try await fs.delete(folder.id)
     }
 

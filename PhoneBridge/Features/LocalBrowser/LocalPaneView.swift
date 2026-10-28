@@ -40,7 +40,10 @@ struct LocalPaneView: View {
                     RoundedRectangle(cornerRadius: 6).strokeBorder(Color.accentColor, lineWidth: 3).padding(2)
                 }
             }
-            .onDrop(of: DropLoader.acceptedTypes, delegate: InAppFirstDropDelegate(isTargeted: $isDropTargeted) {
+            .onDrop(of: DropLoader.acceptedTypes, delegate: InAppFirstDropDelegate(
+                isTargeted: $isDropTargeted,
+                // Only Android items download here; Finder files and text are not taken.
+                isEnabled: { DropLoader.inAppPayloads(NSPasteboard(name: .drag)).contains { !$0.deviceItems.isEmpty } }) {
                 model.dropOnLocal($0)
             })
         }

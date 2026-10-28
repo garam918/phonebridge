@@ -31,6 +31,26 @@ struct DeviceBrokerTests {
         #expect(broker.fileSystem(for: pixelID) != nil)
     }
 
+    @Test func aFailedStorageRefreshKeepsTheConnection() async throws {
+        let broker = makeBroker()
+        monitor.send(.attached(.fixture()))
+        try await waitUntil { broker.record(for: pixelID)?.state == .connected }
+        let opens = backend.openCount
+
+        backend.configure { $0.storagesError = .protocolError(code: 0x2002, detail: "GetStorageInfo refused") }
+        broker.refreshStorages(pixelID)
+        try await Task.sleep(for: .milliseconds(200))
+        #expect(broker.record(for: pixelID)?.state == .connected)
+        #expect(broker.record(for: pixelID)?.storages.map(\.id) == [0x0001_0001])
+        #expect(broker.fileSystem(for: pixelID) != nil)
+        #expect(backend.openCount == opens, "the session stays open")
+
+        // A device that is gone still fails.
+        backend.configure { $0.storagesError = .disconnected }
+        broker.refreshStorages(pixelID)
+        try await waitUntil { broker.record(for: pixelID)?.state == .failed(.disconnected) }
+    }
+
     @Test func unrelatedUSBDevicesAreIgnored() async throws {
         let broker = makeBroker()
         monitor.send(.attached(.fixture(registryID: 10, vendorID: 0x1EA7, productID: 0x0064, serial: nil,

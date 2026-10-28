@@ -197,6 +197,8 @@ final class AppModel {
             // Diagnostics (launch argument only): flip "open on connect" without the UI.
             if let value = UserDefaults.standard.string(forKey: "diagnostics.openOnConnect") {
                 launchOnConnect.setEnabled(value == "on" || value == "YES")
+            } else {
+                launchOnConnect.refreshRegistration()
             }
         }
         previews.purgeCache()

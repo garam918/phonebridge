@@ -120,6 +120,7 @@ final class DeviceBroker {
     func retry(_ id: DeviceID) {
         guard let record = record(for: id) else { return }
         Log.broker.info("\(id, privacy: .private(mask: .hash)) retry requested in state \(record.state.name, privacy: .public)")
+        transientRetries[id] = nil
         apply(USBDeviceClassifier.classify(record.usb), to: id)
     }
 
@@ -147,7 +148,25 @@ final class DeviceBroker {
         let generation = record.generation
         workers[id]?.cancel()
         workers[id] = Task { [weak self] in
-            await self?.loadStorages(id: id, session: session, generation: generation)
+            await self?.reloadStorages(id: id, session: session, generation: generation)
+        }
+    }
+
+    /// A refresh of a working connection keeps it unless the device is gone:
+    /// a GetStorageInfo error or an empty answer (an SD card being removed)
+    /// must not close the session and cancel queued transfers.
+    private func reloadStorages(id: DeviceID, session: MTPDeviceSession, generation: UInt64) async {
+        do throws(DeviceError) {
+            let storages = try await session.storages()
+            guard isCurrent(id, generation), !storages.isEmpty else { return }
+            update(id) { $0.storages = storages }
+        } catch {
+            guard isCurrent(id, generation) else { return }
+            if case .disconnected = error {
+                fail(id, error)
+            } else {
+                Log.broker.notice("\(id, privacy: .private(mask: .hash)) storage refresh failed, keeping the session: \(error.localizationKey, privacy: .public)")
+            }
         }
     }
 

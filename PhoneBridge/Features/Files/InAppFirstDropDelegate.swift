@@ -45,12 +45,26 @@ struct InAppFirstDropDelegate: DropDelegate {
 
 extension View {
     /// A folder in the Android pane accepts PhoneBridge items (moved into it)
-    /// and Finder files (uploaded into it). Other items are no drop target.
+    /// and Finder files (uploaded into it). Files get no drop target at all:
+    /// a target that rejects the drop would also keep it from the pane behind.
     func deviceFolderDrop(_ item: FileItem, model: AppModel) -> some View {
-        onDrop(of: DropLoader.acceptedTypes,
-               delegate: InAppFirstDropDelegate(isTargeted: .constant(false),
-                                                isEnabled: { item.isFolder && model.canWriteHere }) {
-                   model.dropOnDevice($0, onto: item)
-               })
+        modifier(DeviceFolderDrop(item: item, model: model))
+    }
+}
+
+private struct DeviceFolderDrop: ViewModifier {
+    let item: FileItem
+    let model: AppModel
+
+    func body(content: Content) -> some View {
+        if item.isFolder {
+            content.onDrop(of: DropLoader.acceptedTypes,
+                           delegate: InAppFirstDropDelegate(isTargeted: .constant(false),
+                                                            isEnabled: { model.canWriteHere }) {
+                               model.dropOnDevice($0, onto: item)
+                           })
+        } else {
+            content
+        }
     }
 }

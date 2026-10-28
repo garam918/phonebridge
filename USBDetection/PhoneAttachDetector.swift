@@ -1,13 +1,15 @@
 import Foundation
 
-/// Decides when a USB event means "an Android phone or tablet was just plugged
+/// Decides when a USB event means "a phone or tablet was just plugged
 /// in" (the login-item launcher then opens PhoneBridge, D73).
 ///
 /// - Devices already present when watching starts are not "plugged in now"
 ///   (logging in, or turning the setting on, with a phone attached).
 /// - A phone re-enumerates when its USB mode changes (charging only → file
-///   transfer); a reappearance within `reattachWindow` is the same plug-in.
-/// - Anything that is not an Android device (iPhone, cameras, keyboards,
+///   transfer); a reappearance within `reattachWindow` is the same plug-in,
+///   unless PhoneBridge is not running then (quit with ⌘Q/⌘W, then the cable
+///   pulled and plugged back in quickly, 2026-10-28).
+/// - Anything that is not a phone or tablet (cameras, keyboards,
 ///   drives) is ignored.
 struct PhoneAttachDetector {
     var startupGrace: TimeInterval = 3
@@ -25,7 +27,8 @@ struct PhoneAttachDetector {
     }
 
     /// true when PhoneBridge should be opened for this event.
-    mutating func handle(_ event: USBEvent, now: Date = Date()) -> Bool {
+    /// `appIsRunning` is asked only for a reappearance within `reattachWindow`.
+    mutating func handle(_ event: USBEvent, now: Date = Date(), appIsRunning: () -> Bool = { true }) -> Bool {
         switch event {
         case .attached(let snapshot):
             guard Self.isPhone(snapshot) else { return false }
@@ -34,7 +37,9 @@ struct PhoneAttachDetector {
             guard !handled.contains(key) else { return false }
             handled.insert(key)
             if now.timeIntervalSince(startedAt) < startupGrace { return false }
-            if let detached = lastDetach[key], now.timeIntervalSince(detached) < reattachWindow { return false }
+            if let detached = lastDetach[key], now.timeIntervalSince(detached) < reattachWindow {
+                return !appIsRunning()
+            }
             return true
         case .detached(let registryID):
             guard let key = present.removeValue(forKey: registryID) else { return false }

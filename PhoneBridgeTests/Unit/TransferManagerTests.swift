@@ -280,6 +280,20 @@ final class TransferManagerTests {
         #expect(try await noStagingLeftovers(), "backup of the replaced file must be removed")
     }
 
+    @Test func twoMacNamesThatBecomeOneDeviceNameAreBothKept() async throws {
+        // ":" and "?" both become "_" on the device; "Replace all" must not let
+        // the second upload replace the first one from the same job.
+        let first = try makeLocalFile("a:b.txt", bytes: 1_000, seed: 1)
+        let second = try makeLocalFile("a?b.txt", bytes: 2_000, seed: 2)
+        conflictAnswers = [.always(.replace)]
+        let job = try await upload([first, second], to: ["Download"])
+        #expect(job.state == .completed)
+        #expect(conflictsAsked.isEmpty, "a clash with this job's own upload is not a question")
+        #expect(try await deviceNames(["Download"]).filter { $0.hasPrefix("a_b") } == ["a_b 2.txt", "a_b.txt"])
+        #expect(try await deviceData(["Download", "a_b.txt"]) == (try Data(contentsOf: first)))
+        #expect(try await deviceData(["Download", "a_b 2.txt"]) == (try Data(contentsOf: second)))
+    }
+
     @Test func applyToAllAsksOnceForFolderMerge() async throws {
         let folder = local.appending(path: "Music", directoryHint: .isDirectory)
         try makeLocalFile("봄날.mp3", in: folder, bytes: 100)

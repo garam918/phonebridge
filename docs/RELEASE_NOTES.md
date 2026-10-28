@@ -1,5 +1,16 @@
 # 릴리스 노트 / Release Notes
 
+## 1.0.0 수정 빌드 5 (2026-10-28, 버전 번호 1.0.0 유지) / 1.0.0 updated build 5 (version number unchanged)
+빌드 202610281455, SHA-256 `dce53359a33362f3469d811602a54d3ceb156f420cc7c59a633e282134fcef5a`
+
+- "휴대전화를 연결하면 PhoneBridge 열기": PhoneBridge를 종료한 직후 휴대전화를 다시 꽂으면 열리지 않던 문제와, 업데이트 뒤 다시 로그인하기 전까지 예전 도우미가 계속 쓰이던 문제를 고쳤습니다. / "Open PhoneBridge when a phone is connected" now opens it when the phone is plugged back in right after quitting, and an update replaces the helper right away.
+- 업로드할 때 Mac에서 다른 두 이름이 휴대전화에서 같은 이름이 되면(예: `a:b`와 `a?b`) 먼저 올린 파일이 대치되던 문제를 고쳤습니다. 이제 둘 다 남습니다. / Two Mac files that map to one name on the phone are now both kept instead of one replacing the other.
+- 전송이 끝난 뒤 저장소 정보를 다시 읽다 오류가 나면 연결이 끊기던 문제를 고쳤습니다. / A failed storage refresh after a transfer no longer drops the connection.
+- Finder에서 폴더를 지울 때 기기에 실제로 남은 항목이 있으면 지우지 않습니다. / Deleting a folder from Finder now refuses when the phone still reports items in it.
+- 아이콘 보기에서 파일 아이콘 위에 놓아도 현재 폴더로 올라가고, Mac 창은 휴대전화 항목만 받습니다. / Drops on a file icon now go to the current folder; the Mac pane only accepts phone items.
+- 제거할 때(`install.sh --uninstall`, `brew uninstall`) 연결 시 열기 도우미도 멈춥니다. 설치 스크립트가 개발자 인증서 체인까지 확인합니다. / Uninstalling also stops the open-on-connect helper; the install script checks the certificate chain.
+- 실제 휴대전화로는 아직 확인하지 않았습니다. Homebrew는 `brew update && brew reinstall --cask phonebridge`로 받으세요. / Not yet verified on a real phone. With Homebrew: `brew update && brew reinstall --cask phonebridge`.
+
 ## 1.0.0 수정 빌드 4 (2026-10-28, 버전 번호 1.0.0 유지) / 1.0.0 updated build 4 (version number unchanged)
 빌드 202610281257, SHA-256 `9666ce9f6269fea0d1f8cbce06fbc5c18292ee05b6b900613657354c2846302c`
 

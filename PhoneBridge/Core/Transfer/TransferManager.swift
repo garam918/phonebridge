@@ -355,13 +355,24 @@ final class TransferManager {
         }
 
         var listings = ListingCache(fileSystem: fs)
+        // Objects this job created. Two Mac names can become one device name
+        // (sanitized characters, case), and replacing would then destroy the
+        // first upload — and a move would delete both sources (as `wroteLocally`).
+        var writtenHere: Set<FileItemID> = []
         for plan in plans {
             try Self.checkCancelled(job)
             let name = FileNameRules.sanitizedForDevice(plan.top.url.lastPathComponent)
             let siblings = try await listings.items(in: folder)
             var targetName = name
             var replaceTarget: FileItem?
-            if let existing = siblings.first(where: { $0.name.caseInsensitiveCompare(name) == .orderedSame }) {
+            if let existing = siblings.first(where: { $0.name.caseInsensitiveCompare(name) == .orderedSame }),
+               writtenHere.contains(existing.id) {
+                if existing.isFolder && plan.top.isDirectory {
+                    replaceTarget = existing // merge into the folder made a moment ago
+                } else {
+                    targetName = FileNameRules.uniqueName(for: name, existing: Set(siblings.map(\.name)))
+                }
+            } else if let existing = siblings.first(where: { $0.name.caseInsensitiveCompare(name) == .orderedSame }) {
                 let conflict = TransferConflict(
                     kind: job.kind, name: name, isFolder: plan.top.isDirectory, destinationName: job.destinationName,
                     existingSize: existing.size, existingModified: existing.modified,
@@ -386,6 +397,7 @@ final class TransferManager {
                 } else {
                     let created = try await fs.createFolder(named: targetName, in: folder)
                     listings.add(created, to: folder)
+                    writtenHere.insert(created.id)
                     topFolder = created.id
                 }
                 var folderIDs: [[String]: FileItemID] = [[]: topFolder]
@@ -403,13 +415,16 @@ final class TransferManager {
                                 : FileNameRules.uniqueName(for: entryName, existing: Set(siblings.map(\.name)))
                             let created = try await fs.createFolder(named: folderName, in: parent)
                             listings.add(created, to: parent)
+                            writtenHere.insert(created.id)
                             folderIDs[entry.relative] = created.id
                         }
                         continue
                     }
                     var finalName = entryName
                     var replacing: FileItem?
-                    if let clash {
+                    if let clash, writtenHere.contains(clash.id) {
+                        finalName = FileNameRules.uniqueName(for: entryName, existing: Set(siblings.map(\.name)))
+                    } else if let clash {
                         let conflict = TransferConflict(
                             kind: job.kind, name: entryName, isFolder: false, destinationName: entry.relative.dropLast().last ?? targetName,
                             existingSize: clash.size, existingModified: clash.modified,
@@ -428,12 +443,14 @@ final class TransferManager {
                     }
                     let uploaded = try await uploadFile(entry, named: finalName, into: parent, replacing: replacing, context: context)
                     listings.replace(replacing, with: uploaded, in: parent)
+                    writtenHere.insert(uploaded.id)
                     job.finishedFiles += 1
                 }
             } else {
                 let uploaded = try await uploadFile(plan.top, named: targetName, into: folder, path: destination.path,
                                                     replacing: replaceTarget, context: context)
                 listings.replace(replaceTarget, with: uploaded, in: folder)
+                writtenHere.insert(uploaded.id)
                 job.finishedFiles += 1
             }
 

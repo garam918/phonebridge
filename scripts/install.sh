@@ -93,6 +93,10 @@ verify_app() {  # <path to PhoneBridge.app>
     "Developer ID Application:"*) ;;
     *) die "배포용(Developer ID) 서명이 아닙니다: $auth / not a Developer ID signature" ;;
   esac
+  # The certificate chain itself, not only the text above: a Developer ID
+  # Application leaf issued by Apple for this team.
+  codesign --verify --deep --strict -R="anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] and certificate leaf[field.1.2.840.113635.100.6.1.13] and certificate leaf[subject.OU] = \"$TEAM_ID\"" "$app" 2>/dev/null \
+    || die "배포용(Developer ID) 서명이 아닙니다 / not a Developer ID signature from team $TEAM_ID"
   spctl --assess --type execute "$app" 2>/dev/null \
     || die "Apple 공증(notarization)을 확인할 수 없습니다 / not notarized by Apple"
   xcrun stapler validate -q "$app" 2>/dev/null || say "note: no stapled ticket (Gatekeeper checked online)"
@@ -108,7 +112,15 @@ verify_app() {  # <path to PhoneBridge.app>
 forget_copy() {  # <path to PhoneBridge.app>
   [ -x "$LSREGISTER" ] || return 0
   "$LSREGISTER" -u "$1/Contents/Extensions/PhoneBridgeFinder.appex" >/dev/null 2>&1 || true
+  "$LSREGISTER" -u "$1/Contents/Library/LoginItems/PhoneBridgeLauncher.app" >/dev/null 2>&1 || true
   "$LSREGISTER" -u "$1" >/dev/null 2>&1 || true
+}
+
+# "휴대전화를 연결하면 PhoneBridge 열기" (D73): its login item keeps running from
+# the removed copy until logout. On uninstall it is stopped; after an update
+# the new app registers its own launcher when it first opens (D79).
+stop_launcher() {
+  launchctl bootout "gui/$(id -u)/$BUNDLE_ID.Launcher" >/dev/null 2>&1 || true
 }
 
 # --- download / mount -----------------------------------------------------
@@ -218,6 +230,7 @@ install_app() {
 
 uninstall_app() {
   quit_app
+  stop_launcher
   local found=0 dir
   for dir in $search_dirs; do
     if [ -d "$dir/$APP_NAME" ]; then move_to_trash "$dir/$APP_NAME"; found=1; fi
@@ -226,6 +239,7 @@ uninstall_app() {
   if [ $zap -eq 1 ]; then
     move_to_trash "$HOME/Library/Containers/$BUNDLE_ID"
     move_to_trash "$HOME/Library/Containers/$BUNDLE_ID.FinderVolume"
+    move_to_trash "$HOME/Library/Containers/$BUNDLE_ID.Launcher"
     move_to_trash "$HOME/Library/Group Containers/group.com.phonebridge.shared"
   fi
   say "제거 완료 / removed. 휴대전화에는 설치된 것이 없습니다 / nothing was installed on the phone."

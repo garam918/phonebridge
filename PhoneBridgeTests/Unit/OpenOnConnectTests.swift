@@ -58,6 +58,29 @@ struct OpenOnConnectTests {
         }
     }
 
+    @Test func quickReplugOpensWhenPhoneBridgeWasQuit() {
+        var detector = PhoneAttachDetector(startedAt: start)
+        let phone = USBDeviceSnapshot.fixture(registryID: 10, interfaces: [.androidMTP])
+        do {
+            let opened = detector.handle(.attached(phone), now: at(10))
+            #expect(opened)
+        }
+        // Quit with ⌘Q, then the cable pulled and plugged back in within the window.
+        _ = detector.handle(.detached(registryID: 10), now: at(40))
+        let again = USBDeviceSnapshot.fixture(registryID: 11, interfaces: [.androidMTP])
+        do {
+            let opened = detector.handle(.attached(again), now: at(45), appIsRunning: { false })
+            #expect(opened)
+        }
+        // While PhoneBridge runs, a quick reappearance stays a USB mode change.
+        _ = detector.handle(.detached(registryID: 11), now: at(50))
+        let third = USBDeviceSnapshot.fixture(registryID: 12, interfaces: [.androidMTP])
+        do {
+            let opened = detector.handle(.attached(third), now: at(52), appIsRunning: { true })
+            #expect(!opened)
+        }
+    }
+
     @Test func replugginInLaterOpensAgain() {
         var detector = PhoneAttachDetector(startedAt: start)
         let phone = USBDeviceSnapshot.fixture(registryID: 10, interfaces: [.androidMTP])
@@ -139,6 +162,49 @@ struct OpenOnConnectTests {
             calls.append("unregister")
             status = .notRegistered
         }
+    }
+
+    private func scratchDefaults() -> UserDefaults {
+        let name = "OpenOnConnectTests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: name)!
+        defaults.removePersistentDomain(forName: name)
+        return defaults
+    }
+
+    @MainActor @Test func anUpdateRegistersTheLauncherAgainOnce() {
+        let defaults = scratchDefaults()
+        let service = FakeLoginItem()
+        // Turned on with build 1.
+        LaunchOnConnectSetting(service: service, openSettings: {}, defaults: defaults, build: "1").setEnabled(true)
+        // Same build: nothing to do.
+        LaunchOnConnectSetting(service: service, openSettings: {}, defaults: defaults, build: "1").refreshRegistration()
+        #expect(service.calls == ["register"])
+        // Updated to build 2: the old launcher (still running from the Trash) is replaced, once.
+        let updated = LaunchOnConnectSetting(service: service, openSettings: {}, defaults: defaults, build: "2")
+        updated.refreshRegistration()
+        updated.refreshRegistration()
+        #expect(service.calls == ["register", "unregister", "register"])
+        #expect(updated.state == .on)
+    }
+
+    @MainActor @Test func anUpdateLeavesTheLauncherAloneWhenItIsOff() {
+        let defaults = scratchDefaults()
+        let service = FakeLoginItem()
+        let setting = LaunchOnConnectSetting(service: service, openSettings: {}, defaults: defaults, build: "2")
+        setting.refreshRegistration()
+        service.status = .requiresApproval
+        setting.refreshRegistration()
+        #expect(service.calls.isEmpty)
+        #expect(setting.state == .needsApproval)
+    }
+
+    @MainActor @Test func switchedOffInSystemSettingsAsksForApprovalInsteadOfFailing() {
+        let service = FakeLoginItem()
+        service.failRegister = true
+        service.status = .requiresApproval
+        let setting = LaunchOnConnectSetting(service: service, openSettings: {}, defaults: scratchDefaults(), build: "1")
+        setting.setEnabled(true)
+        #expect(setting.state == .needsApproval)
     }
 
     @MainActor @Test func offByDefault() {

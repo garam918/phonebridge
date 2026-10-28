@@ -676,4 +676,4 @@ macOS 파일 이름은 조합형(NFD)일 수 있다(압축 해제, 오래된 디
 - 범위: D79(빠른 재연결 자동 실행), D80(점검 수정 전체). 배포 전 테스트 301개 통과, 정적 분석 경고 0, 현지화·로그 개인정보 검사 OK.
 - 빌드 202610281455, 앱·DMG 공증 Accepted, Developer ID + Hardened Runtime, 런처 `get-task-allow` 없음, 새 `install.sh`의 인증서 요구 조건 통과. SHA-256 `dce53359…34fcef5a`.
 - 공개: v1.0.0 파일 5개 교체(한 파일은 GitHub 502로 빠져 다시 올림, 내려받아 다섯 파일 체크섬·install.sh 일치 확인) → 탭 Cask(e964324, `uninstall launchctl:`·zap에 런처 컨테이너) → 릴리스 설명 → 소스 → 웹사이트(개인정보 문구).
-
+- 확인(이 Mac): 공개 `install.sh`로 202610281455 설치(체크섬·인증서 요구 조건·공증 통과). 설치 전 도우미는 휴지통의 예전 실행 파일(pid 80462)로 실행 중 → 새 앱을 처음 열자 "launcher registered again for this build", 예전 도우미 종료, 새 도우미가 `/Applications/PhoneBridge.app/…/PhoneBridgeLauncher`로 실행(`validation-category 6`, parent version 202610281455). 샌드박스 거부 0건. 실제 휴대전화 연결은 미확인.
